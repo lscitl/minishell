@@ -1,0 +1,56 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
+#    Updated: 2022/06/08 12:23:32 by seseo            ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+LDFLAGS = -L$(HOME)/.brew/opt/readline/lib
+CPPFLAGS = -I$(HOME)/.brew/opt/readline/include
+
+SRC_DIR 		:=	src
+OBJ_DIR			:=	obj
+
+SRC				:=	$(SRC_DIR)/minishell_main.c \
+					$(SRC_DIR)/minishell_utils_1.c \
+					$(SRC_DIR)/minishell_b_pwd.c \
+					$(SRC_DIR)/minishell_b_echo.c \
+					$(SRC_DIR)/minishell_b_exit.c \
+					$(SRC_DIR)/minishell_b_cd.c
+
+
+OBJ				:=	$(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+
+NAME			:=	minishell
+CC				:=	gcc
+RM				:=	rm -rf
+CFLAGS			:=	-Wall -Wextra -Werror -Iinclude -g
+LIB_PATH		:=	libft
+
+$(OBJ_DIR)/%.o:		$(SRC_DIR)/%.c
+					@mkdir -p $(@D)
+					$(CC) $(CFLAGS) -c $< -o $@ $(CPPFLAGS)
+
+$(NAME):			$(OBJ)
+					@$(MAKE) BONUS=true -C $(LIB_PATH)
+					$(CC) $(LDFLAGS) $(OBJ) -Llibft -lft -lreadline -o $(NAME)
+
+all:				$(NAME)
+
+clean:
+					$(RM) $(OBJ)
+					@$(MAKE) -C $(LIB_PATH) clean
+
+fclean:				clean
+					@$(MAKE) -C $(LIB_PATH) fclean
+					$(RM) $(NAME)
+
+re:					fclean
+					@$(MAKE) all
+
+.PHONY:				all clean fclean re
