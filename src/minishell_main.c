@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/09 13:55:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/10 00:05:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ void	print_environ(char **env)
 	}
 }
 
-void	run_command(char **cmd)
+void	run_command(char **cmd, t_info *info)
 {
 	pid_t	pid;
 
+	if (cmd[0] == NULL)
+		return ;
 	if (is_builtin(cmd[0]))
 	{
 		if (ft_strncmp(cmd[0], "echo", -1) == 0)
@@ -76,9 +78,11 @@ void	run_command(char **cmd)
 		else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
 			b_pwd();
 		else if (ft_strncmp(cmd[0], "env", -1) == 0)
-			print_environ(environ);
+			b_env(info->env_list);
+		else if (ft_strncmp(cmd[0], "unset", -1) == 0)
+			b_unset(cmd, &info->env_list);
 		else if (ft_strncmp(cmd[0], "cd", -1) == 0)
-			b_cd(cmd);
+			b_cd(cmd, info);
 	}
 	else
 	{
@@ -95,29 +99,53 @@ void	run_command(char **cmd)
 	}
 }
 
-void	shell_init(t_env *env)
+t_env_list	*get_env_list(char **env)
+{
+	t_env_list	*env_node;
+	t_env_list	*env_list;
+	int			i;
+
+	i = 0;
+	env_list = NULL;
+	while (env[i])
+	{
+		env_node = ft_lstnew(ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]));
+		if (env_node == NULL)
+			exit(0);
+		env_node->value = ft_substr(env[i], ft_strchr(env[i], '=') - env[i] + 1, -1);
+		if (env_node->content == NULL || env_node->value == NULL)
+			exit(0);
+		ft_lstadd_back(&env_list, env_node);
+		i++;
+	}
+	return (env_list);
+}
+
+void	shell_init(t_info *info)
 {
 	signal(SIGINT, &sig_int);
 	signal(SIGQUIT, &sig_quit);
-	tcgetattr(STDOUT_FILENO, &env->e_disable);
-	tcgetattr(STDOUT_FILENO, &env->e_enable);
-	env->e_disable.c_lflag &= (~ECHOCTL);
+	tcgetattr(STDOUT_FILENO, &info->e_disable);
+	tcgetattr(STDOUT_FILENO, &info->e_enable);
+	info->e_disable.c_lflag &= (~ECHOCTL);
+	info->env_list = get_env_list(environ);
+	// print_env_list(info->env_list);
 	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_disable);
 	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_enable); --> fork 이후에 적용..?
 }
 
 int	main(void)
 {
-	t_env			env;
+	t_info			info;
 	char			*line;
 	char			**cmd;
 
-	shell_init(&env);
+	shell_init(&info);
 	while (42)
 	{
-		tcsetattr(STDOUT_FILENO, TCSANOW, &env.e_disable);
+		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
-		tcsetattr(STDOUT_FILENO, TCSANOW, &env.e_enable);
+		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (line == NULL)
 		{
 			printf("\e[A%sexit\n", SHELL_PROMPT);
@@ -125,8 +153,9 @@ int	main(void)
 		}
 		add_history(line);
 		cmd = ft_split(line, ' ');
-		run_command(cmd);
+		run_command(cmd, &info);
 		free_strs(cmd);
 		free(line);
 	}
+	return (0);
 }

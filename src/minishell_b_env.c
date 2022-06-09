@@ -1,30 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_utils_1.c                                :+:      :+:    :+:   */
+/*   minishell_b_env.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/09 23:10:01 by seseo            ###   ########.fr       */
+/*   Created: 2022/06/09 23:38:41 by seseo             #+#    #+#             */
+/*   Updated: 2022/06/09 23:39:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_builtin(char *cmd)
+int	b_env(t_env_list *env_list)
 {
-	int			i;
-	static char	*built_in_fuc[7]
-		= {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
-
-	i = 0;
-	if (cmd == NULL)
-		return (FALSE);
-	while (i < 7)
+	while (env_list)
 	{
-		if (ft_strncmp(cmd, built_in_fuc[i++], -1) == 0)
-			return (i);
+		if (env_list->value != NULL)
+			printf("%s=%s\n", env_list->content, env_list->value);
+		env_list = env_list->next;
 	}
-	return (FALSE);
+	return (0);
 }

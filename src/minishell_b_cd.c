@@ -3,16 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_b_cd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/08 23:14:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/09 23:20:20 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	b_cd(char **cmd)
+char	*get_home_env(t_env_list *env_list)
+{
+	while (env_list)
+	{
+		if (ft_strncmp(env_list->content, "HOME", -1) == 0)
+			return (env_list->value);
+		env_list = env_list->next;
+	}
+	return (NULL);
+}
+
+int	b_cd(char **cmd, t_info *info)
 {
 	if (cmd[1])
 	{
@@ -22,13 +33,17 @@ int	b_cd(char **cmd)
 				return (0);
 			return (1);
 		}
-		else if (chdir(cmd[1]) == 0)
-			return (0);
-		return (1);
+		else
+		{
+			if (chdir(cmd[1]) == 0)
+				return (0);
+			return (1);
+		}
 	}
 	else
 	{
-		//get_home_env()
-		return (0);
+		if (chdir(get_home_env(info->env_list)) == 0)
+			return (0);
+		return (1);
 	}
 }

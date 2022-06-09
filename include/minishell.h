@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/06 22:49:09 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/10 00:06:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,23 @@ enum e_token
 	TK_QUOTED_STR
 };
 
-typedef struct s_env
+typedef t_list	t_env_list;
+
+typedef struct s_info
 {
 	struct termios	e_enable;
 	struct termios	e_disable;
-	// char			**environ;
 	char			*line;
 	char			**cmd;
-}	t_env;
+	t_env_list		*env_list;
+}	t_info;
 
 int		b_pwd(void);
 int		b_echo(char **cmd);
 void	b_exit(int code);
-int		b_cd(char **cmd);
+int		b_cd(char **cmd, t_info *info);
+int		b_unset(char **cmd, t_env_list **env_list);
+int		b_env(t_env_list *env_list);
 
 int		is_builtin(char *cmd);
 
