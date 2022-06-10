@@ -6,13 +6,14 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 23:22:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/10 00:18:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/10 13:12:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static void	b_unset_sub(char *del_key, t_env_list **env_list);
+static void	lst_del_node(t_env_list *node);
 
 int	b_unset(char **cmd, t_env_list **env_list)
 {
@@ -54,10 +55,7 @@ static void	b_unset_sub(char *del_key, t_env_list **env_list)
 	{
 		del_node = *env_list;
 		*env_list = (*env_list)->next;
-		free(del_node->content);
-		if (del_node->value)
-			free(del_node->value);
-		free(del_node);
+		lst_del_node(del_node);
 		return ;
 	}
 	while (prev_node->next)
@@ -66,12 +64,19 @@ static void	b_unset_sub(char *del_key, t_env_list **env_list)
 		{
 			del_node = prev_node->next;
 			prev_node->next = del_node->next;
-			free(del_node->content);
-			if (del_node->value)
-				free(del_node->value);
-			free(del_node);
+			lst_del_node(del_node);
 			return ;
 		}
 		prev_node = prev_node->next;
 	}
+}
+
+static void	lst_del_node(t_env_list *del_node)
+{
+	if (del_node == NULL)
+		return ;
+	free(del_node->content);
+	if (del_node->value)
+		free(del_node->value);
+	free(del_node);
 }
