@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 23:22:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/10 13:12:49 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/11 00:29:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static void	lst_del_node(t_env_list *node);
 int	b_unset(char **cmd, t_env_list **env_list)
 {
 	int	i;
-	int	j;
 	int	e_flg;
 	int	r_flg;
 
@@ -26,19 +25,14 @@ int	b_unset(char **cmd, t_env_list **env_list)
 	r_flg = 0;
 	while (cmd[i])
 	{
-		j = 0;
 		e_flg = 0;
-		while (cmd[i][j] && !e_flg)
-		{
-			if (ft_isdigit(cmd[i][j]))
-			{
-				ft_putstr_fd("unset err\n", 2);
-				e_flg = 1;
-			}
-			j++;
-		}
-		if (e_flg != 1)
+		if (ft_isalpha(cmd[i][0]) || cmd[i][0] == '_')
 			b_unset_sub(cmd[i], env_list);
+		else
+		{
+			ft_putstr_fd("unset err\n", 2);
+			e_flg = 1;
+		}
 		r_flg |= e_flg;
 		i++;
 	}

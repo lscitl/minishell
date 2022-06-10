@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/10 00:10:11 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/10 16:59:37 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,6 +23,7 @@ SRC				:=	$(SRC_DIR)/minishell_main.c \
 					$(SRC_DIR)/minishell_b_exit.c \
 					$(SRC_DIR)/minishell_b_unset.c \
 					$(SRC_DIR)/minishell_b_env.c \
+					$(SRC_DIR)/minishell_b_export.c \
 					$(SRC_DIR)/minishell_b_cd.c
 
 

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/10 00:05:53 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/10 21:52:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,9 @@ void	sig_int(int num)
 {
 	if (SIGINT == num)
 	{
-		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
+		printf("\n");
 		rl_redisplay();
 	}
 }
@@ -83,16 +83,21 @@ void	run_command(char **cmd, t_info *info)
 			b_unset(cmd, &info->env_list);
 		else if (ft_strncmp(cmd[0], "cd", -1) == 0)
 			b_cd(cmd, info);
+		else if (ft_strncmp(cmd[0], "export", -1) == 0)
+			b_export(cmd, info);
 	}
 	else
 	{
 		pid = fork();
 		if (pid == 0)
 		{
-			execve(cmd[0], cmd, environ);
-			printf("execve failed\n");
-			perror(cmd[0]);
-			exit(0);
+			// signal(SIGINT, SIG_DFL);
+			if (execve(cmd[0], cmd, environ))
+			{
+				printf("execve failed\n");
+				perror(cmd[0]);
+				exit(0);
+			}
 		}
 		else
 			waitpid(pid, NULL, 0);
@@ -121,6 +126,29 @@ t_env_list	*get_env_list(char **env)
 	return (env_list);
 }
 
+void	env_init(t_info *info)
+{
+	t_env_list	*env_list;
+	int			shlvl;
+
+	env_list = info->env_list;
+	while (env_list)
+	{
+		if (ft_strncmp(env_list->content, "SHLVL", -1) == 0)
+		{
+			shlvl = ft_atoi(env_list->value);
+			free(env_list->value);
+			env_list->value = ft_itoa(++shlvl);
+		}
+		if (ft_strncmp(env_list->content, "OLDPWD", -1) == 0)
+		{
+			free(env_list->value);
+			env_list->value = NULL;
+		}
+		env_list = env_list->next;
+	}
+}
+
 void	shell_init(t_info *info)
 {
 	signal(SIGINT, &sig_int);
@@ -129,6 +157,7 @@ void	shell_init(t_info *info)
 	tcgetattr(STDOUT_FILENO, &info->e_enable);
 	info->e_disable.c_lflag &= (~ECHOCTL);
 	info->env_list = get_env_list(environ);
+	env_init(info);
 	// print_env_list(info->env_list);
 	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_disable);
 	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_enable); --> fork 이후에 적용..?

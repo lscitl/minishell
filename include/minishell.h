@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/10 00:06:15 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/11 00:02:57 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define TRUE 1
 # define FALSE 0
-# define SHELL_PROMPT "minishell $"
+# define SHELL_PROMPT "\rminishell $ "
 
 # include <unistd.h>
 # include <stdio.h>
@@ -65,13 +65,16 @@ typedef struct s_info
 	t_env_list		*env_list;
 }	t_info;
 
-int		b_pwd(void);
-int		b_echo(char **cmd);
-void	b_exit(int code);
-int		b_cd(char **cmd, t_info *info);
-int		b_unset(char **cmd, t_env_list **env_list);
-int		b_env(t_env_list *env_list);
+int			b_pwd(void);
+int			b_echo(char **cmd);
+void		b_exit(int code);
+int			b_cd(char **cmd, t_info *info);
+int			b_unset(char **cmd, t_env_list **env_list);
+int			b_env(t_env_list *env_list);
+int			b_export(char **cmd, t_info *info);
 
-int		is_builtin(char *cmd);
+int			is_builtin(char *cmd);
+t_env_list	*find_key(t_env_list *env_list, char *key);
+void		set_env_node(t_info *info, char *key, char *val);
 
 #endif

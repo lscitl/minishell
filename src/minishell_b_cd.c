@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_b_cd.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/09 23:20:20 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/10 21:55:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,10 @@ int	b_cd(char **cmd, t_info *info)
 		if (ft_strncmp(cmd[1], "~", -1) == 0)
 		{
 			if (chdir(getenv("HOME")) == 0)
+			{
+
 				return (0);
+			}
 			return (1);
 		}
 		else
