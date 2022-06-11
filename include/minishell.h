@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 00:02:57 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/11 20:04:47 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,10 @@ int			b_env(t_env_list *env_list);
 int			b_export(char **cmd, t_info *info);
 
 int			is_builtin(char *cmd);
+
 t_env_list	*find_key(t_env_list *env_list, char *key);
 void		set_env_node(t_info *info, char *key, char *val);
+int			is_env_var_invalid(char *var);
+void		set_env_val(t_env_list *env_list, char *key, char *val);
 
 #endif

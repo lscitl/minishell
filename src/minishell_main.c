@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/10 21:52:49 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/11 20:10:16 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,25 +128,19 @@ t_env_list	*get_env_list(char **env)
 
 void	env_init(t_info *info)
 {
-	t_env_list	*env_list;
-	int			shlvl;
+	t_env_list	*shlvl;
+	int			lvl;
 
-	env_list = info->env_list;
-	while (env_list)
+	set_env_node(info, strdup("PWD"), getcwd(NULL, 0));
+	set_env_node(info, strdup("OLDPWD"), NULL);
+	shlvl = find_key(info->env_list, "SHLVL");
+	if (shlvl)
 	{
-		if (ft_strncmp(env_list->content, "SHLVL", -1) == 0)
-		{
-			shlvl = ft_atoi(env_list->value);
-			free(env_list->value);
-			env_list->value = ft_itoa(++shlvl);
-		}
-		if (ft_strncmp(env_list->content, "OLDPWD", -1) == 0)
-		{
-			free(env_list->value);
-			env_list->value = NULL;
-		}
-		env_list = env_list->next;
+		lvl = ft_atoi(shlvl->value);
+		set_env_node(info, ft_strdup("SHLVL"), ft_itoa(++lvl));
 	}
+	else
+		set_env_node(info, ft_strdup("SHLVL"), ft_itoa(1));
 }
 
 void	shell_init(t_info *info)
