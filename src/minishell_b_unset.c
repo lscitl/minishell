@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/09 23:22:21 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 00:29:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/11 17:39:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,11 @@ int	b_unset(char **cmd, t_env_list **env_list)
 	r_flg = 0;
 	while (cmd[i])
 	{
-		e_flg = 0;
-		if (ft_isalpha(cmd[i][0]) || cmd[i][0] == '_')
+		e_flg = is_env_var_invalid(cmd[i]);
+		if (e_flg == 0)
 			b_unset_sub(cmd[i], env_list);
 		else
-		{
 			ft_putstr_fd("unset err\n", 2);
-			e_flg = 1;
-		}
 		r_flg |= e_flg;
 		i++;
 	}
