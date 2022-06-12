@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 20:04:47 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/12 20:41:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ enum e_token
 };
 
 typedef t_list	t_env_list;
+typedef t_list	t_token;
 
 typedef struct s_info
 {
@@ -63,6 +64,7 @@ typedef struct s_info
 	char			*line;
 	char			**cmd;
 	t_env_list		*env_list;
+	t_token			*token;
 }	t_info;
 
 int			b_pwd(void);
@@ -75,9 +77,9 @@ int			b_export(char **cmd, t_info *info);
 
 int			is_builtin(char *cmd);
 
+int			is_env_var_invalid(char *var);
 t_env_list	*find_key(t_env_list *env_list, char *key);
 void		set_env_node(t_info *info, char *key, char *val);
-int			is_env_var_invalid(char *var);
-void		set_env_val(t_env_list *env_list, char *key, char *val);
+char		**get_env_strs(t_info *info);
 
 #endif

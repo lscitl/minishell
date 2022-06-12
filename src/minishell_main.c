@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 20:10:16 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/12 21:46:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ void	print_environ(char **env)
 
 void	run_command(char **cmd, t_info *info)
 {
+	char	**env;
 	pid_t	pid;
 
 	if (cmd[0] == NULL)
@@ -78,7 +79,12 @@ void	run_command(char **cmd, t_info *info)
 		else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
 			b_pwd();
 		else if (ft_strncmp(cmd[0], "env", -1) == 0)
-			b_env(info->env_list);
+		{
+			// b_env(info->env_list);
+			env = get_env_strs(info);
+			print_environ(env);
+			free_strs(env);
+		}
 		else if (ft_strncmp(cmd[0], "unset", -1) == 0)
 			b_unset(cmd, &info->env_list);
 		else if (ft_strncmp(cmd[0], "cd", -1) == 0)
@@ -91,8 +97,8 @@ void	run_command(char **cmd, t_info *info)
 		pid = fork();
 		if (pid == 0)
 		{
-			// signal(SIGINT, SIG_DFL);
-			if (execve(cmd[0], cmd, environ))
+			env = get_env_strs(info);
+			if (execve(cmd[0], cmd, env))
 			{
 				printf("execve failed\n");
 				perror(cmd[0]);
@@ -168,6 +174,7 @@ int	main(void)
 	{
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
+		// heredoc();
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (line == NULL)
 		{
