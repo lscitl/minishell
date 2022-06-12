@@ -6,11 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 19:55:58 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 20:05:49 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/12 20:40:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+static void	get_env_strs_sub(t_info *info, char **env);
 
 int	is_env_var_invalid(char *var)
 {
@@ -58,4 +60,49 @@ void	set_env_node(t_info *info, char *key, char *val)
 		tmp->value = val;
 		ft_lstadd_back(&info->env_list, tmp);
 	}
+}
+
+char	**get_env_strs(t_info *info)
+{
+	t_env_list	*tmp;
+	char		**env;
+	int			i;
+
+	tmp = info->env_list;
+	i = 0;
+	while (tmp)
+	{
+		if (tmp->value)
+			i++;
+		tmp = tmp->next;
+	}
+	env = malloc(sizeof(char *) * (i + 1));
+	if (env == NULL)
+		exit(1);
+	env[i] = NULL;
+	get_env_strs_sub(info, env);
+	return (env);
+}
+
+static void	get_env_strs_sub(t_info *info, char **env)
+{
+	t_env_list	*tmp;
+	t_buffer	*buf;
+	int			i;
+
+	buf = create_buf();
+	tmp = info->env_list;
+	i = 0;
+	while (tmp)
+	{
+		if (tmp->value)
+		{
+			add_str(buf, tmp->content);
+			add_char(buf, '=');
+			add_str(buf, tmp->value);
+			env[i++] = put_str(buf);
+		}
+		tmp = tmp->next;
+	}
+	del_buf(buf);
 }
