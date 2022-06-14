@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:42:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/05 18:18:40 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/14 15:33:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,15 @@
 
 static int	is_option(char *str);
 
-int	b_echo(char **cmd)
+int	b_echo(t_info *info)
 {
-	int	option;
-	int	i;
+	char	**cmd;
+	int		option;
+	int		i;
 
-	option = is_option(cmd[1]);
+	cmd = info->cmd;
 	i = 1;
+	option = is_option(cmd[i]);
 	while (is_option(cmd[i]))
 		i++;
 	while (cmd[i])
