@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/12 21:46:53 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/13 22:41:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	run_command(char **cmd, t_info *info)
 	if (is_builtin(cmd[0]))
 	{
 		if (ft_strncmp(cmd[0], "echo", -1) == 0)
-			b_echo(cmd);
+			b_echo(info);
 		else if (ft_strncmp(cmd[0], "exit", -1) == 0)
 		{
 			if (cmd[1])
@@ -167,13 +167,13 @@ int	main(void)
 {
 	t_info			info;
 	char			*line;
-	char			**cmd;
 
 	shell_init(&info);
 	while (42)
 	{
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
+		// parsing()
 		// heredoc();
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (line == NULL)
@@ -182,9 +182,10 @@ int	main(void)
 			exit(0);
 		}
 		add_history(line);
-		cmd = ft_split(line, ' ');
-		run_command(cmd, &info);
-		free_strs(cmd);
+		info.cmd = ft_split(line, ' ');
+		run_command(info.cmd, &info);
+		free_strs(info.cmd);
+		info.cmd = NULL;
 		free(line);
 	}
 	return (0);
