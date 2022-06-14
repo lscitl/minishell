@@ -6,47 +6,102 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/10 21:55:56 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/14 14:54:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_home_env(t_env_list *env_list)
-{
-	while (env_list)
-	{
-		if (ft_strncmp(env_list->content, "HOME", -1) == 0)
-			return (env_list->value);
-		env_list = env_list->next;
-	}
-	return (NULL);
-}
+static char	*get_env_val(t_env_list *env_list, char *envkey);
+static int	change_dir(t_info *info, char *env_key);
+static int	change_dir_home(t_info *info);
+static int	change_dir_input(t_info *info, char *dir);
 
 int	b_cd(char **cmd, t_info *info)
 {
 	if (cmd[1])
 	{
 		if (ft_strncmp(cmd[1], "~", -1) == 0)
-		{
-			if (chdir(getenv("HOME")) == 0)
-			{
-
-				return (0);
-			}
-			return (1);
-		}
+			return (change_dir_home(info));
+		else if (ft_strncmp(cmd[1], "--", -1) == 0)
+			return (change_dir(info, "HOME"));
+		else if (ft_strncmp(cmd[1], "-", -1) == 0)
+			return (change_dir(info, "OLDPWD"));
 		else
-		{
-			if (chdir(cmd[1]) == 0)
-				return (0);
-			return (1);
-		}
+			return (change_dir_input(info, cmd[1]));
+	}
+	return (change_dir(info, "HOME"));
+}
+
+static char	*get_env_val(t_env_list *env_list, char *envkey)
+{
+	t_env_list	*dir_node;
+
+	dir_node = find_key(env_list, envkey);
+	if (dir_node)
+		return (dir_node->value);
+	return (NULL);
+}
+
+static int	change_dir(t_info *info, char *env_key)
+{
+	const char	*dir = get_env_val(info->env_list, env_key);
+	char		*tmp;
+
+	if (dir == NULL)
+	{
+		printf("minishell: cd: %s not set\n", env_key);
+		return (1);
 	}
 	else
 	{
-		if (chdir(get_home_env(info->env_list)) == 0)
+		tmp = getcwd(NULL, 0);
+		if (chdir(dir) == 0)
+		{
+			set_env_node(info, ft_strdup("OLDPWD"), tmp);
 			return (0);
+		}
+		else
+		{
+			free(tmp);
+			printf("minishell: cd: No such file or directory\n");
+			return (1);
+		}
+	}
+}
+
+static int	change_dir_home(t_info *info)
+{
+	char		*tmp;
+
+	tmp = getcwd(NULL, 0);
+	if (chdir(getenv("HOME")) == 0)
+	{
+		set_env_node(info, ft_strdup("OLDPWD"), tmp);
+		return (0);
+	}
+	else
+	{
+		free(tmp);
+		printf("minishell: cd: No such file or directory\n");
+		return (1);
+	}
+}
+
+static int	change_dir_input(t_info *info, char *dir)
+{
+	char		*tmp;
+
+	tmp = getcwd(NULL, 0);
+	if (chdir(dir) == 0)
+	{
+		set_env_node(info, ft_strdup("OLDPWD"), tmp);
+		return (0);
+	}
+	else
+	{
+		free(tmp);
+		printf("minishell: cd: No such file or directory\n");
 		return (1);
 	}
 }
