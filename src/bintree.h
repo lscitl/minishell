@@ -1,52 +1,41 @@
-#ifndef _BIN_TREE_
-# define _BIN_TREE_
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   bintree.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/06/14 22:22:26 by seseo             #+#    #+#             */
+/*   Updated: 2022/06/14 22:22:26 by seseo            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef BINTREE_H
+# define BINTREE_H
 
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct	BinTreeNodeType
+typedef struct s_b_node
 {
-	int						visited;
-	char					data;
-	struct BinTreeNodeType	*pLeftChild;
-	struct BinTreeNodeType	*pRightChild;
-}	BinTreeNode;
+	t_token			*tokens;
+	t_redir			*redir;
+	struct s_b_node	*left;
+	struct s_b_node	*right;
+}	t_b_node;
 
-typedef struct	BinTreeType
-{
-	struct BinTreeNodeType	*pRootNode;
-}	BinTree;
+t_b_node	*make_btree_node(void *content);
+t_b_node	*insert_left_child(t_b_node *p_node, t_b_node *node);
+t_b_node	*insert_right_child(t_b_node *p_node, t_b_node *node);
+t_b_node	*get_left_child(t_b_node *node);
+t_b_node	*get_right_child(t_b_node *node);
+void		del_btree(t_b_node *root_node);
+void		del_btree_node(t_b_node *node);
 
-BinTree		*makeBinTree(BinTreeNode rootNode);
-BinTreeNode	*getRootNodeBT(BinTree *pBinTree);
-BinTreeNode	*insertLeftChildNodeBT(BinTreeNode *pParentNode, BinTreeNode element);
-BinTreeNode	*insertRightChildNodeBT(BinTreeNode *pParentNode, BinTreeNode element);
-BinTreeNode	*getLeftChildNodeBT(BinTreeNode *pNode);
-BinTreeNode	*getRightChildNodeBT(BinTreeNode *pNode);
-void		deleteBinTree(BinTree *pBinTree);
-void		deleteBinTreeNode(BinTreeNode *pNode);
+void		preorder_b_tree(t_b_node *p_node);
+void		inorder_b_tree(t_b_node *p_node);
+void		postorder_b_tree(t_b_node *p_node);
 
-void		preorderTraversalBinTree(BinTreeNode *pParentNode);
-void		inorderTraversalBinTree(BinTreeNode *pParentNode);
-void		postorderTraversalBinTree(BinTreeNode *pParentNode);
-
-void		preorderTraversalBinTreeIter(BinTreeNode *pParentNode);
-void		inorderTraversalBinTreeIter(BinTreeNode *pParentNode);
-void		postorderTraversalBinTreeIter(BinTreeNode *pParentNode);
-
-int			getMaxLevel(BinTree *pBinTree);
-int 		getMaxLevelRec(BinTree *pBinTree);
-
-void		printBinTree(BinTree *pBinTree);
-
-BinTreeNode	*searchBinTreeNode(BinTree *pBinTree, char c);
-
-#endif
-
-#ifndef _COMMON_TREE_DEF_
-# define _COMMON_TREE_DEF_
-
-# define TRUE		1
-# define FALSE		0
+// t_b_node	*searchBinTreeNode(t_b_node *root_node, char c);
 
 #endif

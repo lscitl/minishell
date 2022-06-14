@@ -6,144 +6,123 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 16:07:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/14 19:34:22 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/14 23:24:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "bintree.h"
 
-BinTree	*makeBinTree(BinTreeNode rootNode)
+t_b_node	*make_btree_node(void *content)
 {
-	BinTree		*pBinTree;
-	BinTreeNode	*pRootNode;
+	t_b_node	*r_node;
 
-	pBinTree = malloc(sizeof(BinTree));
-	if (pBinTree == NULL)
+	r_node = malloc(sizeof(t_b_node));
+	if (r_node == NULL)
 		return (NULL);
-	pRootNode = malloc(sizeof(BinTreeNode));
-	if (pRootNode == NULL)
-	{
-		free(pBinTree);
-		return (NULL);
-	}
-	*pRootNode = rootNode;
-	pRootNode->pLeftChild = NULL;
-	pRootNode->pRightChild = NULL;
-	pBinTree->pRootNode = pRootNode;
-	return (pBinTree);
+	r_node->tokens = content;
+	r_node->left = NULL;
+	r_node->right = NULL;
+	return (r_node);
 }
 
-BinTreeNode	*getRootNodeBT(BinTree *pBinTree)
+t_b_node	*insert_left_child(t_b_node *p_node, t_b_node *node)
 {
-	if (pBinTree != NULL)
-		return (pBinTree->pRootNode);
-	return (NULL);
+	if (p_node->left != NULL)
+		return (NULL);
+	c_node->left = NULL;
+	c_node->right = NULL;
+	p_node->left = node;
+	return (p_node);
 }
 
-BinTreeNode	*insertLeftChildNodeBT(BinTreeNode *pParentNode, BinTreeNode element)
+t_b_node	*insert_right_child(t_b_node *p_node, t_b_node *node)
 {
-	BinTreeNode	*pChildNode;
-
-	if (pParentNode->pLeftChild != NULL)
+	if (p_node->right != NULL)
 		return (NULL);
-	pChildNode = malloc(sizeof(BinTreeNode));
-	if (pChildNode == NULL)
-		return (NULL);
-	*pChildNode = element;
-	pChildNode->pLeftChild = NULL;
-	pChildNode->pRightChild = NULL;
-	pParentNode->pLeftChild = pChildNode;
-	return (pChildNode);
+	c_node->left = NULL;
+	c_node->right = NULL;
+	p_node->right = node;
+	return (p_node);
 }
 
-BinTreeNode	*insertRightChildNodeBT(BinTreeNode *pParentNode, BinTreeNode element)
+t_b_node	*get_left_child(t_b_node *node)
 {
-	BinTreeNode	*pChildNode;
-
-	if (pParentNode->pRightChild != NULL)
+	if (node == NULL)
 		return (NULL);
-	pChildNode = malloc(sizeof(BinTreeNode));
-	if (pChildNode == NULL)
-		return (NULL);
-	*pChildNode = element;
-	pChildNode->pLeftChild = NULL;
-	pChildNode->pRightChild = NULL;
-	pParentNode->pRightChild = pChildNode;
-	return (pChildNode);
+	return (node->left);
 }
 
-BinTreeNode	*getLeftChildNodeBT(BinTreeNode *pNode)
+t_b_node	*get_right_child(t_b_node *node)
 {
-	if (pNode == NULL)
+	if (node == NULL)
 		return (NULL);
-	return (pNode->pLeftChild);
+	return (node->right);
 }
 
-BinTreeNode	*getRightChildNodeBT(BinTreeNode *pNode)
+void	del_btree(t_b_node *node)
 {
-	if (pNode == NULL)
-		return (NULL);
-	return (pNode->pRightChild);
-}
-
-void	deleteBinTree(BinTree *pBinTree)
-{
-	deleteBinTreeNode(getRootNodeBT(pBinTree));
-	free(pBinTree);
-}
-
-void	deleteBinTreeNode(BinTreeNode *pNode)
-{
-	if (pNode == NULL)
+	if (node == NULL)
 		return ;
-	deleteBinTreeNode(pNode->pLeftChild);
-	deleteBinTreeNode(pNode->pRightChild);
-	free(pNode);
+	del_btree(node->left);
+	del_btree(node->right);
+	// ft_lstdel(node->tokens);
+	// ft_lstdel(node->redir);
+	free(node);
 }
 
-void	preorderTraversalBinTree(BinTreeNode *pParentNode)
+void	del_btree_node(t_b_node *node)
 {
-	if (pParentNode == NULL)
+	if (node == NULL)
 		return ;
-	printf("%c ", pParentNode->data);
-	preorderTraversalBinTree(pParentNode->pLeftChild);
-	preorderTraversalBinTree(pParentNode->pRightChild);
+	if (node->left)
 }
 
-void	inorderTraversalBinTree(BinTreeNode *pParentNode)
+void	preorder_btree(t_b_node *p_node)
 {
-	if (pParentNode == NULL)
+	if (p_node == NULL)
 		return ;
-	inorderTraversalBinTree(pParentNode->pLeftChild);
-	printf("%c ", pParentNode->data);
-	inorderTraversalBinTree(pParentNode->pRightChild);
+	// do something
+	// printf("%c ", p_node->data);
+	preorder_btree(p_node->left);
+	preorder_btree(p_node->right);
 }
 
-void	postorderTraversalBinTree(BinTreeNode *pParentNode)
+void	inorder_btree(t_b_node *p_node)
 {
-	if (pParentNode == NULL)
+	if (p_node == NULL)
 		return ;
-	postorderTraversalBinTree(pParentNode->pLeftChild);
-	postorderTraversalBinTree(pParentNode->pRightChild);
-	printf("%c ", pParentNode->data);
+	inorder_btree(p_node->left);
+	// do something
+	// printf("%c ", p_node->data);
+	inorder_btree(p_node->right);
 }
 
-static BinTreeNode	*preorderSearch(BinTreeNode *pParentNode, char c)
+void	postorder_btree(t_b_node *p_node)
 {
-	BinTreeNode	*pReturnNode = NULL;
-
-	if (pParentNode == NULL)
-		return (NULL);
-	if (pParentNode->data == c)
-		pReturnNode = pParentNode;
-	if (pReturnNode == NULL)
-		pReturnNode = preorderSearch(pParentNode->pLeftChild, c);
-	if (pReturnNode == NULL)
-		pReturnNode = preorderSearch(pParentNode->pRightChild, c);
-	return (pReturnNode);
+	if (p_node == NULL)
+		return ;
+	postorder_btree(p_node->left);
+	postorder_btree(p_node->right);
+	// do something
+	// printf("%c ", p_node->data);
 }
 
-BinTreeNode	*searchBinTreeNode(BinTree *pBinTree, char c)
-{
-	return (preorderSearch(getRootNodeBT(pBinTree), c));
-}
+// static t_b_node	*preorderSearch(t_b_node *p_node, char c)
+// {
+// 	t_b_node	*pReturnNode = NULL;
+
+// 	if (p_node == NULL)
+// 		return (NULL);
+// 	if (p_node->data == c)
+// 		pReturnNode = p_node;
+// 	if (pReturnNode == NULL)
+// 		pReturnNode = preorderSearch(p_node->left, c);
+// 	if (pReturnNode == NULL)
+// 		pReturnNode = preorderSearch(p_node->right, c);
+// 	return (pReturnNode);
+// }
+
+// t_b_node	*searchBinTreeNode(BinTree *pBinTree, char c)
+// {
+// 	return (preorderSearch(getRootNodeBT(pBinTree), c));
+// }
