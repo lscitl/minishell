@@ -15,6 +15,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include "../libft/include/libft.h"
 
 typedef struct s_b_node
 {

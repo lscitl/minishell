@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 16:07:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/14 23:24:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/15 11:19:25 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	del_btree_node(t_b_node *node)
 {
 	if (node == NULL)
 		return ;
-	if (node->left)
+	// if (node->left)
 }
 
 void	preorder_btree(t_b_node *p_node)
