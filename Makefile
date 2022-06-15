@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/11 20:10:44 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/16 00:05:39 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,9 @@ SRC_DIR 		:=	src
 OBJ_DIR			:=	obj
 
 SRC				:=	$(SRC_DIR)/minishell_main.c \
-					$(SRC_DIR)/minishell_envlist_utils_1.c \
+					$(SRC_DIR)/minishell_aster.c \
+					$(SRC_DIR)/minishell_list_utils_1.c \
+					$(SRC_DIR)/minishell_list_utils_2.c \
 					$(SRC_DIR)/minishell_utils_1.c \
 					$(SRC_DIR)/minishell_b_pwd.c \
 					$(SRC_DIR)/minishell_b_echo.c \
