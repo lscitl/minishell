@@ -6,26 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/13 22:41:27 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/15 17:59:38 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 extern char	**environ;
-
-void	free_strs(char **strs)
-{
-	int	i;
-
-	i = 0;
-	while (strs[i])
-	{
-		free(strs[i]);
-		i++;
-	}
-	free(strs);
-}
 
 void	sig_quit(int num)
 {
@@ -56,6 +43,20 @@ void	print_environ(char **env)
 	{
 		while (env[i])
 			printf("%s\n", env[i++]);
+	}
+}
+
+void	aster_test(char **cmd)
+{
+	char	**tmp;
+
+	if (cmd[1] == NULL)
+		return ;
+	else
+	{
+		tmp = asterisk_expand(cmd[1]);
+		print_environ(tmp);
+		free_strs(tmp);
 	}
 }
 
@@ -94,6 +95,11 @@ void	run_command(char **cmd, t_info *info)
 	}
 	else
 	{
+		if (ft_strncmp(cmd[0], "aster", -1) == 0)
+		{
+			aster_test(cmd);
+			return ;
+		}
 		pid = fork();
 		if (pid == 0)
 		{
@@ -160,7 +166,7 @@ void	shell_init(t_info *info)
 	env_init(info);
 	// print_env_list(info->env_list);
 	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_disable);
-	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_enable); --> fork ÀÌÈÄ¿¡ Àû¿ë..?
+	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_enable); --> fork ï¿½ï¿½ï¿½Ä¿ï¿½ ï¿½ï¿½ï¿½ï¿½..?
 }
 
 int	main(void)
