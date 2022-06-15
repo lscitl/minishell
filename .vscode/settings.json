@@ -27,7 +27,8 @@
 		"philo.h": "c",
 		"philo_bonus.h": "c",
 		"random": "c",
-		"minishell.h": "c"
+		"minishell.h": "c",
+		"readline.h": "c"
 	},
 
 	"42header.username": "seseo",
