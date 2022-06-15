@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 19:56:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/16 00:04:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,43 @@ int	is_builtin(char *cmd)
 			return (i);
 	}
 	return (FALSE);
+}
+
+void	free_strs(char **strs)
+{
+	int	i;
+
+	i = 0;
+	while (strs[i])
+	{
+		free(strs[i]);
+		i++;
+	}
+	free(strs);
+}
+
+void	sort_strs(char **strs)
+{
+	char	*tmp;
+	int		i;
+	int		j;
+
+	if (strs == NULL || !strs[0] || !strs[1])
+		return ;
+	i = 0;
+	while (strs[i + 1])
+	{
+		j = i + 1;
+		while (strs[j])
+		{
+			if (ft_strncmp(strs[i], strs[j], -1) > 0)
+			{
+				tmp = strs[i];
+				strs[i] = strs[j];
+				strs[j] = tmp;
+			}
+			j++;
+		}
+		i++;
+	}
 }
