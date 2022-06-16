@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 16:12:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/16 23:24:14 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,32 @@ enum e_built_in
 
 enum e_token
 {
-	TK_STR,
-	TK_IRD,
-	TK_ORD,
-	TK_HRD,
-	TK_ARD,
-	TK_PIPE,
-	TK_AND,
-	TK_OR,
-	TK_LPT,
-	TK_RPT,
-	TK_INVALID,
-	TK_EXPANDED_STR,
-	TK_QUOTED_STR
+	TKN_STR,
+	TKN_INP_RD,
+	TKN_OUT_RD,
+	TKN_HDC_RD,
+	TKN_APP_RD,
+	TKN_PIPE,
+	TKN_AND,
+	TKN_OR,
+	TKN_L_PT,
+	TKN_R_PT,
+	TKN_EXPAN_STR,
+	TKN_QUOTE_STR,
+	TKN_INVAL
+};
+
+enum	e_type
+{
+	BT_CMD,
+	BT_AND,
+	BT_OR,
+	BT_PAREN,
+	BT_PIPE,
+	BT_NONE
 };
 
 typedef t_list	t_env_list;
-typedef t_list	t_token;
 typedef t_list	t_redir;
 typedef t_list	t_dir_list;
 
@@ -67,14 +76,21 @@ typedef struct s_info
 	char			*line;
 	char			**cmd;
 	t_env_list		*env_list;
-	t_token			*token;
 	int				status;
 	// t_cmd_tree
 }	t_info;
 
+typedef struct s_token
+{
+	enum e_token	type;
+	char			*content;
+	char			*value;
+	struct s_token	*next;
+}	t_token;
+
 typedef struct s_b_node
 {
-	// enum			t_tk;
+	enum e_type		type;
 	t_token			*tokens;
 	t_redir			*redir;
 	struct s_b_node	*left;
@@ -128,5 +144,11 @@ void		del_btree_node(t_b_node *node);
 // void		postorder_b_tree(t_b_node *p_node);
 
 // t_b_node	*searchBinTreeNode(t_b_node *root_node, char c);
+
+// minishell_token_utils.c
+t_token		*token_new(void *content);
+t_token		*token_last(t_token *tokens);
+void		token_add_back(t_token **tokens, t_token *new);
+int			find_token_type(void *content);
 
 #endif
