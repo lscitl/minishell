@@ -6,13 +6,12 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 13:43:41 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/11 19:23:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/16 13:40:05 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	sort_char(char **env);
 static void	print_envs_sub(char **env, t_env_list *env_list);
 static void	print_envs(t_env_list *env_list);
 static void	add_env_node(t_info *info, char *cmd);
@@ -68,35 +67,9 @@ static void	print_envs(t_env_list *env_list)
 		env[len++] = tmp->content;
 		tmp = tmp->next;
 	}
-	sort_char(env);
+	sort_strs(env);
 	print_envs_sub(env, env_list);
 	free(env);
-}
-
-static void	sort_char(char **env)
-{
-	int		i;
-	int		j;
-	char	*tmp;
-
-	if (env[0] == NULL)
-		return ;
-	i = 0;
-	while (env[i + 1])
-	{
-		j = i + 1;
-		while (env[j])
-		{
-			if (ft_strncmp(env[i], env[j], -1) > 0)
-			{
-				tmp = env[i];
-				env[i] = env[j];
-				env[j] = tmp;
-			}
-			j++;
-		}
-		i++;
-	}
 }
 
 static void	print_envs_sub(char **env, t_env_list *env_list)

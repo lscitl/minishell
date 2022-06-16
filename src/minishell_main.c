@@ -6,33 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/15 17:59:38 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/16 14:25:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 extern char	**environ;
-
-void	sig_quit(int num)
-{
-	if (SIGQUIT == num)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-	}
-}
-
-void	sig_int(int num)
-{
-	if (SIGINT == num)
-	{
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		printf("\n");
-		rl_redisplay();
-	}
-}
 
 void	print_environ(char **env)
 {
@@ -103,6 +83,7 @@ void	run_command(char **cmd, t_info *info)
 		pid = fork();
 		if (pid == 0)
 		{
+			// signal(SIGINT, &sig_int_child);
 			env = get_env_strs(info);
 			if (execve(cmd[0], cmd, env))
 			{
@@ -114,28 +95,6 @@ void	run_command(char **cmd, t_info *info)
 		else
 			waitpid(pid, NULL, 0);
 	}
-}
-
-t_env_list	*get_env_list(char **env)
-{
-	t_env_list	*env_node;
-	t_env_list	*env_list;
-	int			i;
-
-	i = 0;
-	env_list = NULL;
-	while (env[i])
-	{
-		env_node = ft_lstnew(ft_substr(env[i], 0, ft_strchr(env[i], '=') - env[i]));
-		if (env_node == NULL)
-			exit(0);
-		env_node->value = ft_substr(env[i], ft_strchr(env[i], '=') - env[i] + 1, -1);
-		if (env_node->content == NULL || env_node->value == NULL)
-			exit(0);
-		ft_lstadd_back(&env_list, env_node);
-		i++;
-	}
-	return (env_list);
 }
 
 void	env_init(t_info *info)
@@ -157,7 +116,6 @@ void	env_init(t_info *info)
 
 void	shell_init(t_info *info)
 {
-	signal(SIGINT, &sig_int);
 	signal(SIGQUIT, &sig_quit);
 	tcgetattr(STDOUT_FILENO, &info->e_disable);
 	tcgetattr(STDOUT_FILENO, &info->e_enable);
@@ -177,6 +135,7 @@ int	main(void)
 	shell_init(&info);
 	while (42)
 	{
+		signal(SIGINT, &sig_int_readline);
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
 		// parsing()
@@ -189,6 +148,7 @@ int	main(void)
 		}
 		add_history(line);
 		info.cmd = ft_split(line, ' ');
+		signal(SIGINT, &sig_int_exec);
 		run_command(info.cmd, &info);
 		free_strs(info.cmd);
 		info.cmd = NULL;

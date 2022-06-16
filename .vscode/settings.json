@@ -33,4 +33,7 @@
 
 	"42header.username": "seseo",
 	"42header.email": "seseo@student.42seoul.kr",
+	"editor.rulers": [
+	80
+	],
 }

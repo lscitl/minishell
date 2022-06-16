@@ -33,9 +33,9 @@ t_b_node	*get_right_child(t_b_node *node);
 void		del_btree(t_b_node *root_node);
 void		del_btree_node(t_b_node *node);
 
-void		preorder_b_tree(t_b_node *p_node);
-void		inorder_b_tree(t_b_node *p_node);
-void		postorder_b_tree(t_b_node *p_node);
+// void		preorder_b_tree(t_b_node *p_node);
+// void		inorder_b_tree(t_b_node *p_node);
+// void		postorder_b_tree(t_b_node *p_node);
 
 // t_b_node	*searchBinTreeNode(t_b_node *root_node, char c);
 

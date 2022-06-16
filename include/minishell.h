@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 00:07:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/16 16:12:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ enum e_token
 
 typedef t_list	t_env_list;
 typedef t_list	t_token;
+typedef t_list	t_redir;
 typedef t_list	t_dir_list;
 
 typedef struct s_info
@@ -71,8 +72,23 @@ typedef struct s_info
 	// t_cmd_tree
 }	t_info;
 
+typedef struct s_b_node
+{
+	// enum			t_tk;
+	t_token			*tokens;
+	t_redir			*redir;
+	struct s_b_node	*left;
+	struct s_b_node	*right;
+}	t_b_node;
+
 // minishell_aster.c
 char		**asterisk_expand(char *str);
+
+// minishell_signal.c
+void		sig_int_readline(int num);
+void		sig_int_exec(int num);
+void		sig_int_child(int num);
+void		sig_quit(int num);
 
 // minishell_b_*.c
 int			b_pwd(void);
@@ -94,6 +110,23 @@ t_env_list	*find_key(t_env_list *env_list, char *key);
 void		set_env_node(t_info *info, char *key, char *val);
 char		**get_env_strs(t_info *info);
 
+// minishell_list_utils_2.c
+t_env_list	*get_env_list(char **env);
 char		**list_to_str(t_list *list);
+
+// bintree.c
+t_b_node	*make_btree_node(void *content);
+t_b_node	*insert_left_child(t_b_node *p_node, t_b_node *node);
+t_b_node	*insert_right_child(t_b_node *p_node, t_b_node *node);
+t_b_node	*get_left_child(t_b_node *node);
+t_b_node	*get_right_child(t_b_node *node);
+void		del_btree(t_b_node *root_node);
+void		del_btree_node(t_b_node *node);
+
+// void		preorder_b_tree(t_b_node *p_node);
+// void		inorder_b_tree(t_b_node *p_node);
+// void		postorder_b_tree(t_b_node *p_node);
+
+// t_b_node	*searchBinTreeNode(t_b_node *root_node, char c);
 
 #endif
