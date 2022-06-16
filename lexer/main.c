@@ -96,7 +96,7 @@ void	chopper(t_token **tokens, char *line)
 			start = i;
 			if (is_quote(line[i]))
 			{
-				printf("%s\n", &line[i]);
+				// printf("%s\n", &line[i]);
 				i += inside_quote(&line[start], &quote_flag);
 				if (i < start)
 				{
@@ -179,22 +179,24 @@ int	main(int argc, char **argv)
 	t_token	*tokens;
 	t_token	*tmp;
 	char	*str;
+	t_b_node	*ret;
 
 	// input must be a single line;
 	str = readline(">>");
 	// chopper(&tokens, argv[1]);
 	chopper(&tokens, str);
 	tmp = tokens;
-	while (tmp)
-	{
-		printf("%s (type :%d)\n", tmp->content, tmp->type);
-		tmp = tmp->next;
-	}
-	if (syntax_error_check(tokens))
+	if (syntax_error_check(tmp))
 		printf("\nOK\n");
 	else
 		printf("\nSyntax Error\n");
 	// system("leaks lexer");
+	// heredoc을 받아야 함.
+	// token list에 받고 싶음.
+	print_content(tmp);
+	ret = make_btree_node(tmp);
+	make_parse_tree(ret);
+	preorder_btree(ret);
 	return (0);
 }
 

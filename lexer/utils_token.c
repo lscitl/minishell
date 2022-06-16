@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_token.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyunkkim <hyunkkim@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:07:35 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/06/13 19:09:56 by hyunkkim         ###   ########seoul.kr  */
+/*   Updated: 2022/06/16 21:57:51 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ t_token	*token_new(void *content)
 		return (NULL);
 	new->type = find_token_type(content);
 	new->content = content;
-	new->expansion_record = NULL;
+	new->value = NULL;
 	new->next = NULL;
 	return (new);
 }

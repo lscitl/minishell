@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hyunkkim <hyunkkim@student.42seoul.kr>     +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 16:03:04 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/06/13 21:50:27 by hyunkkim         ###   ########seoul.kr  */
+/*   Updated: 2022/06/16 21:57:24 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,19 +34,40 @@ enum	e_token
 	TKN_INVAL
 };
 
-typedef	struct	s_list
+enum	e_type
+{
+	BT_CMD,
+	BT_AND,
+	BT_OR,
+	BT_PAREN,
+	BT_PIPE,
+	BT_NONE
+};
+
+typedef struct	s_list
 {
 	char			*content;
 	struct s_list	*next;
 }	t_list;
 
+typedef t_list	t_redir;
+
 typedef	struct	s_token
 {
 	enum e_token	type;
 	char			*content;
-	t_list			*expansion_record;
+	char			*value;
 	struct s_token	*next;
 }	t_token;
+
+typedef struct s_b_node
+{
+	enum e_type		type;
+	t_token			*tokens;
+	t_redir			*redir;
+	struct s_b_node	*left;
+	struct s_b_node	*right;
+}	t_b_node;
 
 // t_list func;
 t_list	*ft_lstnew(void *cmd);
@@ -61,5 +82,19 @@ void	token_add_back(t_token **tokens, t_token *new);
 // utils from libft
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
+
+// bintree.c
+t_b_node	*make_btree_node(void *content);
+t_b_node	*insert_left_child(t_b_node *p_node, t_b_node *node);
+t_b_node	*insert_right_child(t_b_node *p_node, t_b_node *node);
+t_b_node	*get_left_child(t_b_node *node);
+t_b_node	*get_right_child(t_b_node *node);
+void		del_btree(t_b_node *root_node);
+void		del_btree_node(t_b_node *node);
+void		preorder_btree(t_b_node *p_node);
+void		print_content(t_token *tokens);
+
+// parse.c
+void	make_parse_tree(t_b_node *b_node);
 
 #endif
