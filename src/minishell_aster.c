@@ -6,20 +6,21 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 23:54:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 20:47:00 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	asterisk_sub(t_dir_list **dir_list, DIR *p_dir, char *str);
+static void	asterisk_sub(t_info *info, t_dir_list **dir_list,
+				DIR *p_dir, char *str);
 static int	asterisk_set_flag(char **ast_strs, char *str);
 static void	asterisk_sub2(t_dir_list **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
 static void	asterisk_add_files(t_dir_list **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
 
-char	**asterisk_expand(char *str)
+char	**asterisk_expand(t_info *info, char *str)
 {
 	t_dir_list		*dir_list;
 	DIR				*p_dir;
@@ -35,23 +36,40 @@ char	**asterisk_expand(char *str)
 		return (NULL);
 	}
 	dir_list = NULL;
-	asterisk_sub(&dir_list, p_dir, str);
+	asterisk_sub(info, &dir_list, p_dir, str);
 	closedir(p_dir);
 	ret_strs = list_to_str(dir_list);
 	ft_lstclear(&dir_list, &free);
 	sort_strs(ret_strs);
 	if (ret_strs[0] == NULL)
-		ret_strs[0] = strdup(str);
+	{
+		free(ret_strs[0]);
+		ret_strs = malloc(sizeof(char *) * 2);
+		ret_strs[0] = rm_quote_and_expand(info, str);
+		ret_strs[1] = NULL;
+	}
 	return (ret_strs);
 }
 
-static void	asterisk_sub(t_dir_list **dir_list, DIR *p_dir, char *str)
+//aster "*"*
+static void	asterisk_sub(t_info *info, t_dir_list **dir_list,
+							DIR *p_dir, char *str)
 {
 	struct dirent	*f;
 	char			**ast_strs;
+	char			*tmp;
 	int				ad_flag;
+	int				i;
 
-	ast_strs = ft_split(str, '*');
+	ast_strs = split_wildcard(str, '*');
+	i = 0;
+	while (ast_strs[i])
+	{
+		tmp = rm_quote_and_expand(info, ast_strs[i]);
+		free(ast_strs[i]);
+		ast_strs[i] = tmp;
+		i++;
+	}
 	ad_flag = asterisk_set_flag(ast_strs, str);
 	f = readdir(p_dir);
 	while (f)
