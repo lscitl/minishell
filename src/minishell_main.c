@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 15:19:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 22:02:57 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	print_environ(char **env)
 	}
 }
 
-void	aster_test(char **cmd)
+void	aster_test(t_info *info, char **cmd)
 {
 	char	**tmp;
 
@@ -34,7 +34,7 @@ void	aster_test(char **cmd)
 		return ;
 	else
 	{
-		tmp = asterisk_expand(cmd[1]);
+		tmp = asterisk_expand(info, cmd[1]);
 		print_environ(tmp);
 		free_strs(tmp);
 	}
@@ -77,7 +77,7 @@ void	run_command(char **cmd, t_info *info)
 	{
 		if (ft_strncmp(cmd[0], "aster", -1) == 0)
 		{
-			aster_test(cmd);
+			aster_test(info, cmd);
 			return ;
 		}
 		pid = fork();
@@ -116,6 +116,7 @@ void	env_init(t_info *info)
 
 void	shell_init(t_info *info)
 {
+	signal(SIGINT, &sig_int_readline);
 	signal(SIGQUIT, &sig_quit);
 	tcgetattr(STDOUT_FILENO, &info->e_disable);
 	tcgetattr(STDOUT_FILENO, &info->e_enable);
@@ -131,37 +132,34 @@ int	main(void)
 {
 	t_info			info;
 	char			*line;
-	t_token			*tokens;
-	t_b_node		*parsed_tree;
-	char			*tmp;
+	// char			*tmp;
 
 	shell_init(&info);
 	while (42)
 	{
-		signal(SIGINT, &sig_int_readline);
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
-		if (line)
-		{
-			add_history(line);
-			tmp = rm_quote_and_expand(&info, line);
-			free(line);
-			printf("%s\n", tmp);
-			free(tmp);
-			continue ;
-		}
+		// !!!!testing rm_quote!!!!
+		// if (line)
+		// {
+		// 	add_history(line);
+		// 	tmp = rm_quote_and_expand(&info, line);
+		// 	free(line);
+		// 	printf("%s\n", tmp);
+		// 	free(tmp);
+		// 	continue ;
+		// }
 		// parsing()
-		// chopper(&tokens, line);
-		if (!syntax_error_check(tokens))
-		{
-			// del tokens;
-			tokens = token_del(tokens);
-			continue ;
-		}
+		// chopper(&info.tokens, line);
+		// if (!syntax_error_check(info.tokens))
+		// {
+		// 	info.tokens = token_del(info.tokens);
+		// 	continue ;
+		// }
 		// heredoc();
 		// parse();
-		parsed_tree = make_btree_node(tokens);
-		make_parse_tree(parsed_tree);
+		// info.cmd_root = make_btree_node(tokens);
+		// make_parse_tree(info.cmd_root);
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (line == NULL)
 		{

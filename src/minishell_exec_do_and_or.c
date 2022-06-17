@@ -6,19 +6,49 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 23:26:25 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 22:43:23 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	do_and(t_b_node *root)
+int	is_paren(t_b_node *root)
+{
+	t_tokens	*tmp;
+
+	tmp = root->tokens;
+	while (tmp)
+		if (tmp->type == TKN_L_PT)
+			return (TRUE);
+	return (FALSE);
+}
+
+int	do_cmd(t_b_node *root, t_info *info)
+{
+	int	paren;
+
+	paren = is_paren(root);
+	if (paren)
+	{
+
+	}
+}
+
+int	do_and(t_b_node *root, t_info *info)
 {
 	int	status;
 
-	status = do_left(root->left);
+	if (roo->left->type == BT_CMD)
+		status = do_cmd(root->left, info);
+	else if (roo->left->type == BT_PIPE)
+		status = do_pipe(root->left, info);
 	if (status == 0)
-		return (do_right(root->right));
+	{
+		if (roo->left->type == BT_CMD)
+			status = do_cmd(root->right, info);
+		else if (roo->left->type == BT_PIPE)
+			status = do_pipe(root->right, info);
+	}
 	return (status);
 }
 
