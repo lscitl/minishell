@@ -6,13 +6,12 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 15:18:35 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 16:05:46 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	rm_quote_and_expand_sub(t_info *info, t_buffer *buf, char *str);
 static int	do_expand(t_info *info, t_buffer *buf, char *str);
 static int	get_env_len(char *str);
 
@@ -20,19 +19,10 @@ char	*rm_quote_and_expand(t_info *info, char *str)
 {
 	t_buffer	*buf;
 	char		*ret;
-
-	buf = create_buf();
-	rm_quote_and_expand_sub(info, buf, str);
-	ret = put_str(buf);
-	del_buf(buf);
-	return (ret);
-}
-
-static void	rm_quote_and_expand_sub(t_info *info, t_buffer *buf, char *str)
-{
 	int			q_flag;
 	int			i;
 
+	buf = create_buf();
 	i = 0;
 	q_flag = 0;
 	while (str[i])
@@ -41,16 +31,15 @@ static void	rm_quote_and_expand_sub(t_info *info, t_buffer *buf, char *str)
 			q_flag ^= 1;
 		else if (!(q_flag & 1) && str[i] == '"')
 			q_flag ^= 2;
-		else if (q_flag & 1 && str[i] != '\'')
-			add_char(buf, str[i]);
-		else if (q_flag & 2 && str[i] != '"' && str[i] != '$')
-			add_char(buf, str[i]);
 		else if ((q_flag & 2 || !q_flag) && str[i] == '$')
 			i += do_expand(info, buf, &str[i]);
-		else if (!q_flag)
+		else
 			add_char(buf, str[i]);
 		i++;
 	}
+	ret = put_str(buf);
+	del_buf(buf);
+	return (ret);
 }
 
 static int	do_expand(t_info *info, t_buffer *buf, char *str)
