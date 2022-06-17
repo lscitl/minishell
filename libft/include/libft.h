@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: seseo <seseo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 13:32:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/09 19:45:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 20:04:06 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,8 @@ char		*add_char(t_buffer *buf, char c);
 char		*add_str(t_buffer *buf, char *str);
 char		*put_str(t_buffer *buf);
 void		del_buf(t_buffer *buf);
+// wildcard
+char	*skip_until_delimiter(char *s, char c);
+char	**split_wildcard(const char *s, char c);
 
 #endif

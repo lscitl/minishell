@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 13:53:10 by seseo             #+#    #+#              #
-#    Updated: 2022/06/04 16:27:44 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/17 20:03:07 by seseo            ###   ########seoul.kr   #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,6 +63,8 @@ SRCB			:=	$(SRC_DIR)/ft_lstnew.c \
 					$(SRC_DIR)/str_buffer_bonus.c \
 					$(SRC_DIR)/ft_hextoi_bonus.c \
 					$(SRC_DIR)/get_next_line_bonus.c
+					$(SRC_DIR)/split_wildcard.c \
+					$(SRC_DIR)/split_wildcard_utils.c
 
 ifeq ($(BONUS), true)
 	SRC			+=	$(SRCB)
