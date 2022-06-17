@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 16:05:46 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/17 21:09:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@ static int	do_expand(t_info *info, t_buffer *buf, char *str)
 		tmp = ft_itoa(info->status);
 		add_str(buf, tmp);
 		return (1);
+	}
+	if (str && !ft_isalnum(str[0]) && str[0] != '_')
+	{
+		add_char(buf, '$');
+		return (0);
 	}
 	len = get_env_len(&str[1]);
 	key = ft_substr(str, 1, len);
