@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 14:45:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 22:45:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@
 # include <termios.h>
 # include <dirent.h>
 # include "../libft/include/libft.h"
+
+typedef t_list	t_env_list;
+typedef t_list	t_redir;
+typedef t_list	t_dir_list;
 
 enum e_built_in
 {
@@ -65,21 +69,6 @@ enum	e_type
 	BT_NONE
 };
 
-typedef t_list	t_env_list;
-typedef t_list	t_redir;
-typedef t_list	t_dir_list;
-
-typedef struct s_info
-{
-	struct termios	e_enable;
-	struct termios	e_disable;
-	char			*line;
-	char			**cmd;
-	t_env_list		*env_list;
-	int				status;
-	// t_cmd_tree
-}	t_info;
-
 typedef struct s_token
 {
 	enum e_token	type;
@@ -97,8 +86,20 @@ typedef struct s_b_node
 	struct s_b_node	*right;
 }	t_b_node;
 
+typedef struct s_info
+{
+	struct termios	e_enable;
+	struct termios	e_disable;
+	char			*line;
+	char			**cmd;
+	int				status;
+	t_env_list		*env_list;
+	t_token			*tokens;
+	t_b_node		*cmd_root;
+}	t_info;
+
 // minishell_aster.c
-char		**asterisk_expand(char *str);
+char		**asterisk_expand(t_info *info, char *str);
 
 // minishell_signal.c
 void		sig_int_readline(int num);
