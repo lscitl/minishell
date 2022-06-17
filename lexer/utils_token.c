@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:07:35 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/06/16 21:57:51 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/16 23:20:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	find_token_type(void *content)
 
 	if (ft_strncmp(content, "<", -1) == 0)
 		type_num = TKN_INP_RD;
-	else if (ft_strncmp(content, ">", -1 )== 0)
+	else if (ft_strncmp(content, ">", -1) == 0)
 		type_num = TKN_OUT_RD;
 	else if (ft_strncmp(content, "<<", -1) == 0)
 		type_num = TKN_HDC_RD;
@@ -32,7 +32,7 @@ int	find_token_type(void *content)
 		type_num = TKN_OR;
 	else if (ft_strncmp(content, "(", -1) == 0)
 		type_num = TKN_L_PT;
-	else if (ft_strncmp(content, ")", -1 )== 0)
+	else if (ft_strncmp(content, ")", -1) == 0)
 		type_num = TKN_R_PT;
 	else
 		type_num = TKN_STR;
@@ -72,7 +72,7 @@ void	token_add_back(t_token **tokens, t_token *new)
 		return ;
 	if (!*tokens)
 	{
-		*tokens	= new;
+		*tokens = new;
 		return ;
 	}
 	last = token_last(*tokens);
