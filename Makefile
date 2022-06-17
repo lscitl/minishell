@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/16 23:21:32 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/17 13:50:04 by seseo            ###   ########seoul.kr   #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,7 +32,9 @@ SRC				:=	$(SRC_DIR)/minishell_main.c \
 					$(SRC_DIR)/minishell_b_unset.c \
 					$(SRC_DIR)/minishell_b_env.c \
 					$(SRC_DIR)/minishell_b_export.c \
-					$(SRC_DIR)/minishell_b_cd.c
+					$(SRC_DIR)/minishell_b_cd.c \
+					$(SRC_DIR)/minishell_parser.c \
+					$(SRC_DIR)/minishell_tokenizer.c
 
 
 OBJ				:=	$(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

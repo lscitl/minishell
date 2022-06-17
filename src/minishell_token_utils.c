@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:07:35 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/06/16 23:21:54 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 13:44:04 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,4 +77,19 @@ void	token_add_back(t_token **tokens, t_token *new)
 	}
 	last = token_last(*tokens);
 	last->next = new;
+}
+
+void	*token_del(t_token *tokens)
+{
+	t_token	*next;
+
+	while (tokens)
+	{
+		next = tokens->next;
+		free(tokens->content);
+		free(tokens->value);
+		free(tokens);
+		tokens = next;
+	}
+	return (NULL);
 }

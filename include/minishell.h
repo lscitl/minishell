@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 23:24:14 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 13:45:17 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,5 +150,13 @@ t_token		*token_new(void *content);
 t_token		*token_last(t_token *tokens);
 void		token_add_back(t_token **tokens, t_token *new);
 int			find_token_type(void *content);
+void		*token_del(t_token *tokens);
+
+// tokenizer.c
+void		chopper(t_token **tokens, char *line);
+int 		syntax_error_check(t_token *tokens);
+
+// parser.c
+void		make_parse_tree(t_b_node *b_node);
 
 #endif

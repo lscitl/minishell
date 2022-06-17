@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 23:31:41 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/17 13:48:22 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,8 @@ int	main(void)
 {
 	t_info			info;
 	char			*line;
+	t_token			*tokens;
+	t_b_node		*parsed_tree;
 
 	shell_init(&info);
 	while (42)
@@ -139,7 +141,17 @@ int	main(void)
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
 		// parsing()
+		chopper(&tokens, line);
+		if (!syntax_error_check(tokens))
+		{
+			// del tokens;
+			tokens = token_del(tokens);
+			continue ;
+		}
 		// heredoc();
+		// parse();
+		parsed_tree = make_btree_node(tokens);
+		make_parse_tree(parsed_tree);
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (line == NULL)
 		{
