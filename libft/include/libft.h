@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/09 13:32:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 20:04:06 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/17 20:15:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,9 @@ char		*add_char(t_buffer *buf, char c);
 char		*add_str(t_buffer *buf, char *str);
 char		*put_str(t_buffer *buf);
 void		del_buf(t_buffer *buf);
+
 // wildcard
-char	*skip_until_delimiter(char *s, char c);
-char	**split_wildcard(const char *s, char c);
+char		*skip_until_delimiter(char *s, char c);
+char		**split_wildcard(char *s, char c);
 
 #endif

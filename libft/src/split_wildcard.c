@@ -6,13 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 19:57:55 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 20:04:51 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/17 20:13:02 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	ft_count_words(const char *s, char c)
+static int	ft_count_words(char *s, char c)
 {
 	int	word_num;
 
@@ -43,7 +43,7 @@ static char	**ft_free_heap(char **s)
 	return (NULL);
 }
 
-static char	**ft_assign_words(const char *s, char c, char **arr)
+static char	**ft_assign_words(char *s, char c, char **arr)
 {
 	int		i;
 	char	*word_start;
@@ -68,7 +68,7 @@ static char	**ft_assign_words(const char *s, char c, char **arr)
 	return (arr);
 }
 
-char	**split_wildcard(const char *s, char c)
+char	**split_wildcard(char *s, char c)
 {
 	char	**result;
 	int		the_word_num;

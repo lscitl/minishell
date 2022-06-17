@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 19:57:26 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 20:00:11 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/17 20:15:52 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static char	*skip_quote(char *s)
 
 char	*skip_until_delimiter(char *s, char c)
 {
-	while (*s)
+	while (*s && *s != c)
 	{
 		if (is_quote(*s))
 			s = skip_quote(s);
