@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/18 15:20:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/18 16:46:18 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,15 @@ typedef struct s_info
 	t_token			*tokens;
 	t_b_node		*cmd_root;
 }	t_info;
+
+typedef struct s_pipe_args
+{
+	pid_t	pid;
+	int		n_pipe;
+	int		pipe_oi[2];
+	int		prev_pipe;
+	int		status;
+}	t_pipe_args;
 
 // minishell_aster.c
 char		**asterisk_expand(t_info *info, char *str);
