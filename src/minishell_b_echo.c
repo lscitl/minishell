@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:42:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/14 15:33:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/18 15:50:14 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 static int	is_option(char *str);
 
+// export A=* --> export B=$A --> echo $B should show all files.
 int	b_echo(t_info *info)
 {
 	char	**cmd;
