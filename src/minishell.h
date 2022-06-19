@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/18 16:46:18 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/19 23:45:29 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termios.h>
@@ -29,7 +30,6 @@
 # include "../libft/include/libft.h"
 
 typedef t_list	t_env_list;
-typedef t_list	t_redir;
 typedef t_list	t_dir_list;
 
 enum e_built_in
@@ -77,6 +77,8 @@ typedef struct s_token
 	char			*value;
 	struct s_token	*next;
 }	t_token;
+
+typedef t_token	t_redir;
 
 typedef struct s_b_node
 {
@@ -163,14 +165,20 @@ void		token_add_back(t_token **tokens, t_token *new);
 int			find_token_type(void *content);
 void		*token_del(t_token *tokens);
 
-// tokenizer.c
+// minishell_tokenizer.c
 void		chopper(t_token **tokens, char *line);
 int			syntax_error_check(t_token *tokens);
 
-// parser.c
+// minishell_parser.c
 void		make_parse_tree(t_b_node *b_node);
 
 // minishell_rm_quote.c
 char		*rm_quote_and_expand(t_info *info, char *str);
+
+// minishell_redir.c
+void		set_redir(t_b_node *root);
+void		apply_redir(t_b_node *root);
+int			do_paren(t_b_node *root);
+int			do_cmd(t_info *info, t_b_node *root);
 
 #endif

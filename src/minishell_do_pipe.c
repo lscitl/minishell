@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/18 17:58:45 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 00:03:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,52 @@ int	count_pipe(t_b_node *root)
 	return (n);
 }
 
+void	do_child_cmd(t_info *info, t_b_node *root)
+{
+	char	**path;
+	char	**cmd;
+	char	**env;
+
+	set_redir(root);
+	apply_redir(root);
+	path = ft_split(find_key(info->env_list, "PATH")->value, ':');
+	if (path)
+	{
+		i = 0;
+		while (path[i])
+			path[i] = ft_strjoin(path[i++], "/");
+		env = get_env_strs(info);
+		i = 0;
+		while (execve(ft_strjoin(path[i], cmd[0]), cmd, env))
+			;
+		// ft_putendl_fd(strerror(errno), 2);???
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd[0], 2);
+		ft_putendl_fd(": command not found", 2);
+		exit(127);
+	}
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd[0], 2);
+	ft_putendl_fd(": No such file or directory", 2);
+	exit(127);
+}
+
 void	do_child(t_info *info, t_b_node *root)
 {
-	is_paren(root);
+	set_redir(root);
+	apply_redir(root);
+	if (root->tokens->type == TKN_L_PT)
+		exit(do_paren(root));
+	else
+		do_child_cmd(info, root);
 }
 
 int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 {
-	int	i;
+	char	**cmd;
+	char	**path;
+	char	**env;
+	int		i;
 
 	args.pid[args.n_pipe] = fork();
 	if (args.pid[args.n_pipe] == -1)
@@ -41,8 +79,28 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 	{
 		dup2(args.prev_pipe, STDIN_FILENO);
 		close(args.prev_pipe);
-		do_cmd();
-		exit(EXIT_FAILURE);
+		set_redir(root);
+		apply_redir(root);
+		path = ft_split(find_key(info->env_list, "PATH")->value, ':');
+		if (path)
+		{
+			i = 0;
+			while (path[i])
+				path[i] = ft_strjoin(path[i++], "/");
+			env = get_env_strs(info);
+			i = 0;
+			while (execve(ft_strjoin(path[i], cmd[0]), cmd, env))
+				;
+			// ft_putendl_fd(strerror(errno), 2);???
+			ft_putstr_fd("minishell: ", 2);
+			ft_putstr_fd(cmd[0], 2);
+			ft_putendl_fd(": command not found", 2);
+			exit(127);
+		}
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd[0], 2);
+		ft_putendl_fd(": No such file or directory", 2);
+		exit(127);
 	}
 	close(args.prev_pipe);
 	i = 0;
@@ -63,7 +121,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 	int			i;
 
 	args.n_pipe = count_pipe(root);
-	args.pid = malloc(sizeof(pid_t) * (n_pipe + 1));
+	args.pid = malloc(sizeof(pid_t) * (args.n_pipe + 1));
 	if (args.pid == NULL)
 		exit(EXIT_FAILURE);
 	i = 0;
@@ -76,10 +134,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 		if (args.pid[i] == -1)
 			exit(EXIT_FAILURE);
 		else if (args.pid[i] == 0)
-		{
 			do_child(info, root->left, args);
-			exit (0);
-		}
 		else
 		{
 			close(args.pipe_oi[1]);
