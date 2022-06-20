@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 14:24:47 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/20 16:14:02 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	do_expand(t_info *info, t_buffer *buf, char *str);
 static int	get_env_len(char *str);
-/*
+
 char	*rm_quote_and_expand(t_info *info, char *str)
 {
 	t_buffer	*buf;
@@ -40,9 +40,9 @@ char	*rm_quote_and_expand(t_info *info, char *str)
 	ret = put_str(buf);
 	del_buf(buf);
 	return (ret);
-}*/
+}
 
-char	*rm_quote(t_info *info, char *str)
+char	*rm_quote(char *str)
 {
 	char		*ret;
 	int			i;
@@ -62,7 +62,7 @@ char	*rm_quote(t_info *info, char *str)
 		else if (!(q_flag & 1) && str[i] == '"')
 		{
 			q_flag ^= 2;
-			i++;:
+			i++;
 		}
 		else
 			add_char(buf, str[i++]);

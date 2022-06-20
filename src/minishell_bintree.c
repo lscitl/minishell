@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 16:07:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 23:17:16 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 17:32:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ void	del_btree(t_b_node *node)
 		return ;
 	del_btree(node->left);
 	del_btree(node->right);
-	// ft_lstdel(node->tokens);
-	// ft_lstdel(node->redir);
+	token_del(node->tokens);
+	token_del(node->redir);
 	free(node);
 }
 

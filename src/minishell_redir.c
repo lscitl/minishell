@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 23:37:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/19 23:40:26 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 17:06:31 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,18 @@ void	set_redir(t_b_node *root)
 	int		pt_cnt;
 
 	pt_cnt = 0;
+	// print_content(root->tokens);
 	cur = root->tokens;
+	root->tokens = NULL;
 	while (cur)
 	{
 		if (cur->type == TKN_L_PT)
 			pt_cnt++;
 		else if (cur->type == TKN_R_PT)
 			pt_cnt--;
-		else if (!pt_cnt && (cur->type >= 1 || cur->type <= 4))
+		if (!pt_cnt && (1 <= cur->type && cur->type <= 4))
 		{
-			ft_lstadd_back(&root->redir, cur);
+			token_add_back(&root->redir, cur);
 			cur = cur->next->next;
 			cur->next->next = NULL;
 		}
@@ -36,13 +38,15 @@ void	set_redir(t_b_node *root)
 		{
 			prev = cur;
 			cur = cur ->next;
-			ft_lstadd_back(&root->tokens, prev);
+			token_add_back(&root->tokens, prev);
 			prev->next = NULL;
 		}
 	}
+	// print_content(root->tokens);
+	// print_content(root->redir);
 }
 
-void	apply_redir(t_b_node *root)
+void	apply_redir(t_info *info, t_b_node *root)
 {
 	t_redir	*rd;
 	char	*here_doc;
@@ -71,7 +75,7 @@ void	apply_redir(t_b_node *root)
 		}
 		else if (rd->type == TKN_HDC_RD)
 		{
-			here_doc = rm_quote_and_expand(rd->value);
+			here_doc = rm_quote_and_expand(info, rd->value);
 			write(STDIN_FILENO, here_doc, ft_strlen(here_doc));
 		}
 		rd = rd->next->next;

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 13:02:32 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 13:59:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 17:09:38 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,33 @@ char	**list_to_str(t_list *list)
 	strs[i] = NULL;
 	i = 0;
 	tmp = list;
+	while (tmp)
+	{
+		strs[i++] = ft_strdup(tmp->content);
+		tmp = tmp->next;
+	}
+	return (strs);
+}
+
+char	**tokens_to_str(t_token *tokens)
+{
+	t_token		*tmp;
+	char		**strs;
+	int			i;
+
+	i = 0;
+	tmp = tokens;
+	while (tmp)
+	{
+		i++;
+		tmp = tmp->next;
+	}
+	strs = malloc(sizeof(char *) * (i + 1));
+	if (strs == NULL)
+		return (NULL);
+	strs[i] = NULL;
+	i = 0;
+	tmp = tokens;
 	while (tmp)
 	{
 		strs[i++] = ft_strdup(tmp->content);

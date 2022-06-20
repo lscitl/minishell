@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 00:03:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 17:28:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,18 +30,25 @@ void	do_child_cmd(t_info *info, t_b_node *root)
 	char	**path;
 	char	**cmd;
 	char	**env;
+	int		i;
 
 	set_redir(root);
-	apply_redir(root);
+	apply_redir(info, root);
+	cmd = tokens_to_str(root->tokens);
+	if (is_builtin(cmd[0]))
+		exit(do_builtin(info, cmd));
 	path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 	if (path)
 	{
 		i = 0;
 		while (path[i])
-			path[i] = ft_strjoin(path[i++], "/");
+		{
+			path[i] = ft_strjoin(path[i], "/");
+			i++;
+		}
 		env = get_env_strs(info);
 		i = 0;
-		while (execve(ft_strjoin(path[i], cmd[0]), cmd, env))
+		while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env))
 			;
 		// ft_putendl_fd(strerror(errno), 2);???
 		ft_putstr_fd("minishell: ", 2);
@@ -58,9 +65,9 @@ void	do_child_cmd(t_info *info, t_b_node *root)
 void	do_child(t_info *info, t_b_node *root)
 {
 	set_redir(root);
-	apply_redir(root);
+	apply_redir(info, root);
 	if (root->tokens->type == TKN_L_PT)
-		exit(do_paren(root));
+		exit(do_paren(info, root));
 	else
 		do_child_cmd(info, root);
 }
@@ -80,16 +87,20 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 		dup2(args.prev_pipe, STDIN_FILENO);
 		close(args.prev_pipe);
 		set_redir(root);
-		apply_redir(root);
+		apply_redir(info, root);
+		cmd = tokens_to_str(root->tokens);
 		path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 		if (path)
 		{
 			i = 0;
 			while (path[i])
-				path[i] = ft_strjoin(path[i++], "/");
+			{
+				path[i] = ft_strjoin(path[i], "/");
+				i++;
+			}
 			env = get_env_strs(info);
 			i = 0;
-			while (execve(ft_strjoin(path[i], cmd[0]), cmd, env))
+			while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env))
 				;
 			// ft_putendl_fd(strerror(errno), 2);???
 			ft_putstr_fd("minishell: ", 2);
@@ -134,7 +145,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 		if (args.pid[i] == -1)
 			exit(EXIT_FAILURE);
 		else if (args.pid[i] == 0)
-			do_child(info, root->left, args);
+			do_child(info, root->left);
 		else
 		{
 			close(args.pipe_oi[1]);
@@ -145,5 +156,5 @@ int	do_pipe(t_info *info, t_b_node *root)
 		}
 		i++;
 	}
-	return (do_final_cmd(info, root->left, args));
+	return (do_pipe_final_cmd(info, root->left, args));
 }

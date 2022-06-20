@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/19 23:45:29 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 17:15:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ typedef struct s_info
 
 typedef struct s_pipe_args
 {
-	pid_t	pid;
+	pid_t	*pid;
 	int		n_pipe;
 	int		pipe_oi[2];
 	int		prev_pipe;
@@ -142,6 +142,7 @@ char		**get_env_strs(t_info *info);
 // minishell_list_utils_2.c
 t_env_list	*get_env_list(char **env);
 char		**list_to_str(t_list *list);
+char		**tokens_to_str(t_token *tokens);
 
 // bintree.c
 t_b_node	*make_btree_node(void *content);
@@ -174,11 +175,25 @@ void		make_parse_tree(t_b_node *b_node);
 
 // minishell_rm_quote.c
 char		*rm_quote_and_expand(t_info *info, char *str);
+char		*rm_quote(char *str);
+char		*expand_string_elem(t_info *info, char *str);
 
 // minishell_redir.c
 void		set_redir(t_b_node *root);
-void		apply_redir(t_b_node *root);
-int			do_paren(t_b_node *root);
+void		apply_redir(t_info *info, t_b_node *root);
+
+// here_doc
+int			search_here_doc(t_token *tokens);
+
+// exec
+int			do_builtin(t_info *info, char **cmd);
+int			do_paren(t_info *info, t_b_node *root);
 int			do_cmd(t_info *info, t_b_node *root);
+int			do_and(t_info *info, t_b_node *root);
+int			do_or(t_info *info, t_b_node *root);
+int			do_pipe(t_info *info, t_b_node *root);
+
+void		print_content(t_token *tokens);
+void		print_strs(char **env);
 
 #endif

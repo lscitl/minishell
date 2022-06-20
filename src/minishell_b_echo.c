@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:42:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/18 15:50:14 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 17:19:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ int	b_echo(t_info *info)
 	int		option;
 	int		i;
 
-	cmd = info->cmd;
+	// printf("b_echo before\n");
+	cmd = tokens_to_str(info->cmd_root->tokens);
+	// print_strs(cmd);
 	i = 1;
 	option = is_option(cmd[i]);
 	while (is_option(cmd[i]))
@@ -35,6 +37,7 @@ int	b_echo(t_info *info)
 	}
 	if (!option)
 		ft_putstr_fd("\n", 1);
+	// printf("b_echo after\n");
 	return (0);
 }
 
