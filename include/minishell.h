@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/18 15:20:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 14:25:46 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,8 @@ int			syntax_error_check(t_token *tokens);
 void		make_parse_tree(t_b_node *b_node);
 
 // minishell_rm_quote.c
-char		*rm_quote_and_expand(t_info *info, char *str);
+// char		*rm_quote_and_expand(t_info *info, char *str);
+char		*rm_quote(t_info *info, char *str);
+char		*expand_string_elem(t_info *info, char *str);
 
 #endif

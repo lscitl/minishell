@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 21:09:35 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 14:24:47 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 static int	do_expand(t_info *info, t_buffer *buf, char *str);
 static int	get_env_len(char *str);
-
+/*
 char	*rm_quote_and_expand(t_info *info, char *str)
 {
 	t_buffer	*buf;
@@ -36,6 +36,62 @@ char	*rm_quote_and_expand(t_info *info, char *str)
 		else
 			add_char(buf, str[i]);
 		i++;
+	}
+	ret = put_str(buf);
+	del_buf(buf);
+	return (ret);
+}*/
+
+char	*rm_quote(t_info *info, char *str)
+{
+	char		*ret;
+	int			i;
+	int			q_flag;
+	t_buffer	*buf;
+
+	buf = create_buf();
+	i = 0;
+	q_flag = 0;
+	while (str[i])
+	{
+		if (!(q_flag & 2) && str[i] == '\'')
+		{
+			q_flag ^= 1;
+			i++;
+		}
+		else if (!(q_flag & 1) && str[i] == '"')
+		{
+			q_flag ^= 2;
+			i++;:
+		}
+		else
+			add_char(buf, str[i++]);
+	}
+	ret = put_str(buf);
+	del_buf(buf);
+	return (ret);
+}
+
+char	*expand_string_elem(t_info *info, char *str)
+{
+	t_buffer	*buf;
+	char		*ret;
+	int			q_flag;
+	int			i;
+
+	buf = create_buf();
+	i = 0;
+	q_flag = 0;
+	while (str[i])
+	{
+		if (!(q_flag & 2) && str[i] == '\'')
+			q_flag ^= 1;
+		else if (!(q_flag & 1) && str[i] == '"')
+			q_flag ^= 2;
+		if ((q_flag & 2 || !q_flag) && str[i] == '$')
+			i += do_expand(info, buf, &str[i]);
+		else
+			add_char(buf, str[i++]);
 	}
 	ret = put_str(buf);
 	del_buf(buf);
