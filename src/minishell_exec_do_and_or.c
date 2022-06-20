@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 18:56:41 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/20 22:58:25 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ int	do_cmd(t_info *info, t_b_node *root)
 				i = 0;
 				while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env))
 					;
+				execve(cmd[0], cmd, env);
 				// ft_putendl_fd(strerror(errno), 2);???
 				ft_putstr_fd("minishell: ", 2);
 				ft_putstr_fd(cmd[0], 2);

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 18:57:53 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 00:31:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ void	env_init(t_info *info)
 
 void	shell_init(t_info *info)
 {
+	info->tokens = NULL;
+	info->cmd_root = NULL;
 	signal(SIGINT, &sig_int_readline);
 	signal(SIGQUIT, &sig_quit);
 	tcgetattr(STDOUT_FILENO, &info->e_disable);
@@ -101,8 +103,10 @@ int	main(void)
 			exit(0);
 		}
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
-		add_history(line);
 		chopper(&info.tokens, line);
+		if (info.tokens == NULL)
+			continue ;
+		add_history(line);
 		if (!syntax_error_check(info.tokens))
 		{
 			info.tokens = token_del(info.tokens);
@@ -120,18 +124,20 @@ int	main(void)
 		// print_content(info.tokens);
 		if (info.cmd_root->type == BT_AND)
 		{
-			printf("before\n");
+			print_content(info.cmd_root->left->tokens);
+			print_content(info.cmd_root->right->tokens);
 			status = do_and(&info, info.cmd_root);
-			printf("after\n");
 		}
 		else if (info.cmd_root->type == BT_OR)
 			status = do_or(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_CMD)
-		{
 			status = do_cmd(&info, info.cmd_root);
-		}
 		else if (info.cmd_root->type == BT_PIPE)
+		{
+			print_content(info.cmd_root->left->tokens);
+			print_content(info.cmd_root->right->tokens);
 			status = do_pipe(&info, info.cmd_root);
+		}
 		signal(SIGINT, &sig_int_exec);
 		del_btree(info.cmd_root);
 		info.cmd_root = NULL;

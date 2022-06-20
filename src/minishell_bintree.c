@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 16:07:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 17:32:26 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 00:45:08 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ void	print_content(t_token *tokens)
 	tmp = tokens;
 	while (tmp)
 	{
-		printf("%s ", tmp->content);
+		fprintf(stderr, "%s ", tmp->content);
 		tmp = tmp->next;
 	}
-	printf("\n");
+	fprintf(stderr, "\n");
 }
 
 t_b_node	*make_btree_node(void *content)
@@ -31,9 +31,10 @@ t_b_node	*make_btree_node(void *content)
 
 	r_node = malloc(sizeof(t_b_node));
 	if (r_node == NULL)
-		return (NULL);
+		exit(EXIT_FAILURE);
 	r_node->type = BT_NONE;
 	r_node->tokens = content;
+	r_node->redir = NULL;
 	r_node->left = NULL;
 	r_node->right = NULL;
 	return (r_node);
@@ -82,13 +83,6 @@ void	del_btree(t_b_node *node)
 	token_del(node->tokens);
 	token_del(node->redir);
 	free(node);
-}
-
-void	del_btree_node(t_b_node *node)
-{
-	if (node == NULL)
-		return ;
-	// if (node->left)
 }
 
 void	preorder_btree(t_b_node *p_node)

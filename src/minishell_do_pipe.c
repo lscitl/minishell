@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 17:28:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 00:28:10 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,16 @@ void	do_child_cmd(t_info *info, t_b_node *root)
 	exit(127);
 }
 
-void	do_child(t_info *info, t_b_node *root)
+void	do_child(t_info *info, t_b_node *root, t_pipe_args args)
 {
+	if (args.prev_pipe != -1)
+	{
+		dup2(args.prev_pipe, STDIN_FILENO);
+		close(args.prev_pipe);
+	}
+	close(args.pipe_oi[0]);
+	dup2(args.pipe_oi[1], STDOUT_FILENO);
+	close(args.pipe_oi[1]);
 	set_redir(root);
 	apply_redir(info, root);
 	if (root->tokens->type == TKN_L_PT)
@@ -102,6 +110,7 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 			i = 0;
 			while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env))
 				;
+			execve(cmd[0], cmd, env);
 			// ft_putendl_fd(strerror(errno), 2);???
 			ft_putstr_fd("minishell: ", 2);
 			ft_putstr_fd(cmd[0], 2);
@@ -145,7 +154,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 		if (args.pid[i] == -1)
 			exit(EXIT_FAILURE);
 		else if (args.pid[i] == 0)
-			do_child(info, root->left);
+			do_child(info, root->left, args);
 		else
 		{
 			close(args.pipe_oi[1]);
@@ -156,5 +165,5 @@ int	do_pipe(t_info *info, t_b_node *root)
 		}
 		i++;
 	}
-	return (do_pipe_final_cmd(info, root->left, args));
+	return (do_pipe_final_cmd(info, root, args));
 }

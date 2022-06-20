@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:13:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 13:13:46 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/21 00:47:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_token	*skip_paren(t_token *token)
 
 	tmp = token;
 	paren_flag = 0;
-	while(tmp)
+	while (tmp)
 	{
 		if (tmp->type == TKN_L_PT)
 			paren_flag++;
@@ -41,8 +41,8 @@ t_token	*is_bool_or_pipe(t_token *token)
 	pipe = NULL;
 	while (tmp)
 	{
-		if (1<= tmp->type && tmp->type <= 4)
-			tmp = tmp->next->next;
+		if (1 <= tmp->type && tmp->type <= 4)
+			tmp = tmp->next;
 		if (tmp->type == TKN_L_PT)
 			tmp = skip_paren(tmp);
 		if (tmp == NULL)
@@ -83,21 +83,23 @@ void	make_left_node(t_token	*token, t_token *root)
 
 void	make_parse_tree(t_b_node *b_node)
 {
-	t_token	*root;
+	t_token	*tk_root;
 
-	if (b_node == NULL)
-		return ;
-	if (b_node->type == BT_NONE)
+	if (b_node && b_node->type == BT_NONE)
 	{
-		root = is_bool_or_pipe(b_node->tokens);
-		find_node_type(b_node, root);
+		tk_root = is_bool_or_pipe(b_node->tokens);
+		find_node_type(b_node, tk_root);
+		print_content(tk_root);
 		if (b_node->type != BT_CMD)
 		{
-			make_left_node(b_node->tokens, root);
+			make_left_node(b_node->tokens, tk_root);
 			b_node->left = make_btree_node(b_node->tokens);
-			b_node->right = make_btree_node(root->next);
-			free(root->content);
-			free(root);
+			b_node->tokens = NULL;
+			b_node->right = make_btree_node(tk_root->next);
+			print_content(b_node->left->tokens);
+			print_content(b_node->right->tokens);
+			free(tk_root->content);
+			free(tk_root);
 			make_parse_tree(b_node->left);
 			make_parse_tree(b_node->right);
 		}

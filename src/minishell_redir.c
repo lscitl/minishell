@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 23:37:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 17:06:31 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 00:28:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ void	set_redir(t_b_node *root)
 	int		pt_cnt;
 
 	pt_cnt = 0;
-	// print_content(root->tokens);
 	cur = root->tokens;
 	root->tokens = NULL;
 	while (cur)
@@ -31,8 +30,9 @@ void	set_redir(t_b_node *root)
 		if (!pt_cnt && (1 <= cur->type && cur->type <= 4))
 		{
 			token_add_back(&root->redir, cur);
+			prev = cur->next;
+			prev->next = NULL;
 			cur = cur->next->next;
-			cur->next->next = NULL;
 		}
 		else
 		{
@@ -42,8 +42,6 @@ void	set_redir(t_b_node *root)
 			prev->next = NULL;
 		}
 	}
-	// print_content(root->tokens);
-	// print_content(root->redir);
 }
 
 void	apply_redir(t_info *info, t_b_node *root)

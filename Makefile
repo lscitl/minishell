@@ -6,13 +6,13 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/20 18:58:35 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/20 21:44:30 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-LDFLAGS = -L$(HOME)/.brew/opt/readline/lib
-CPPFLAGS = -I$(HOME)/.brew/opt/readline/include
-CC := /Users/seseo/goinfre/clang+llvm-14.0.5-x86_64-apple-darwin/bin/clang-14
+LDFLAGS=-L/goinfre/seseo/homebrew/opt/readline/lib
+CPPFLAGS=-I/goinfre/seseo/homebrew/opt/readline/include
+# CC := /Users/seseo/goinfre/clang+llvm-14.0.5-x86_64-apple-darwin/bin/clang-14
 SRC_DIR 		:=	src
 OBJ_DIR			:=	obj
 
@@ -42,9 +42,9 @@ SRC				:=	$(SRC_DIR)/minishell_aster.c \
 OBJ				:=	$(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 NAME			:=	minishell
-#CC				:=	gcc
+CC				:=	gcc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror -Iinclude -g # -fsanitize=address
+CFLAGS			:=	-Wall -Wextra -Werror -Iinclude -g #-fsanitize=address,undefined
 LIB_PATH		:=	libft
 
 $(OBJ_DIR)/%.o:		$(SRC_DIR)/%.c
@@ -53,7 +53,7 @@ $(OBJ_DIR)/%.o:		$(SRC_DIR)/%.c
 
 $(NAME):			$(OBJ)
 					@$(MAKE) BONUS=true -C $(LIB_PATH)
-					$(CC) $(LDFLAGS) $(OBJ) -Llibft -lft -lreadline -o $(NAME)
+					$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) -Llibft -lft -lreadline -o $(NAME)
 
 all:				$(NAME)
 

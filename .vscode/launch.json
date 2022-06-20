@@ -10,13 +10,13 @@
             "request": "launch",
             //"targetArchitecture": "x86_64",
             // "program": "프로그램 이름 입력(예: ${workspaceFolder}/a.out)",
-            "program": "${workspaceFolder}/libft/a.out",
+            "program": "${workspaceFolder}/minishell",
             //"args": ["./rt_file/multi_42.rt", "--save"],
-            "args": ["*a"],
+            "args": [""],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "externalConsole": false,
+            "externalConsole": true,
             "MIMode": "lldb"
         }
     ]
