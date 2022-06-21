@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 21:40:14 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 00:10:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,9 @@ int	main(void)
 {
 	t_info			info;
 	char			*line;
-	int				status;
 	// char			*tmp;
 
 	shell_init(&info);
-	status = 0;
 	while (42)
 	{
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
@@ -117,18 +115,18 @@ int	main(void)
 		make_parse_tree(info.cmd_root);
 		// print_content(info.tokens);
 		if (info.cmd_root->type == BT_AND)
-			status = do_and(&info, info.cmd_root);
+			info.status = do_and(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_OR)
-			status = do_or(&info, info.cmd_root);
+			info.status = do_or(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_CMD)
-			status = do_cmd(&info, info.cmd_root);
+			info.status = do_cmd(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_PIPE)
-			status = do_pipe(&info, info.cmd_root);
+			info.status = do_pipe(&info, info.cmd_root);
 		signal(SIGINT, &sig_int_exec);
 		del_btree(info.cmd_root);
 		info.cmd_root = NULL;
 		info.tokens = NULL;
 		free(line);
 	}
-	return (status);
+	return (0);
 }

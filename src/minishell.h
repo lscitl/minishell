@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 19:43:31 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 00:03:04 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # define TRUE 1
 # define FALSE 0
 # define SHELL_PROMPT "\rminishell $ "
+# define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
 
 # include <unistd.h>
 # include <sys/wait.h>
@@ -191,12 +192,14 @@ void		apply_redir(t_info *info, t_b_node *root);
 int			search_here_doc(t_token *tokens);
 
 // exec
+int			is_paren(t_b_node *root);
 int			do_builtin(t_info *info, char **cmd);
 int			do_paren(t_info *info, t_b_node *root);
 int			do_cmd(t_info *info, t_b_node *root);
 int			do_and(t_info *info, t_b_node *root);
 int			do_or(t_info *info, t_b_node *root);
 int			do_pipe(t_info *info, t_b_node *root);
+int			do_cmd_paren(t_info *info, t_b_node *root);
 
 void		print_content(t_token *tokens);
 void		print_strs(char **env);

@@ -6,13 +6,27 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 22:18:46 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 23:27:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int	do_paren(t_info *info, t_b_node *root);
+
+int	is_paren(t_b_node *root)
+{
+	t_token	*tmp;
+
+	tmp = root->tokens;
+	while (tmp)
+	{
+		if (tmp->type == TKN_L_PT)
+			return (TRUE);
+		tmp = tmp->next;
+	}
+	return (FALSE);
+}
 
 int	do_cmd_paren(t_info *info, t_b_node *root)
 {
@@ -22,7 +36,7 @@ int	do_cmd_paren(t_info *info, t_b_node *root)
 
 	l_paren = root->tokens;
 	tmp = root->tokens;
-	while (tmp->next != TKN_R_PT)
+	while (tmp->next->type != TKN_R_PT)
 		tmp = tmp->next;
 	r_paren = tmp->next;
 	tmp->next = NULL;
@@ -88,10 +102,11 @@ int	do_cmd(t_info *info, t_b_node *root)
 	// int		io_fd[2];
 
 	set_redir(root);
-	// printf("do_cmd before\n");
-	if (root->tokens->type == TKN_L_PT)
+	if (is_paren(root))
 		return (do_cmd_paren(info, root));
 	cmd = tokens_to_str(root->tokens);
+	if (cmd[0] == NULL)
+		return (0);
 	if (cmd && is_builtin(cmd[0]))
 	{
 		// pipe(io_fd);
@@ -165,11 +180,14 @@ int	do_and(t_info *info, t_b_node *root)
 	// fprintf(stderr, "status : %d\n", status);
 	if (status == 0)
 	{
-		print_content(root->right->tokens);
+		// print_content(root->right->tokens);
 		if (root->right->type == BT_CMD)
 			status = do_cmd(info, root->right);
 		else if (root->right->type == BT_PIPE)
+		{
+			printf("pipe\n");
 			status = do_pipe(info, root->right);
+		}
 		else if (root->right->type == BT_AND)
 			status = do_and(info, root->right);
 		else if (root->right->type == BT_OR)
@@ -214,14 +232,14 @@ int	do_paren(t_info *info, t_b_node *root)
 		apply_redir(info, root);
 		make_parse_tree(root->right);
 		if (root->right->type == BT_AND)
-			do_and(info, root->right);
+			exit(do_and(info, root->right));
+		else if (root->right->type == BT_OR)
+			exit(do_or(info, root->right));
 		else if (root->right->type == BT_CMD)
-			do_cmd(info, root->right);
+			exit(do_cmd(info, root->right));
 		else if (root->right->type == BT_PIPE)
-			do_pipe(info, root->right);
-		exit(EXIT_FAILURE);
+			exit(do_pipe(info, root->right));
 	}
 	waitpid(pid, &status, 0);
 	return (WEXITSTATUS(status));
 }
-

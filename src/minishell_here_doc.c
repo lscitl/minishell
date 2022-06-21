@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 20:57:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 23:43:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 22:59:05 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	search_here_doc(t_token *tokens)
 	{
 		if (tmp->type == TKN_HDC_RD)
 		{
-			tmp->value = get_here_doc_str(tmp->content);
+			tmp->value = get_here_doc_str(tmp->next->content);
 			if (tmp->value == NULL)
 				return (FALSE);
 		}
