@@ -6,20 +6,11 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 13:37:31 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/21 19:39:22 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_quote(char c)
-{
-	if (c == '\'')
-		return (1);
-	else if (c == '"')
-		return (2);
-	return (0);
-}
 
 int	is_meta_char(char c)
 {
@@ -122,6 +113,24 @@ void	chopper(t_token **tokens, char *line)
 	}
 }
 
+int	is_next_token_valid(int prev_type, int curr_type)
+{
+	if (prev_type == TKN_STR && \
+	(curr_type == TKN_L_PT || curr_type == TKN_INVAL))
+		return (FALSE);
+	else if ((1 <= prev_type && prev_type <= 4) && curr_type != TKN_STR)
+		return (FALSE);
+	else if ((5 <= prev_type && prev_type <= 8) && \
+	!((0 <= curr_type && curr_type <= 4) || curr_type == TKN_L_PT))
+		return (FALSE);
+	else if (prev_type == TKN_R_PT && (curr_type == TKN_STR || \
+	curr_type== TKN_L_PT || curr_type == TKN_INVAL))
+		return (FALSE);
+	else if (prev_type == TKN_INVAL)
+		return (FALSE);
+	return (TRUE);
+}
+
 int syntax_error_check(t_token *tokens)
 {
 	t_token	*tmp;
@@ -129,12 +138,8 @@ int syntax_error_check(t_token *tokens)
 
 	tmp = tokens;
 	if ((5 <= tmp->type && tmp->type <= 7) || \
-	 tmp->type == 9 || tmp->type == 10)
-	{
-		printf("curr tmp->type : %d\n", tmp->type);
-		printf("first token is uncanny\n");
-		return (0);
-	}
+	tmp->type == 9 || tmp->type == 10)
+		return (FALSE);
 	while (tmp)
 	{
 		prev_type = tmp->type;
@@ -142,39 +147,23 @@ int syntax_error_check(t_token *tokens)
 			tmp = tmp->next;
 		else
 			break ;
-		if (prev_type == TKN_STR && \
-		(tmp->type == TKN_L_PT || tmp->type == TKN_INVAL))
-		{
-			printf("invalid token after str token\n");
-			return (0);
-		}
-		else if ((1 <= prev_type && prev_type <= 4) && tmp->type != TKN_STR)
-		{
-			printf("invalid token after redirection token\n");
-			return (0);
-		}
-		else if ((5 <= prev_type && prev_type <= 8) && \
-		!((0 <= tmp->type && tmp->type <= 4) || tmp->type == TKN_L_PT))
-		{
-			printf("invalid token after pipe, and, etc token\n");
-			return (0);
-		}
-		else if (prev_type == TKN_R_PT && (tmp->type == TKN_STR || \
-		tmp->type == TKN_L_PT || tmp->type == TKN_INVAL))
-		{
-			printf("invalid token after right parenthesis\n");
-			return (0);
-		}
-		else if (prev_type == TKN_INVAL)
-		{
-			printf("invalid token detected\n");
-			return (0);
-		}
+		if (is_next_token_valid(prev_type, tmp->type) == FALSE)
+			return (FALSE);
+		// if (prev_type == TKN_STR && \
+		// (tmp->type == TKN_L_PT || tmp->type == TKN_INVAL))
+		// 	return (0);
+		// else if ((1 <= prev_type && prev_type <= 4) && tmp->type != TKN_STR)
+		// 	return (0);
+		// else if ((5 <= prev_type && prev_type <= 8) && \
+		// !((0 <= tmp->type && tmp->type <= 4) || tmp->type == TKN_L_PT))
+		// 	return (0);
+		// else if (prev_type == TKN_R_PT && (tmp->type == TKN_STR || \
+		// tmp->type == TKN_L_PT || tmp->type == TKN_INVAL))
+		// 	return (0);
+		// else if (prev_type == TKN_INVAL)
+		// 	return (0);
 	}
 	if (tmp->type != TKN_STR && tmp->type != TKN_R_PT)
-	{
-		printf("last token is uncanny\n");
-		return (0);
-	}
-	return (1);
+		return (FALSE);
+	return (TRUE);
 }

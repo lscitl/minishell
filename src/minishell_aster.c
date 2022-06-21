@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 20:47:00 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 19:39:02 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,19 @@ static void	asterisk_sub2(t_dir_list **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
 static void	asterisk_add_files(t_dir_list **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
+
+int	is_there_asterisk(char *s)
+{
+	while (*s)
+	{
+		if (is_quote(*s))
+			s = skip_quote(s);
+		else if (*s == '*')
+			return (1);
+		s++;
+	}
+	return (0);
+}
 
 char	**asterisk_expand(t_info *info, char *str)
 {
