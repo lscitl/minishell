@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 18:25:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 22:18:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	do_cmd_paren(t_info *info, t_b_node *root)
 
 	l_paren = root->tokens;
 	tmp = root->tokens;
-	while (tmp->next != NULL)
+	while (tmp->next != TKN_R_PT)
 		tmp = tmp->next;
 	r_paren = tmp->next;
 	tmp->next = NULL;
@@ -35,8 +35,7 @@ int	do_builtin(t_info *info, char **cmd)
 {
 	if (ft_strncmp(cmd[0], "echo", -1) == 0)
 	{
-		print_strs(cmd);
-		return (b_echo(info));
+		return (b_echo(info, cmd));
 	}
 	else if (ft_strncmp(cmd[0], "exit", -1) == 0)
 	{
@@ -90,9 +89,9 @@ int	do_cmd(t_info *info, t_b_node *root)
 
 	set_redir(root);
 	// printf("do_cmd before\n");
-	cmd = tokens_to_str(root->tokens);
 	if (root->tokens->type == TKN_L_PT)
 		return (do_cmd_paren(info, root));
+	cmd = tokens_to_str(root->tokens);
 	if (cmd && is_builtin(cmd[0]))
 	{
 		// pipe(io_fd);
@@ -102,7 +101,7 @@ int	do_cmd(t_info *info, t_b_node *root)
 		// dup2(STDOUT_FILENO, io_fd[1]);
 		apply_redir(info, root);
 		status = do_builtin(info, cmd);
-		fprintf(stderr, "builtin %d\n", status);
+		// fprintf(stderr, "builtin %d\n", status);
 		// dup2(io_fd[0], STDIN_FILENO);
 		// close(io_fd[0]);
 		// dup2(io_fd[1], STDOUT_FILENO);
@@ -163,13 +162,18 @@ int	do_and(t_info *info, t_b_node *root)
 	// else if (root->left->type == BT_PIPE)
 	else
 		status = do_pipe(info, root->left);
-	fprintf(stderr, "status : %d\n", status);
+	// fprintf(stderr, "status : %d\n", status);
 	if (status == 0)
 	{
-		if (root->left->type == BT_CMD)
+		print_content(root->right->tokens);
+		if (root->right->type == BT_CMD)
 			status = do_cmd(info, root->right);
-		else if (root->left->type == BT_PIPE)
+		else if (root->right->type == BT_PIPE)
 			status = do_pipe(info, root->right);
+		else if (root->right->type == BT_AND)
+			status = do_and(info, root->right);
+		else if (root->right->type == BT_OR)
+			status = do_or(info, root->right);
 	}
 	return (status);
 }
@@ -185,10 +189,14 @@ int	do_or(t_info *info, t_b_node *root)
 		status = do_pipe(info, root->left);
 	if (status != 0)
 	{
-		if (root->left->type == BT_CMD)
+		if (root->right->type == BT_CMD)
 			status = do_cmd(info, root->right);
-		else if (root->left->type == BT_PIPE)
+		else if (root->right->type == BT_PIPE)
 			status = do_pipe(info, root->right);
+		else if (root->right->type == BT_AND)
+			status = do_and(info, root->right);
+		else if (root->right->type == BT_OR)
+			status = do_or(info, root->right);
 	}
 	return (status);
 }

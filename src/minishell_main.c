@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 18:17:34 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 21:40:14 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	aster_test(t_info *info, char **cmd)
 		return ;
 	else
 	{
+		cmd[1] = expand_string_elem(info, cmd[1]);
 		tmp = asterisk_expand(info, cmd[1]);
 		print_strs(tmp);
 		free_strs(tmp);
@@ -86,23 +87,16 @@ int	main(void)
 	{
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		line = readline(SHELL_PROMPT);
-		// !!!!testing rm_quote!!!!
-		// if (line)
-		// {
-		// 	add_history(line);
-		// 	tmp = rm_quote_and_expand(&info, line);
-		// 	free(line);
-		// 	printf("%s\n", tmp);
-		// 	free(tmp);
-		// 	continue ;
-		// }
-		// parsing()
 		if (line == NULL)
 		{
 			printf("\e[A%sexit\n", SHELL_PROMPT);
 			exit(0);
 		}
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
+		// char **cmd = ft_split(line, ' ');
+		// aster_test(&info, cmd);
+		// add_history(line);
+		// continue ;
 		chopper(&info.tokens, line);
 		if (info.tokens == NULL)
 			continue ;
@@ -123,21 +117,13 @@ int	main(void)
 		make_parse_tree(info.cmd_root);
 		// print_content(info.tokens);
 		if (info.cmd_root->type == BT_AND)
-		{
-			// print_content(info.cmd_root->left->tokens);
-			// print_content(info.cmd_root->right->tokens);
 			status = do_and(&info, info.cmd_root);
-		}
 		else if (info.cmd_root->type == BT_OR)
 			status = do_or(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_CMD)
 			status = do_cmd(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_PIPE)
-		{
-			// print_content(info.cmd_root->left->tokens);
-			// print_content(info.cmd_root->right->left->tokens);
 			status = do_pipe(&info, info.cmd_root);
-		}
 		signal(SIGINT, &sig_int_exec);
 		del_btree(info.cmd_root);
 		info.cmd_root = NULL;

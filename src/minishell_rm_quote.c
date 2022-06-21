@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 16:14:02 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 20:29:20 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,17 +55,12 @@ char	*rm_quote(char *str)
 	while (str[i])
 	{
 		if (!(q_flag & 2) && str[i] == '\'')
-		{
 			q_flag ^= 1;
-			i++;
-		}
 		else if (!(q_flag & 1) && str[i] == '"')
-		{
 			q_flag ^= 2;
-			i++;
-		}
 		else
-			add_char(buf, str[i++]);
+			add_char(buf, str[i]);
+		i++;
 	}
 	ret = put_str(buf);
 	del_buf(buf);
@@ -88,10 +83,11 @@ char	*expand_string_elem(t_info *info, char *str)
 			q_flag ^= 1;
 		else if (!(q_flag & 1) && str[i] == '"')
 			q_flag ^= 2;
-		if ((q_flag & 2 || !q_flag) && str[i] == '$')
+		else if ((q_flag & 2 || !q_flag) && str[i] == '$')
 			i += do_expand(info, buf, &str[i]);
 		else
-			add_char(buf, str[i++]);
+			add_char(buf, str[i]);
+		i++;
 	}
 	ret = put_str(buf);
 	del_buf(buf);
@@ -113,7 +109,7 @@ static int	do_expand(t_info *info, t_buffer *buf, char *str)
 		add_str(buf, tmp);
 		return (1);
 	}
-	if (str && !ft_isalnum(str[0]) && str[0] != '_')
+	if (str && !ft_isalnum(str[1]) && str[1] != '_')
 	{
 		add_char(buf, '$');
 		return (0);

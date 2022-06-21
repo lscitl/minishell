@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:42:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 14:24:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 20:09:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,12 @@
 static int	is_option(char *str);
 
 // export A=* --> export B=$A --> echo $B should show all files.
-int	b_echo(t_info *info)
+int	b_echo(t_info *info, char **cmd)
 {
-	char	**cmd;
 	int		option;
 	int		i;
 
-	// printf("b_echo before\n");
-	cmd = tokens_to_str(info->cmd_root->tokens);
-	// print_strs(cmd);
+	(void)info;
 	i = 1;
 	option = is_option(cmd[i]);
 	while (is_option(cmd[i]))
@@ -37,7 +34,6 @@ int	b_echo(t_info *info)
 	}
 	if (!option)
 		ft_putstr_fd("\n", 1);
-	// printf("b_echo after\n");
 	return (0);
 }
 

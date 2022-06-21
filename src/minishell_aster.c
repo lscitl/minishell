@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 19:39:02 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/21 20:22:02 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ int	is_there_asterisk(char *s)
 		if (is_quote(*s))
 			s = skip_quote(s);
 		else if (*s == '*')
-			return (1);
+			return (TRUE);
 		s++;
 	}
-	return (0);
+	return (FALSE);
 }
 
 char	**asterisk_expand(t_info *info, char *str)
@@ -40,6 +40,15 @@ char	**asterisk_expand(t_info *info, char *str)
 	char			**ret_strs;
 	char			*cwd;
 
+	if (!is_there_asterisk(str))
+	{
+		ret_strs = malloc(sizeof(char *) * 2);
+		if (ret_strs == NULL)
+			exit(EXIT_FAILURE);
+		ret_strs[0] = rm_quote(str);
+		ret_strs[1] = NULL;
+		return (ret_strs);
+	}
 	cwd = getcwd(NULL, 0);
 	p_dir = opendir(cwd);
 	free(cwd);
@@ -58,7 +67,7 @@ char	**asterisk_expand(t_info *info, char *str)
 	{
 		free(ret_strs[0]);
 		ret_strs = malloc(sizeof(char *) * 2);
-		ret_strs[0] = rm_quote_and_expand(info, str);
+		ret_strs[0] = rm_quote(str);
 		ret_strs[1] = NULL;
 	}
 	return (ret_strs);

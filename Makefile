@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/21 13:58:28 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/21 19:52:07 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,6 +31,7 @@ SRC				:=	minishell_aster.c \
 					minishell_list_utils_1.c \
 					minishell_list_utils_2.c \
 					minishell_main.c \
+					minishell_parser_utils.c \
 					minishell_parser.c \
 					minishell_redir.c \
 					minishell_rm_quote.c \
