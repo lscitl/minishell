@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 22:58:25 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 18:25:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,9 @@ int	do_cmd_paren(t_info *info, t_b_node *root)
 
 int	do_builtin(t_info *info, char **cmd)
 {
-	// printf("do_builtin before\n");
 	if (ft_strncmp(cmd[0], "echo", -1) == 0)
 	{
-		// printf("do_builtin after\n");
+		print_strs(cmd);
 		return (b_echo(info));
 	}
 	else if (ft_strncmp(cmd[0], "exit", -1) == 0)
@@ -59,6 +58,26 @@ int	do_builtin(t_info *info, char **cmd)
 		return (b_export(cmd, info));
 }
 
+// char	**make_cmd_strs(t_info *info, t_token *tokens)
+// {
+// 	char	**cmd;
+// 	char	**ast_strs;
+// 	char	*tmp;
+// 	int		i;
+
+// 	cmd = tokens_to_str(tokens);
+// 	i = 0;
+// 	while (cmd[i])
+// 	{
+// 		tmp = cmd[i];
+// 		cmd[i] = expand_string_elem(info, cmd[i]);
+// 		free(tmp);
+// 		tmp = cmd[i];
+// 		cmd = merge_strs(cmd, asterisk_expand(info, cmd[i]), i);
+
+// 	}
+// }
+
 int	do_cmd(t_info *info, t_b_node *root)
 {
 	pid_t	pid;
@@ -67,15 +86,31 @@ int	do_cmd(t_info *info, t_b_node *root)
 	char	**env;
 	int		status;
 	int		i;
+	// int		io_fd[2];
 
 	set_redir(root);
 	// printf("do_cmd before\n");
+	cmd = tokens_to_str(root->tokens);
 	if (root->tokens->type == TKN_L_PT)
 		return (do_cmd_paren(info, root));
-	cmd = tokens_to_str(root->tokens);
-	// printf("do_cmd after\n");
 	if (cmd && is_builtin(cmd[0]))
-		return (do_builtin(info, cmd));
+	{
+		// pipe(io_fd);
+		// close(io_fd[0]);
+		// close(io_fd[1]);
+		// dup2(STDIN_FILENO, io_fd[0]);
+		// dup2(STDOUT_FILENO, io_fd[1]);
+		apply_redir(info, root);
+		status = do_builtin(info, cmd);
+		fprintf(stderr, "builtin %d\n", status);
+		// dup2(io_fd[0], STDIN_FILENO);
+		// close(io_fd[0]);
+		// dup2(io_fd[1], STDOUT_FILENO);
+		// close(io_fd[1]);
+		dup2(STDERR_FILENO, STDIN_FILENO);
+		dup2(STDERR_FILENO, STDOUT_FILENO);
+		return (status);
+	}
 	else
 	{
 		pid = fork();
@@ -109,6 +144,7 @@ int	do_cmd(t_info *info, t_b_node *root)
 			ft_putendl_fd(": No such file or directory", 2);
 			exit(127);
 		}
+		free_strs(cmd);
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
@@ -127,6 +163,7 @@ int	do_and(t_info *info, t_b_node *root)
 	// else if (root->left->type == BT_PIPE)
 	else
 		status = do_pipe(info, root->left);
+	fprintf(stderr, "status : %d\n", status);
 	if (status == 0)
 	{
 		if (root->left->type == BT_CMD)

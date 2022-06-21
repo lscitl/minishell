@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 00:42:33 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 14:50:31 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,29 @@ void	sort_strs(char **strs)
 		}
 		i++;
 	}
+}
+
+char	**merge_strs(char **main, char **elem, int idx)
+{
+	char	**r_strs;
+	int		main_len;
+	int		elem_len;
+
+	main_len = 0;
+	while (main[main_len])
+		main_len++;
+	elem_len = 0;
+	while (elem[elem_len])
+		elem_len++;
+	r_strs = malloc(sizeof(char *) * (main_len + elem_len));
+	if (r_strs == NULL)
+		exit(EXIT_FAILURE);
+	r_strs[main_len + elem_len] = NULL;
+	ft_memcpy(r_strs, main, sizeof(char *) * idx);
+	ft_memcpy(&r_strs[idx], elem, sizeof(char *) * elem_len);
+	ft_memcmp(&r_strs[idx + elem_len], &main[idx + 1],
+		sizeof(char *) * (main_len - idx - 1));
+	free_strs(main);
+	free_strs(elem);
+	return (r_strs);
 }

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:13:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 00:47:15 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 14:01:58 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,15 +89,15 @@ void	make_parse_tree(t_b_node *b_node)
 	{
 		tk_root = is_bool_or_pipe(b_node->tokens);
 		find_node_type(b_node, tk_root);
-		print_content(tk_root);
+		// print_content(tk_root);
 		if (b_node->type != BT_CMD)
 		{
 			make_left_node(b_node->tokens, tk_root);
 			b_node->left = make_btree_node(b_node->tokens);
 			b_node->tokens = NULL;
 			b_node->right = make_btree_node(tk_root->next);
-			print_content(b_node->left->tokens);
-			print_content(b_node->right->tokens);
+			// print_content(b_node->left->tokens);
+			// print_content(b_node->right->tokens);
 			free(tk_root->content);
 			free(tk_root);
 			make_parse_tree(b_node->left);

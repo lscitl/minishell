@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/20 17:15:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 14:52:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,7 @@ int			b_export(char **cmd, t_info *info);
 int			is_builtin(char *cmd);
 void		free_strs(char **strs);
 void		sort_strs(char **strs);
+char		**merge_strs(char **main, char **elem, int idx);
 
 // minishell_list_utils_1.c
 int			is_env_var_invalid(char *var);

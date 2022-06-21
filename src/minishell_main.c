@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 00:31:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 18:17:34 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,8 @@ int	main(void)
 		// print_content(info.tokens);
 		if (info.cmd_root->type == BT_AND)
 		{
-			print_content(info.cmd_root->left->tokens);
-			print_content(info.cmd_root->right->tokens);
+			// print_content(info.cmd_root->left->tokens);
+			// print_content(info.cmd_root->right->tokens);
 			status = do_and(&info, info.cmd_root);
 		}
 		else if (info.cmd_root->type == BT_OR)
@@ -134,8 +134,8 @@ int	main(void)
 			status = do_cmd(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_PIPE)
 		{
-			print_content(info.cmd_root->left->tokens);
-			print_content(info.cmd_root->right->tokens);
+			// print_content(info.cmd_root->left->tokens);
+			// print_content(info.cmd_root->right->left->tokens);
 			status = do_pipe(&info, info.cmd_root);
 		}
 		signal(SIGINT, &sig_int_exec);
