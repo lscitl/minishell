@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 14:52:49 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 18:30:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void		sig_quit(int num);
 
 // minishell_b_*.c
 int			b_pwd(void);
-int			b_echo(t_info *info);
+int			b_echo(t_info *info, char **cmd);
 void		b_exit(int code);
 int			b_cd(char **cmd, t_info *info);
 int			b_unset(char **cmd, t_env_list **env_list);
