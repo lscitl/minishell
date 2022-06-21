@@ -6,13 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 19:57:26 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/17 20:15:52 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/21 19:28:00 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	is_quote(char c)
+static int	ft_isquote(char c)
 {
 	if (c == '\'')
 		return (1);
@@ -21,7 +21,7 @@ static int	is_quote(char c)
 	return (0);
 }
 
-static char	*skip_quote(char *s)
+static char	*ft_skip_quote(char *s)
 {
 	int	quote_flag;
 
@@ -47,8 +47,8 @@ char	*skip_until_delimiter(char *s, char c)
 {
 	while (*s && *s != c)
 	{
-		if (is_quote(*s))
-			s = skip_quote(s);
+		if (ft_isquote(*s))
+			s = ft_skip_quote(s);
 		s++;
 	}
 	return (s);
