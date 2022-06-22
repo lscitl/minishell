@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 13:02:32 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 14:35:14 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/22 20:12:33 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,25 +95,32 @@ void	sort_token_content(t_token **token)
 	t_token	*curr;
 	t_token	*prev;
 	t_token	*target;
+	int		swap_flag;
 
 	curr = *token;
-	prev = NULL;
 	while (curr)
 	{
-		if (curr->next != NULL)
+		swap_flag = 0;
+		prev = curr;
+		target = curr->next;
+		while (target)
 		{
-			target = curr->next;
 			if (ft_strncmp(curr->content, target->content, -1) > 0)
 			{
 				curr->next = target->next;
-				target->next = curr;
-				if (prev)
-					prev->next = target;
+				if (target != curr->next)
+					target->next = curr->next;
 				else
-					*token = target;
+					target->next = curr;
+				if (curr != prev)
+					prev->next = curr;
+				curr = target;
+				target = prev->next;
+				swab_flag = 1;
 			}
+			target = target->next;
 		}
-		prev = curr;
-		curr = curr->next;
+		if (swap_flag == 0)
+			break ;
 	}
 }
