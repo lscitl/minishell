@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 13:02:32 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 20:12:33 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/22 21:21:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,35 +92,73 @@ char	**tokens_to_str(t_token *tokens)
 
 void	sort_token_content(t_token **token)
 {
-	t_token	*curr;
-	t_token	*prev;
-	t_token	*target;
-	int		swap_flag;
+	t_token	*tmp1;
+	t_token	*t1_prev;
+	t_token	*tmp2;
+	t_token	*t2_prev;
+	t_token	*ret;
 
-	curr = *token;
-	while (curr)
+	ret = NULL;
+	while ((*token)->next)
 	{
-		swap_flag = 0;
-		prev = curr;
-		target = curr->next;
-		while (target)
+		tmp1 = *token;
+		t1_prev = NULL;
+		tmp2 = tmp1->next;
+		t2_prev = tmp1;
+		while (tmp2)
 		{
-			if (ft_strncmp(curr->content, target->content, -1) > 0)
+			if (ft_strncmp(tmp1->content, tmp2->content, -1) > 0)
 			{
-				curr->next = target->next;
-				if (target != curr->next)
-					target->next = curr->next;
-				else
-					target->next = curr;
-				if (curr != prev)
-					prev->next = curr;
-				curr = target;
-				target = prev->next;
-				swab_flag = 1;
+				tmp1 = tmp2;
+				t1_prev = t2_prev;
 			}
-			target = target->next;
+			t2_prev = t2_prev->next;
+			tmp2 = tmp2->next;
 		}
-		if (swap_flag == 0)
-			break ;
+		if (tmp1 == *token)
+			*token = tmp1->next;
+		else
+			t1_prev->next = tmp1->next;
+		tmp1->next = NULL;
+		token_add_back(&ret, tmp1);
 	}
+	token_add_back(&ret, *token);
+	*token = ret;
 }
+// void	sort_token_content(t_token **token)
+// {
+// 	t_token	*curr;
+// 	t_token	*tmp;
+// 	t_token	*prev;
+// 	t_token	*target;
+// 	int		swap_flag;
+
+// 	while (curr)
+// 	{
+// 		swap_flag = 0;
+// 		prev = curr;
+// 		target = curr->next;
+// 		while (target)
+// 		{
+// 			if (ft_strncmp(curr->content, target->content, -1) > 0)
+// 			{
+// 				tmp = curr->next;
+// 				curr->next = target->next;
+// 				if (target != tmp)
+// 					target->next = tmp;
+// 				else
+// 					target->next = curr;
+// 				if (curr != prev)
+// 					prev->next = curr;
+// 				curr = target;
+// 				prev = prev->next;
+// 				target = prev->next;
+// 				swap_flag = 1;
+// 			}
+// 			target = target->next;
+// 		}
+// 		curr = curr->next;
+// 		if (swap_flag == 0)
+// 			break ;
+// 	}
+// }

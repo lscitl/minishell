@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 00:03:04 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 20:10:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # define TRUE 1
 # define FALSE 0
-# define SHELL_PROMPT "\rminishell $ "
+# define SHELL_PROMPT "minishell $ "
 # define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
 
 # include <unistd.h>
@@ -28,10 +28,11 @@
 # include <readline/history.h>
 # include <termios.h>
 # include <dirent.h>
+# include <errno.h>
 # include "../libft/include/libft.h"
 
 typedef t_list	t_env_list;
-typedef t_list	t_dir_list;
+// typedef t_list	t_dir_list;
 
 enum e_built_in
 {
@@ -97,6 +98,7 @@ typedef struct s_info
 	char			*line;
 	char			**cmd;
 	int				status;
+	int				plv;
 	t_env_list		*env_list;
 	t_token			*tokens;
 	t_b_node		*cmd_root;
@@ -112,7 +114,7 @@ typedef struct s_pipe_args
 }	t_pipe_args;
 
 // minishell_aster.c
-char		**asterisk_expand(t_info *info, char *str);
+t_token		*asterisk_expand(t_info *info, char *str);
 
 // minishell_signal.c
 void		sig_int_readline(int num);
@@ -123,7 +125,7 @@ void		sig_quit(int num);
 // minishell_b_*.c
 int			b_pwd(void);
 int			b_echo(t_info *info, char **cmd);
-void		b_exit(int code);
+void		b_exit(t_info *info, int code);
 int			b_cd(char **cmd, t_info *info);
 int			b_unset(char **cmd, t_env_list **env_list);
 int			b_env(t_env_list *env_list);
@@ -167,6 +169,8 @@ t_token		*token_last(t_token *tokens);
 void		token_add_back(t_token **tokens, t_token *new);
 int			find_token_type(void *content);
 void		*token_del(t_token *tokens);
+//
+void		sort_token_content(t_token **token);
 
 // minishell_tokenizer.c
 void		chopper(t_token **tokens, char *line);
@@ -203,5 +207,7 @@ int			do_cmd_paren(t_info *info, t_b_node *root);
 
 void		print_content(t_token *tokens);
 void		print_strs(char **env);
+
+char		**make_cmd_strs(t_info *info, t_token *token);
 
 #endif

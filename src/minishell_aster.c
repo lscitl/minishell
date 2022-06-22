@@ -6,18 +6,18 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 20:22:02 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 20:15:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	asterisk_sub(t_info *info, t_dir_list **dir_list,
+static void	asterisk_sub(t_info *info, t_token **dir_list,
 				DIR *p_dir, char *str);
 static int	asterisk_set_flag(char **ast_strs, char *str);
-static void	asterisk_sub2(t_dir_list **dir_list,
+static void	asterisk_sub2(t_token **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
-static void	asterisk_add_files(t_dir_list **dir_list,
+static void	asterisk_add_files(t_token **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
 
 int	is_there_asterisk(char *s)
@@ -33,21 +33,23 @@ int	is_there_asterisk(char *s)
 	return (FALSE);
 }
 
-char	**asterisk_expand(t_info *info, char *str)
+t_token	*asterisk_expand(t_info *info, char *str)
 {
-	t_dir_list		*dir_list;
-	DIR				*p_dir;
-	char			**ret_strs;
-	char			*cwd;
+	t_token		*dir_list;
+	DIR			*p_dir;
+	char		*cwd;
+	// char		**ret_strs;
 
 	if (!is_there_asterisk(str))
 	{
-		ret_strs = malloc(sizeof(char *) * 2);
-		if (ret_strs == NULL)
-			exit(EXIT_FAILURE);
-		ret_strs[0] = rm_quote(str);
-		ret_strs[1] = NULL;
-		return (ret_strs);
+		dir_list = token_new(rm_quote(str));
+		return (dir_list);
+		// ret_strs = malloc(sizeof(char *) * 2);
+		// if (ret_strs == NULL)
+		// 	exit(EXIT_FAILURE);
+		// ret_strs[0] = rm_quote(str);
+		// ret_strs[1] = NULL;
+		// return (ret_strs);
 	}
 	cwd = getcwd(NULL, 0);
 	p_dir = opendir(cwd);
@@ -60,21 +62,25 @@ char	**asterisk_expand(t_info *info, char *str)
 	dir_list = NULL;
 	asterisk_sub(info, &dir_list, p_dir, str);
 	closedir(p_dir);
-	ret_strs = list_to_str(dir_list);
-	ft_lstclear(&dir_list, &free);
-	sort_strs(ret_strs);
-	if (ret_strs[0] == NULL)
-	{
-		free(ret_strs[0]);
-		ret_strs = malloc(sizeof(char *) * 2);
-		ret_strs[0] = rm_quote(str);
-		ret_strs[1] = NULL;
-	}
-	return (ret_strs);
+	if (dir_list == NULL)
+		dir_list = token_new(rm_quote(str));
+	sort_token_content(&dir_list);
+	return (dir_list);
+	// ret_strs = list_to_str(dir_list);
+	// ft_lstclear(&dir_list, &free);
+	// sort_strs(ret_strs);
+	// if (ret_strs[0] == NULL)
+	// {
+	// 	free(ret_strs[0]);
+	// 	ret_strs = malloc(sizeof(char *) * 2);
+	// 	ret_strs[0] = rm_quote(str);
+	// 	ret_strs[1] = NULL;
+	// }
+	// return (ret_strs);
 }
 
 //aster "*"*
-static void	asterisk_sub(t_info *info, t_dir_list **dir_list,
+static void	asterisk_sub(t_info *info, t_token **dir_list,
 							DIR *p_dir, char *str)
 {
 	struct dirent	*f;
@@ -83,11 +89,12 @@ static void	asterisk_sub(t_info *info, t_dir_list **dir_list,
 	int				ad_flag;
 	int				i;
 
+	(void)info;
 	ast_strs = split_wildcard(str, '*');
 	i = 0;
 	while (ast_strs[i])
 	{
-		tmp = rm_quote_and_expand(info, ast_strs[i]);
+		tmp = rm_quote(ast_strs[i]);
 		free(ast_strs[i]);
 		ast_strs[i] = tmp;
 		i++;
@@ -136,7 +143,7 @@ static int	asterisk_set_flag(char **ast_strs, char *str)
 	return (ad_flag);
 }
 
-static void	asterisk_sub2(t_dir_list **dir_list,
+static void	asterisk_sub2(t_token **dir_list,
 						char **ast_strs, char *d_name, int ad_flag)
 {
 	if ((ad_flag && ast_strs[0] == NULL) || (ad_flag & 4 && !ast_strs[0][0]))
@@ -144,9 +151,9 @@ static void	asterisk_sub2(t_dir_list **dir_list,
 		if (d_name[0] != '.')
 		{
 			if (ad_flag & 4)
-				ft_lstadd_back(dir_list, ft_lstnew(ft_strjoin(d_name, "/")));
+				token_add_back(dir_list, token_new(ft_strjoin(d_name, "/")));
 			else
-				ft_lstadd_back(dir_list, ft_lstnew(ft_strdup(d_name)));
+				token_add_back(dir_list, token_new(ft_strdup(d_name)));
 		}
 	}
 	else if ((!(ad_flag & 1)
@@ -155,7 +162,7 @@ static void	asterisk_sub2(t_dir_list **dir_list,
 		asterisk_add_files(dir_list, ast_strs, d_name, ad_flag);
 }
 
-static void	asterisk_add_files(t_dir_list **dir_list,
+static void	asterisk_add_files(t_token **dir_list,
 							char **ast_strs, char *d_name, int ad_flag)
 {
 	char	*tmp;
@@ -179,8 +186,8 @@ static void	asterisk_add_files(t_dir_list **dir_list,
 		|| ad_flag & 2)
 	{
 		if (ad_flag & 4)
-			ft_lstadd_back(dir_list, ft_lstnew(ft_strjoin(d_name, "/")));
+			token_add_back(dir_list, token_new(ft_strjoin(d_name, "/")));
 		else
-			ft_lstadd_back(dir_list, ft_lstnew(ft_strdup(d_name)));
+			token_add_back(dir_list, token_new(ft_strdup(d_name)));
 	}
 }

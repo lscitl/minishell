@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 13:57:50 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/22 20:11:52 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	do_cmd_paren(t_info *info, t_b_node *root)
 
 	l_paren = root->tokens;
 	tmp = root->tokens;
-	while (tmp->next->type != TKN_R_PT)
+	while (tmp->next->next != NULL)
 		tmp = tmp->next;
 	r_paren = tmp->next;
 	tmp->next = NULL;
@@ -54,8 +54,8 @@ int	do_builtin(t_info *info, char **cmd)
 	else if (ft_strncmp(cmd[0], "exit", -1) == 0)
 	{
 		if (cmd[1])
-			b_exit(ft_atoi(cmd[1]));
-		b_exit(0);
+			b_exit(info, ft_atoi(cmd[1]));
+		b_exit(info, 0);
 		return (0);
 	}
 	else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
@@ -71,7 +71,7 @@ int	do_builtin(t_info *info, char **cmd)
 		return (b_export(cmd, info));
 }
 
-char	**make_cmd_strs(t_token *token)
+char	**make_cmd_strs(t_info *info, t_token *token)
 {
 	char	**ret;
 	t_token	*cur;
@@ -100,30 +100,27 @@ int	do_cmd(t_info *info, t_b_node *root)
 	char	**env;
 	int		status;
 	int		i;
-	// int		io_fd[2];
+	int		io_fd[2];
 
 	set_redir(root);
 	if (is_paren(root))
 		return (do_cmd_paren(info, root));
-	cmd = tokens_to_str(root->tokens);
+	cmd = make_cmd_strs(info, root->tokens);
 	if (cmd[0] == NULL)
 		return (0);
 	if (cmd && is_builtin(cmd[0]))
 	{
-		// pipe(io_fd);
-		// close(io_fd[0]);
-		// close(io_fd[1]);
-		// dup2(STDIN_FILENO, io_fd[0]);
-		// dup2(STDOUT_FILENO, io_fd[1]);
+		pipe(io_fd);
+		close(io_fd[0]);
+		close(io_fd[1]);
+		dup2(STDIN_FILENO, io_fd[0]);
+		dup2(STDOUT_FILENO, io_fd[1]);
 		apply_redir(info, root);
 		status = do_builtin(info, cmd);
-		// fprintf(stderr, "builtin %d\n", status);
-		// dup2(io_fd[0], STDIN_FILENO);
-		// close(io_fd[0]);
-		// dup2(io_fd[1], STDOUT_FILENO);
-		// close(io_fd[1]);
-		dup2(STDERR_FILENO, STDIN_FILENO);
-		dup2(STDERR_FILENO, STDOUT_FILENO);
+		dup2(io_fd[0], STDIN_FILENO);
+		close(io_fd[0]);
+		dup2(io_fd[1], STDOUT_FILENO);
+		close(io_fd[1]);
 		return (status);
 	}
 	else
@@ -133,6 +130,7 @@ int	do_cmd(t_info *info, t_b_node *root)
 			exit(EXIT_FAILURE);
 		else if (pid == 0)
 		{
+			info->plv++;
 			apply_redir(info, root);
 			path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 			if (path)
@@ -145,13 +143,18 @@ int	do_cmd(t_info *info, t_b_node *root)
 				}
 				env = get_env_strs(info);
 				i = 0;
-				while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env))
-					;
-				execve(cmd[0], cmd, env);
+				if (strchr(cmd[0], '/'))
+					execve(cmd[0], cmd, env);
+				else
+				{
+					while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env) && errno == ENOENT)
+						;
+				}
 				// ft_putendl_fd(strerror(errno), 2);???
 				ft_putstr_fd("minishell: ", 2);
 				ft_putstr_fd(cmd[0], 2);
-				ft_putendl_fd(": command not found", 2);
+				ft_putstr_fd(": ", 2);
+				ft_putendl_fd(strerror(errno), 2);
 				exit(127);
 			}
 			ft_putstr_fd("minishell: ", 2);
@@ -230,6 +233,7 @@ int	do_paren(t_info *info, t_b_node *root)
 		exit(EXIT_FAILURE);
 	else if (pid == 0)
 	{
+		info->plv++;
 		apply_redir(info, root);
 		make_parse_tree(root->right);
 		if (root->right->type == BT_AND)

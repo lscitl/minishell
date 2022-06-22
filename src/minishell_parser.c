@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:13:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 14:01:58 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 18:32:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_token	*is_bool_or_pipe(t_token *token)
 		if (tmp->type == TKN_L_PT)
 			tmp = skip_paren(tmp);
 		if (tmp == NULL)
-			return (NULL);
+			return (pipe);
 		if (tmp->type == TKN_AND || tmp->type == TKN_OR)
 			return (tmp);
 		if (tmp->type == TKN_PIPE && pipe == NULL)

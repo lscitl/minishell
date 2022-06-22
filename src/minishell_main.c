@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 00:10:41 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 20:06:38 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,20 @@ void	print_strs(char **env)
 	}
 }
 
-void	aster_test(t_info *info, char **cmd)
-{
-	char	**tmp;
+// void	aster_test(t_info *info, char **cmd)
+// {
+// 	char	**tmp;
 
-	if (cmd[1] == NULL)
-		return ;
-	else
-	{
-		cmd[1] = expand_string_elem(info, cmd[1]);
-		tmp = asterisk_expand(info, cmd[1]);
-		print_strs(tmp);
-		free_strs(tmp);
-	}
-}
+// 	if (cmd[1] == NULL)
+// 		return ;
+// 	else
+// 	{
+// 		cmd[1] = expand_string_elem(info, cmd[1]);
+// 		tmp = asterisk_expand(info, cmd[1]);
+// 		print_strs(tmp);
+// 		free_strs(tmp);
+// 	}
+// }
 
 void	env_init(t_info *info)
 {
@@ -62,6 +62,7 @@ void	shell_init(t_info *info)
 {
 	info->tokens = NULL;
 	info->cmd_root = NULL;
+	info->plv = 0;
 	signal(SIGINT, &sig_int_readline);
 	signal(SIGQUIT, &sig_quit);
 	tcgetattr(STDOUT_FILENO, &info->e_disable);
@@ -99,9 +100,13 @@ int	main(void)
 		if (info.tokens == NULL)
 			continue ;
 		add_history(line);
+		// info.cmd = make_cmd_strs(&info, info.tokens);
+		// print_strs(info.cmd);
+		// continue ;
 		if (!syntax_error_check(info.tokens))
 		{
 			info.tokens = token_del(info.tokens);
+			ft_putendl_fd("ub", 2);
 			continue ;
 		}
 		if (search_here_doc(info.tokens) == FALSE)
@@ -113,7 +118,8 @@ int	main(void)
 		// parse();
 		info.cmd_root = make_btree_node(info.tokens);
 		make_parse_tree(info.cmd_root);
-		// print_content(info.tokens);
+		// print_content(info.cmd_root->right->tokens);
+		// print_content(info.cmd_root->right->tokens);
 		if (info.cmd_root->type == BT_AND)
 			info.status = do_and(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_OR)

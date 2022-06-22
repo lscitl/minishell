@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 00:16:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/22 20:11:40 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,13 @@ void	do_child_cmd(t_info *info, t_b_node *root)
 	char	**env;
 	int		i;
 
-	cmd = tokens_to_str(root->tokens);
+	cmd = make_cmd_strs(info, root->tokens);
+	// fprintf(stderr, "%s\n", cmd[0]);
 	if (is_builtin(cmd[0]))
 		exit(do_builtin(info, cmd));
 	path = ft_split(find_key(info->env_list, "PATH")->value, ':');
-	fprintf(stderr, "%s\n", cmd);
+	// if (root->right)
+	// 	print_content(root->right->tokens);
 	if (path)
 	{
 		i = 0;
@@ -63,6 +65,7 @@ void	do_child_cmd(t_info *info, t_b_node *root)
 
 void	do_child(t_info *info, t_b_node *root, t_pipe_args args)
 {
+	info->plv++;
 	if (args.prev_pipe != -1)
 	{
 		dup2(args.prev_pipe, STDIN_FILENO);
@@ -72,9 +75,9 @@ void	do_child(t_info *info, t_b_node *root, t_pipe_args args)
 	dup2(args.pipe_oi[1], STDOUT_FILENO);
 	close(args.pipe_oi[1]);
 	set_redir(root);
+	apply_redir(info, root);
 	if (is_paren(root))
 		exit(do_cmd_paren(info, root));
-	apply_redir(info, root);
 	do_child_cmd(info, root);
 }
 
@@ -90,13 +93,14 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 		exit(EXIT_FAILURE);
 	else if (args.pid[args.n_pipe] == 0)
 	{
+		info->plv++;
 		dup2(args.prev_pipe, STDIN_FILENO);
 		close(args.prev_pipe);
 		set_redir(root);
+		apply_redir(info, root);
 		if (is_paren(root))
 			exit(do_cmd_paren(info, root));
-		apply_redir(info, root);
-		cmd = tokens_to_str(root->tokens);
+		cmd = make_cmd_strs(info, root->tokens);
 		path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 		if (path)
 		{
@@ -140,6 +144,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 	t_pipe_args	args;
 	int			i;
 
+	// print_content(root->left->tokens);
 	args.n_pipe = count_pipe(root);
 	args.pid = malloc(sizeof(pid_t) * (args.n_pipe + 1));
 	if (args.pid == NULL)
