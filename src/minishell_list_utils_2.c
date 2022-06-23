@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 13:02:32 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 21:21:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 15:47:17 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	sort_token_content(t_token **token)
 {
 	t_token	*tmp1;
 	t_token	*t1_prev;
-	t_token	*tmp2;
+	// t_token	*tmp2;
 	t_token	*t2_prev;
 	t_token	*ret;
 
@@ -103,17 +103,17 @@ void	sort_token_content(t_token **token)
 	{
 		tmp1 = *token;
 		t1_prev = NULL;
-		tmp2 = tmp1->next;
+		// tmp2 = tmp1->next;
 		t2_prev = tmp1;
 		while (tmp2)
 		{
-			if (ft_strncmp(tmp1->content, tmp2->content, -1) > 0)
+			if (ft_strncmp(tmp1->content, t2_prev->next->content, -1) > 0)
 			{
-				tmp1 = tmp2;
+				tmp1 = t2_prev->next;
 				t1_prev = t2_prev;
 			}
 			t2_prev = t2_prev->next;
-			tmp2 = tmp2->next;
+			// tmp2 = tmp2->next;
 		}
 		if (tmp1 == *token)
 			*token = tmp1->next;
