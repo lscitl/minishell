@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 20:06:38 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 13:36:58 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,21 +25,6 @@ void	print_strs(char **env)
 			printf("%s\n", env[i++]);
 	}
 }
-
-// void	aster_test(t_info *info, char **cmd)
-// {
-// 	char	**tmp;
-
-// 	if (cmd[1] == NULL)
-// 		return ;
-// 	else
-// 	{
-// 		cmd[1] = expand_string_elem(info, cmd[1]);
-// 		tmp = asterisk_expand(info, cmd[1]);
-// 		print_strs(tmp);
-// 		free_strs(tmp);
-// 	}
-// }
 
 void	env_init(t_info *info)
 {
@@ -70,16 +55,12 @@ void	shell_init(t_info *info)
 	info->e_disable.c_lflag &= (~ECHOCTL);
 	info->env_list = get_env_list(environ);
 	env_init(info);
-	// print_env_list(info->env_list);
-	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_disable);
-	// tcsetattr(STDOUT_FILENO, TCSANOW, &env->e_enable); --> fork ���Ŀ� ����..?
 }
 
 int	main(void)
 {
 	t_info			info;
 	char			*line;
-	// char			*tmp;
 
 	shell_init(&info);
 	while (42)
@@ -92,34 +73,31 @@ int	main(void)
 			exit(0);
 		}
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
-		// char **cmd = ft_split(line, ' ');
-		// aster_test(&info, cmd);
-		// add_history(line);
-		// continue ;
-		chopper(&info.tokens, line);
-		if (info.tokens == NULL)
+		if (!chopper(&info.tokens, line) || info.tokens == NULL)
+		{
+			if (info.tokens != NULL)
+			{
+				add_history(line);
+				ft_putendl_fd("syntax error!", 2);
+			}
+			token_del(info.tokens);
+			info.tokens = NULL;
 			continue ;
+		}
 		add_history(line);
-		// info.cmd = make_cmd_strs(&info, info.tokens);
-		// print_strs(info.cmd);
-		// continue ;
 		if (!syntax_error_check(info.tokens))
 		{
 			info.tokens = token_del(info.tokens);
-			ft_putendl_fd("ub", 2);
+			ft_putendl_fd("syntax error!", 2);
 			continue ;
 		}
 		if (search_here_doc(info.tokens) == FALSE)
 		{
-			// free()
+			token_del(info.tokens);
 			continue ;
 		}
-		// heredoc();
-		// parse();
 		info.cmd_root = make_btree_node(info.tokens);
 		make_parse_tree(info.cmd_root);
-		// print_content(info.cmd_root->right->tokens);
-		// print_content(info.cmd_root->right->tokens);
 		if (info.cmd_root->type == BT_AND)
 			info.status = do_and(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_OR)

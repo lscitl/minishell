@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 19:39:22 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/23 13:25:58 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	make_meta_str(char *line, char **str)
 	return (len);
 }
 
-void	chopper(t_token **tokens, char *line)
+int	chopper(t_token **tokens, char *line)
 {
 	char	*str;
 	int		i;
@@ -98,11 +98,11 @@ void	chopper(t_token **tokens, char *line)
 			{
 				i += inside_quote(&line[start], &quote_flag);
 				if (i < start)
-					return ;
+					return (FALSE);
 			}
 			else
 			{
-				while (line[i] != ' ' && !is_meta_char(line[i]) && line[i])
+				while (line[i] != ' ' && !is_meta_char(line[i]) && !is_quote(line[i]) && line[i])
 					i++;
 			}
 			str = ft_substr(line, start, (i - start));
@@ -111,6 +111,7 @@ void	chopper(t_token **tokens, char *line)
 		else if (line[i] == ' ')
 			i++;
 	}
+	return (TRUE);
 }
 
 int	is_next_token_valid(int prev_type, int curr_type)

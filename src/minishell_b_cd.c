@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/14 14:54:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 12:59:45 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ static int	change_dir_input(t_info *info, char *dir)
 	tmp = getcwd(NULL, 0);
 	if (chdir(dir) == 0)
 	{
+		printf("%s\n", dir);
 		set_env_node(info, ft_strdup("OLDPWD"), tmp);
 		return (0);
 	}

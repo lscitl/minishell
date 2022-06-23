@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 20:10:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 13:17:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@ void		*token_del(t_token *tokens);
 void		sort_token_content(t_token **token);
 
 // minishell_tokenizer.c
-void		chopper(t_token **tokens, char *line);
+int			chopper(t_token **tokens, char *line);
 int			syntax_error_check(t_token *tokens);
 
 // minishell_parser.c

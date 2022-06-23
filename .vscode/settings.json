@@ -29,7 +29,8 @@
 		"random": "c",
 		"minishell.h": "c",
 		"readline.h": "c",
-		"ios": "c"
+		"ios": "c",
+		"unistd.h": "c"
 	},
 
 	"42header.username": "seseo",

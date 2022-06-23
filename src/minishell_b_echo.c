@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:42:45 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 21:25:32 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 12:38:50 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	b_echo(t_info *info, char **cmd)
 	}
 	if (!option)
 		ft_putstr_fd("\n", 1);
-	free_strs(cmd);
 	return (0);
 }
 

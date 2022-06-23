@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 21:35:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 12:41:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,28 +47,29 @@ int	do_cmd_paren(t_info *info, t_b_node *root)
 
 int	do_builtin(t_info *info, char **cmd)
 {
+	int	status;
+
+	status = 0;
 	if (ft_strncmp(cmd[0], "echo", -1) == 0)
-	{
-		return (b_echo(info, cmd));
-	}
+		status = b_echo(info, cmd);
 	else if (ft_strncmp(cmd[0], "exit", -1) == 0)
 	{
 		if (cmd[1])
 			b_exit(info, ft_atoi(cmd[1]));
 		b_exit(info, 0);
-		return (0);
 	}
 	else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
-		return (b_pwd());
+		status = b_pwd();
 	else if (ft_strncmp(cmd[0], "env", -1) == 0)
-		return (b_env(info->env_list));
+		status = b_env(info->env_list);
 	else if (ft_strncmp(cmd[0], "unset", -1) == 0)
-		return (b_unset(cmd, &info->env_list));
+		status = b_unset(cmd, &info->env_list);
 	else if (ft_strncmp(cmd[0], "cd", -1) == 0)
-		return (b_cd(cmd, info));
-	// else if (ft_strncmp(cmd[0], "export", -1) == 0)
+		status = b_cd(cmd, info);
 	else
-		return (b_export(cmd, info));
+		status = b_export(cmd, info);
+	free_strs(cmd);
+	return (status);
 }
 
 char	**make_cmd_strs(t_info *info, t_token *token)

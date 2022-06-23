@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 20:11:40 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 12:20:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,8 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 		if (is_paren(root))
 			exit(do_cmd_paren(info, root));
 		cmd = make_cmd_strs(info, root->tokens);
+		if (is_builtin(cmd[0]))
+			exit(do_builtin(info, cmd));
 		path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 		if (path)
 		{
