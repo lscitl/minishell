@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/15 13:02:32 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 15:47:17 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/23 15:48:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	sort_token_content(t_token **token)
 		t1_prev = NULL;
 		// tmp2 = tmp1->next;
 		t2_prev = tmp1;
-		while (tmp2)
+		while (t2_prev->next)
 		{
 			if (ft_strncmp(tmp1->content, t2_prev->next->content, -1) > 0)
 			{

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:13:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 12:21:24 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 14:54:34 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,23 @@ void	make_left_node(t_token	*token, t_token *root)
 	token->next = NULL;
 }
 
+void	make_paren_node(t_b_node *root)
+{
+	t_token	*tmp;
+	t_token	*l_paren;
+	t_token	*r_paren;
+
+	l_paren = root->tokens;
+	tmp = root->tokens;
+	while (tmp->next->next != NULL)
+		tmp = tmp->next;
+	r_paren = tmp->next;
+	tmp->next = NULL;
+	root->right = make_btree_node(l_paren->next);
+	l_paren->next = r_paren;
+	make_parse_tree(root->right);
+}
+
 void	make_parse_tree(t_b_node *b_node)
 {
 	t_token	*tk_root;
@@ -99,6 +116,12 @@ void	make_parse_tree(t_b_node *b_node)
 			free(tk_root);
 			make_parse_tree(b_node->left);
 			make_parse_tree(b_node->right);
+		}
+		else if (b_node->type == BT_CMD)
+		{
+			set_redir(b_node);
+			if (is_paren(b_node))
+				make_paren_node(b_node);
 		}
 	}
 }

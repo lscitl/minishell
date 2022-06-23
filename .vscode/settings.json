@@ -30,7 +30,8 @@
 		"minishell.h": "c",
 		"readline.h": "c",
 		"ios": "c",
-		"unistd.h": "c"
+		"unistd.h": "c",
+		"sstream": "c"
 	},
 
 	"42header.username": "seseo",

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 12:59:45 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 15:08:34 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static int	change_dir(t_info *info, char *env_key)
 		else
 		{
 			free(tmp);
-			printf("minishell: cd: No such file or directory\n");
+			ft_putendl_fd("minishell: cd: No such file or directory\n", 2);
 			return (1);
 		}
 	}
@@ -83,7 +83,7 @@ static int	change_dir_home(t_info *info)
 	else
 	{
 		free(tmp);
-		printf("minishell: cd: No such file or directory\n");
+		ft_putendl_fd("minishell: cd: No such file or directory\n", 2);
 		return (1);
 	}
 }
@@ -102,7 +102,7 @@ static int	change_dir_input(t_info *info, char *dir)
 	else
 	{
 		free(tmp);
-		printf("minishell: cd: No such file or directory\n");
+		ft_putendl_fd("minishell: cd: No such file or directory\n", 2);
 		return (1);
 	}
 }

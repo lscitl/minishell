@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 12:20:35 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 15:49:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,11 @@ void	do_child_cmd(t_info *info, t_b_node *root)
 	int		i;
 
 	cmd = make_cmd_strs(info, root->tokens);
-	// fprintf(stderr, "%s\n", cmd[0]);
-	if (is_builtin(cmd[0]))
+	if (cmd[0] && is_builtin(cmd[0]))
 		exit(do_builtin(info, cmd));
+	if (cmd[0] == NULL)
+		exit(EXIT_SUCCESS);
 	path = ft_split(find_key(info->env_list, "PATH")->value, ':');
-	// if (root->right)
-	// 	print_content(root->right->tokens);
 	if (path)
 	{
 		i = 0;
@@ -74,10 +73,9 @@ void	do_child(t_info *info, t_b_node *root, t_pipe_args args)
 	close(args.pipe_oi[0]);
 	dup2(args.pipe_oi[1], STDOUT_FILENO);
 	close(args.pipe_oi[1]);
-	set_redir(root);
 	apply_redir(info, root);
 	if (is_paren(root))
-		exit(do_cmd_paren(info, root));
+		exit(do_paren(info, root));
 	do_child_cmd(info, root);
 }
 
@@ -96,13 +94,14 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 		info->plv++;
 		dup2(args.prev_pipe, STDIN_FILENO);
 		close(args.prev_pipe);
-		set_redir(root);
 		apply_redir(info, root);
 		if (is_paren(root))
-			exit(do_cmd_paren(info, root));
+			exit(do_paren(info, root));
 		cmd = make_cmd_strs(info, root->tokens);
-		if (is_builtin(cmd[0]))
+		if (cmd[0] && is_builtin(cmd[0]))
 			exit(do_builtin(info, cmd));
+		if (cmd[0] == NULL)
+			exit(EXIT_SUCCESS);
 		path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 		if (path)
 		{
@@ -117,7 +116,6 @@ int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 			while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env))
 				;
 			execve(cmd[0], cmd, env);
-			// ft_putendl_fd(strerror(errno), 2);???
 			ft_putstr_fd("minishell: ", STDERR_FILENO);
 			ft_putstr_fd(cmd[0], STDERR_FILENO);
 			ft_putendl_fd(": command not found", STDERR_FILENO);
@@ -146,7 +144,6 @@ int	do_pipe(t_info *info, t_b_node *root)
 	t_pipe_args	args;
 	int			i;
 
-	// print_content(root->left->tokens);
 	args.n_pipe = count_pipe(root);
 	args.pid = malloc(sizeof(pid_t) * (args.n_pipe + 1));
 	if (args.pid == NULL)

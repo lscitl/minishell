@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 13:38:32 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 17:14:50 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,12 +76,14 @@ int	main(void)
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (!chopper(&info.tokens, line) || info.tokens == NULL)
 		{
+			printf("asdf\n");
 			if (info.tokens != NULL)
 			{
 				add_history(line);
 				ft_putendl_fd("syntax error!", 2);
 			}
 			token_del(info.tokens);
+			free(line);
 			continue ;
 		}
 		add_history(line);
@@ -89,6 +91,7 @@ int	main(void)
 		{
 			info.tokens = token_del(info.tokens);
 			ft_putendl_fd("syntax error!", 2);
+			free(line);
 			continue ;
 		}
 		if (search_here_doc(info.tokens) == FALSE)

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 12:41:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 17:12:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,23 +26,6 @@ int	is_paren(t_b_node *root)
 		tmp = tmp->next;
 	}
 	return (FALSE);
-}
-
-int	do_cmd_paren(t_info *info, t_b_node *root)
-{
-	t_token	*tmp;
-	t_token	*l_paren;
-	t_token	*r_paren;
-
-	l_paren = root->tokens;
-	tmp = root->tokens;
-	while (tmp->next->next != NULL)
-		tmp = tmp->next;
-	r_paren = tmp->next;
-	tmp->next = NULL;
-	root->right = make_btree_node(l_paren->next);
-	l_paren->next = r_paren;
-	return (do_paren(info, root));
 }
 
 int	do_builtin(t_info *info, char **cmd)
@@ -103,13 +86,11 @@ int	do_cmd(t_info *info, t_b_node *root)
 	int		i;
 	int		io_fd[2];
 
-	set_redir(root);
 	if (is_paren(root))
-		return (do_cmd_paren(info, root));
+		return (do_paren(info, root));
 	cmd = make_cmd_strs(info, root->tokens);
-	if (cmd[0] == NULL)
-		return (0);
-	if (cmd && is_builtin(cmd[0]))
+	print_strs(cmd);
+	if (cmd[0] && is_builtin(cmd[0]))
 	{
 		pipe(io_fd);
 		close(io_fd[0]);
@@ -133,6 +114,8 @@ int	do_cmd(t_info *info, t_b_node *root)
 		{
 			info->plv++;
 			apply_redir(info, root);
+			if (cmd[0] == NULL)
+				exit (EXIT_SUCCESS);
 			path = ft_split(find_key(info->env_list, "PATH")->value, ':');
 			if (path)
 			{
@@ -151,7 +134,6 @@ int	do_cmd(t_info *info, t_b_node *root)
 					while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env) && errno == ENOENT)
 						;
 				}
-				// ft_putendl_fd(strerror(errno), 2);???
 				ft_putstr_fd("minishell: ", 2);
 				ft_putstr_fd(cmd[0], 2);
 				ft_putstr_fd(": ", 2);
@@ -167,7 +149,6 @@ int	do_cmd(t_info *info, t_b_node *root)
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			return (WEXITSTATUS(status));
-		// else if (WIFSIGNALED(status))
 		else
 			return (128 + WTERMSIG(status));
 	}
@@ -179,20 +160,14 @@ int	do_and(t_info *info, t_b_node *root)
 
 	if (root->left->type == BT_CMD)
 		status = do_cmd(info, root->left);
-	// else if (root->left->type == BT_PIPE)
 	else
 		status = do_pipe(info, root->left);
-	// fprintf(stderr, "status : %d\n", status);
 	if (status == 0)
 	{
-		// print_content(root->right->tokens);
 		if (root->right->type == BT_CMD)
 			status = do_cmd(info, root->right);
 		else if (root->right->type == BT_PIPE)
-		{
-			printf("pipe\n");
 			status = do_pipe(info, root->right);
-		}
 		else if (root->right->type == BT_AND)
 			status = do_and(info, root->right);
 		else if (root->right->type == BT_OR)
@@ -207,7 +182,6 @@ int	do_or(t_info *info, t_b_node *root)
 
 	if (root->left->type == BT_CMD)
 		status = do_cmd(info, root->left);
-	// else if (root->left->type == BT_PIPE)
 	else
 		status = do_pipe(info, root->left);
 	if (status != 0)
@@ -236,7 +210,6 @@ int	do_paren(t_info *info, t_b_node *root)
 	{
 		info->plv++;
 		apply_redir(info, root);
-		make_parse_tree(root->right);
 		if (root->right->type == BT_AND)
 			exit(do_and(info, root->right));
 		else if (root->right->type == BT_OR)

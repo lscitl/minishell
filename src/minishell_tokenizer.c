@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 13:25:58 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 17:15:36 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,9 @@ int	inside_quote(char *line, int *quote_flag)
 	{
 		i++;
 		while (((line[i] != ' ' && \
-		!is_meta_char(line[i]))|| *quote_flag) && line[i])
+		!is_meta_char(line[i])) || *quote_flag) && line[i])
 		{
-			if (is_quote(line[i]))
+			if (is_quote(line[i]) == *quote_flag)
 				*quote_flag ^= is_quote(line[i]);
 			i++;
 		}
@@ -150,19 +150,6 @@ int syntax_error_check(t_token *tokens)
 			break ;
 		if (is_next_token_valid(prev_type, tmp->type) == FALSE)
 			return (FALSE);
-		// if (prev_type == TKN_STR && \
-		// (tmp->type == TKN_L_PT || tmp->type == TKN_INVAL))
-		// 	return (0);
-		// else if ((1 <= prev_type && prev_type <= 4) && tmp->type != TKN_STR)
-		// 	return (0);
-		// else if ((5 <= prev_type && prev_type <= 8) && \
-		// !((0 <= tmp->type && tmp->type <= 4) || tmp->type == TKN_L_PT))
-		// 	return (0);
-		// else if (prev_type == TKN_R_PT && (tmp->type == TKN_STR || \
-		// tmp->type == TKN_L_PT || tmp->type == TKN_INVAL))
-		// 	return (0);
-		// else if (prev_type == TKN_INVAL)
-		// 	return (0);
 	}
 	if (tmp->type != TKN_STR && tmp->type != TKN_R_PT)
 		return (FALSE);
