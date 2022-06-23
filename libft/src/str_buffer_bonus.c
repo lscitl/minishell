@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/28 14:32:26 by seseo             #+#    #+#             */
-/*   Updated: 2022/04/28 16:32:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 22:34:23 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_buffer	*create_buf(void)
 	char		*str;
 
 	buf = malloc(sizeof(t_buffer));
-	str = malloc(sizeof(char) * 1);
+	str = malloc(sizeof(char) * 1024);
 	if (buf == NULL || str == NULL)
 		return (NULL);
 	buf->str = str;

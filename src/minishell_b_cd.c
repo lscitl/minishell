@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 15:08:34 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 21:27:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ static int	change_dir(t_info *info, char *env_key);
 static int	change_dir_home(t_info *info);
 static int	change_dir_input(t_info *info, char *dir);
 
+// cd - print path check
 int	b_cd(char **cmd, t_info *info)
 {
 	if (cmd[1])
@@ -58,6 +59,7 @@ static int	change_dir(t_info *info, char *env_key)
 		tmp = getcwd(NULL, 0);
 		if (chdir(dir) == 0)
 		{
+			printf("%s\n", dir);
 			set_env_node(info, ft_strdup("OLDPWD"), tmp);
 			return (0);
 		}
@@ -95,7 +97,6 @@ static int	change_dir_input(t_info *info, char *dir)
 	tmp = getcwd(NULL, 0);
 	if (chdir(dir) == 0)
 	{
-		printf("%s\n", dir);
 		set_env_node(info, ft_strdup("OLDPWD"), tmp);
 		return (0);
 	}

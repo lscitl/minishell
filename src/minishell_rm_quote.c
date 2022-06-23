@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 21:32:52 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 22:35:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ char	*rm_quote_and_expand(t_info *info, char *str)
 
 char	*rm_quote(char *str)
 {
-	char		*ret;
-	int			i;
-	int			q_flag;
 	t_buffer	*buf;
+	char		*ret;
+	int			q_flag;
+	int			i;
 
 	buf = create_buf();
 	i = 0;

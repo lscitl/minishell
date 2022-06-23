@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:20:28 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 18:41:51 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/23 19:08:40 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,17 @@
 
 int	print_err_msg(char *cmd)
 {
-	char	*tmp;
-	char	*err_msg;
+	t_buffer	*buf;
+	char		*err_msg;
 
-	tmp = ft_strjoin("minishell", cmd);
-	err_msg = ft_strjoin(tmp, strerror(errno));
-	free(tmp);
+	buf = create_buf();
+	add_str(buf, "minishell: ");
+	add_str(buf, cmd);
+	add_str(buf, ": ");
+	add_str(buf, strerror(errno));
+	err_msg = put_str(buf);
 	ft_putendl_fd(err_msg, 2);
+	del_buf(buf);
 	free(err_msg);
 	return (FALSE);
 }

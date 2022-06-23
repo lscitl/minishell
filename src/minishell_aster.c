@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 22:56:17 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 21:19:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,7 @@ t_token	*asterisk_expand(t_info *info, char *str)
 	return (dir_list);
 }
 
-//aster "*"*
-static void	asterisk_sub(t_info *info, t_token **dir_list,
-							DIR *p_dir, char *str)
+static void	asterisk_sub(t_info *info, t_token **dir_list, DIR *p_dir, char *str)
 {
 	struct dirent	*f;
 	char			**ast_strs;

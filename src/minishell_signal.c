@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:55:08 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/16 15:20:44 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 22:03:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ void	sig_int_exec(int num)
 	}
 }
 
-void	sig_int_child(int num)
-{
-	if (SIGINT == num)
-	{
-		// rl_on_new_line();
-		// rl_replace_line("", 0);
-		printf("\n");
-		// rl_redisplay();
-	}
-}
+// void	sig_int_child(int num)
+// {
+// 	if (SIGINT == num)
+// 	{
+// 		// rl_on_new_line();
+// 		// rl_replace_line("", 0);
+// 		printf("\n");
+// 		// rl_redisplay();
+// 	}
+// }

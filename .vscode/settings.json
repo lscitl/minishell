@@ -31,7 +31,8 @@
 		"readline.h": "c",
 		"ios": "c",
 		"unistd.h": "c",
-		"sstream": "c"
+		"sstream": "c",
+		"cstdlib": "c"
 	},
 
 	"42header.username": "seseo",

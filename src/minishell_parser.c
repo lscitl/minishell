@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:13:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 14:54:34 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 20:29:14 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,20 @@ t_token	*skip_paren(t_token *token)
 			break ;
 	}
 	return (tmp);
+}
+
+int	is_paren(t_b_node *root)
+{
+	t_token	*tmp;
+
+	tmp = root->tokens;
+	while (tmp)
+	{
+		if (tmp->type == TKN_L_PT)
+			return (TRUE);
+		tmp = tmp->next;
+	}
+	return (FALSE);
 }
 
 t_token	*is_bool_or_pipe(t_token *token)

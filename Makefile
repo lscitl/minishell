@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/21 19:52:07 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/23 20:31:13 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,18 +25,22 @@ SRC				:=	minishell_aster.c \
 					minishell_b_pwd.c \
 					minishell_b_unset.c \
 					minishell_bintree.c \
-					minishell_do_pipe.c \
 					minishell_exec_do_and_or.c \
+					minishell_exec_do_cmd_child.c \
+					minishell_exec_do_paren.c \
+					minishell_exec_do_pipe.c \
 					minishell_here_doc.c \
 					minishell_list_utils_1.c \
 					minishell_list_utils_2.c \
 					minishell_main.c \
 					minishell_parser_utils.c \
 					minishell_parser.c \
+					minishell_print_err.c \
 					minishell_redir.c \
 					minishell_rm_quote.c \
 					minishell_signal.c \
-					minishell_token_utils.c \
+					minishell_token_utils_1.c \
+					minishell_token_utils_2.c \
 					minishell_tokenizer.c \
 					minishell_utils_1.c
 

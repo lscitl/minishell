@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 17:14:50 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 19:17:58 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ int	main(void)
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (!chopper(&info.tokens, line) || info.tokens == NULL)
 		{
-			printf("asdf\n");
 			if (info.tokens != NULL)
 			{
 				add_history(line);
@@ -102,9 +101,9 @@ int	main(void)
 		info.cmd_root = make_btree_node(info.tokens);
 		make_parse_tree(info.cmd_root);
 		if (info.cmd_root->type == BT_AND)
-			info.status = do_and(&info, info.cmd_root);
+			info.status = do_and_or(&info, info.cmd_root, CMD_AND);
 		else if (info.cmd_root->type == BT_OR)
-			info.status = do_or(&info, info.cmd_root);
+			info.status = do_and_or(&info, info.cmd_root, CMD_OR);
 		else if (info.cmd_root->type == BT_CMD)
 			info.status = do_cmd(&info, info.cmd_root);
 		else if (info.cmd_root->type == BT_PIPE)

@@ -6,12 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 20:57:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 22:59:05 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 22:29:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// here_doc delimiter
 char	*get_here_doc_str(char *delimiter)
 {
 	t_buffer	*buf;
@@ -45,13 +46,17 @@ char	*get_here_doc_str(char *delimiter)
 int	search_here_doc(t_token *tokens)
 {
 	t_token	*tmp;
+	char	*delimiter;
 
 	tmp = tokens;
 	while (tmp)
 	{
 		if (tmp->type == TKN_HDC_RD)
 		{
-			tmp->value = get_here_doc_str(tmp->next->content);
+			delimiter = rm_quote(tmp->next->content);
+			printf("%s\n", delimiter);
+			tmp->value = get_here_doc_str(delimiter);
+			free(delimiter);
 			if (tmp->value == NULL)
 				return (FALSE);
 		}

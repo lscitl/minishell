@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 13:17:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 20:15:32 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,12 @@
 
 typedef t_list	t_env_list;
 // typedef t_list	t_dir_list;
+
+enum e_and_or
+{
+	CMD_AND,
+	CMD_OR
+};
 
 enum e_built_in
 {
@@ -106,7 +112,7 @@ typedef struct s_info
 
 typedef struct s_pipe_args
 {
-	pid_t	*pid;
+	pid_t	pid;
 	int		n_pipe;
 	int		pipe_oi[2];
 	int		prev_pipe;
@@ -200,14 +206,17 @@ int			is_paren(t_b_node *root);
 int			do_builtin(t_info *info, char **cmd);
 int			do_paren(t_info *info, t_b_node *root);
 int			do_cmd(t_info *info, t_b_node *root);
-int			do_and(t_info *info, t_b_node *root);
-int			do_or(t_info *info, t_b_node *root);
+int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
 int			do_pipe(t_info *info, t_b_node *root);
-int			do_cmd_paren(t_info *info, t_b_node *root);
+void		do_cmd_child(t_info *info, t_b_node *root);
 
 void		print_content(t_token *tokens);
 void		print_strs(char **env);
 
 char		**make_cmd_strs(t_info *info, t_token *token);
+
+int			print_err_msg(char *cmd);
+
+void		error_exit_wait(int n_wait);
 
 #endif
