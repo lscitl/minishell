@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 17:15:36 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 22:38:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ int	inside_quote(char *line, int *quote_flag)
 	if (is_quote(line[i]))
 	{
 		i++;
-		while (((line[i] != ' ' && \
-		!is_meta_char(line[i])) || *quote_flag) && line[i])
+		while (((line[i] != ' ' && !is_meta_char(line[i])) || *quote_flag)
+			&& line[i])
 		{
 			if (is_quote(line[i]) == *quote_flag)
 				*quote_flag ^= is_quote(line[i]);
@@ -73,6 +73,10 @@ int	make_meta_str(char *line, char **str)
 	return (len);
 }
 
+// int	chopper_sub(t_token **tokens, char *line)
+// {}
+
+// quote removal error. as""df --> as df
 int	chopper(t_token **tokens, char *line)
 {
 	char	*str;
@@ -101,10 +105,8 @@ int	chopper(t_token **tokens, char *line)
 					return (FALSE);
 			}
 			else
-			{
 				while (line[i] != ' ' && !is_meta_char(line[i]) && !is_quote(line[i]) && line[i])
 					i++;
-			}
 			str = ft_substr(line, start, (i - start));
 			token_add_back(tokens, token_new(str));
 		}
@@ -125,7 +127,7 @@ int	is_next_token_valid(int prev_type, int curr_type)
 	!((0 <= curr_type && curr_type <= 4) || curr_type == TKN_L_PT))
 		return (FALSE);
 	else if (prev_type == TKN_R_PT && (curr_type == TKN_STR || \
-	curr_type== TKN_L_PT || curr_type == TKN_INVAL))
+	curr_type == TKN_L_PT || curr_type == TKN_INVAL))
 		return (FALSE);
 	else if (prev_type == TKN_INVAL)
 		return (FALSE);
