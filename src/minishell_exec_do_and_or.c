@@ -6,27 +6,11 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 17:12:46 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 20:29:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	do_paren(t_info *info, t_b_node *root);
-
-int	is_paren(t_b_node *root)
-{
-	t_token	*tmp;
-
-	tmp = root->tokens;
-	while (tmp)
-	{
-		if (tmp->type == TKN_L_PT)
-			return (TRUE);
-		tmp = tmp->next;
-	}
-	return (FALSE);
-}
 
 int	do_builtin(t_info *info, char **cmd)
 {
@@ -55,106 +39,49 @@ int	do_builtin(t_info *info, char **cmd)
 	return (status);
 }
 
-char	**make_cmd_strs(t_info *info, t_token *token)
+int	do_main_builtin(t_info *info, t_b_node *root)
 {
-	char	**ret;
-	t_token	*cur;
-	t_token	*dir;
-	char	*tmp;
+	int		io_fd[2];
 
-	cur = token;
-	dir = NULL;
-	while (cur)
-	{
-		tmp = expand_string_elem(info, cur->content);
-		token_add_back(&dir, asterisk_expand(info, tmp));
-		free(tmp);
-		cur = cur->next;
-	}
-	ret = tokens_to_str(dir);
-	token_del(dir);
-	return (ret);
+	pipe(io_fd);
+	close(io_fd[0]);
+	close(io_fd[1]);
+	dup2(STDIN_FILENO, io_fd[0]);
+	dup2(STDOUT_FILENO, io_fd[1]);
+	apply_redir(info, root);
+	info->status = do_builtin(info, info->cmd);
+	dup2(io_fd[0], STDIN_FILENO);
+	close(io_fd[0]);
+	dup2(io_fd[1], STDOUT_FILENO);
+	close(io_fd[1]);
+	return (info->status);
 }
 
 int	do_cmd(t_info *info, t_b_node *root)
 {
 	pid_t	pid;
-	char	**path;
-	char	**cmd;
-	char	**env;
-	int		status;
-	int		i;
-	int		io_fd[2];
 
 	if (is_paren(root))
 		return (do_paren(info, root));
-	cmd = make_cmd_strs(info, root->tokens);
-	print_strs(cmd);
-	if (cmd[0] && is_builtin(cmd[0]))
-	{
-		pipe(io_fd);
-		close(io_fd[0]);
-		close(io_fd[1]);
-		dup2(STDIN_FILENO, io_fd[0]);
-		dup2(STDOUT_FILENO, io_fd[1]);
-		apply_redir(info, root);
-		status = do_builtin(info, cmd);
-		dup2(io_fd[0], STDIN_FILENO);
-		close(io_fd[0]);
-		dup2(io_fd[1], STDOUT_FILENO);
-		close(io_fd[1]);
-		return (status);
-	}
+	info->cmd = make_cmd_strs(info, root->tokens);
+	if (info->cmd[0] && is_builtin(info->cmd[0]))
+		return (do_main_builtin(info, root));
 	else
 	{
 		pid = fork();
 		if (pid == -1)
 			exit(EXIT_FAILURE);
 		else if (pid == 0)
-		{
-			info->plv++;
-			apply_redir(info, root);
-			if (cmd[0] == NULL)
-				exit (EXIT_SUCCESS);
-			path = ft_split(find_key(info->env_list, "PATH")->value, ':');
-			if (path)
-			{
-				i = 0;
-				while (path[i])
-				{
-					path[i] = ft_strjoin(path[i], "/");
-					i++;
-				}
-				env = get_env_strs(info);
-				i = 0;
-				if (strchr(cmd[0], '/'))
-					execve(cmd[0], cmd, env);
-				else
-				{
-					while (path[i] && execve(ft_strjoin(path[i++], cmd[0]), cmd, env) && errno == ENOENT)
-						;
-				}
-				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(cmd[0], 2);
-				ft_putstr_fd(": ", 2);
-				ft_putendl_fd(strerror(errno), 2);
-				exit(127);
-			}
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd[0], 2);
-			ft_putendl_fd(": No such file or directory", 2);
-			exit(127);
-		}
-		free_strs(cmd);
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			return (WEXITSTATUS(status));
-		else
-			return (128 + WTERMSIG(status));
+			do_cmd_child(info, root);
+		free_strs(info->cmd);
+		waitpid(pid, &info->status, 0);
+		if (WEXITSTATUS(info->status))
+			return (WEXITSTATUS(info->status));
+		return (128 + info->status);
 	}
 }
 
-int	do_and(t_info *info, t_b_node *root)
+int	do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or)
 {
 	int	status;
 
@@ -162,63 +89,16 @@ int	do_and(t_info *info, t_b_node *root)
 		status = do_cmd(info, root->left);
 	else
 		status = do_pipe(info, root->left);
-	if (status == 0)
+	if (and_or == !!status)
 	{
 		if (root->right->type == BT_CMD)
 			status = do_cmd(info, root->right);
 		else if (root->right->type == BT_PIPE)
 			status = do_pipe(info, root->right);
 		else if (root->right->type == BT_AND)
-			status = do_and(info, root->right);
+			status = do_and_or(info, root->right, CMD_AND);
 		else if (root->right->type == BT_OR)
-			status = do_or(info, root->right);
+			status = do_and_or(info, root->right, CMD_OR);
 	}
 	return (status);
-}
-
-int	do_or(t_info *info, t_b_node *root)
-{
-	int	status;
-
-	if (root->left->type == BT_CMD)
-		status = do_cmd(info, root->left);
-	else
-		status = do_pipe(info, root->left);
-	if (status != 0)
-	{
-		if (root->right->type == BT_CMD)
-			status = do_cmd(info, root->right);
-		else if (root->right->type == BT_PIPE)
-			status = do_pipe(info, root->right);
-		else if (root->right->type == BT_AND)
-			status = do_and(info, root->right);
-		else if (root->right->type == BT_OR)
-			status = do_or(info, root->right);
-	}
-	return (status);
-}
-
-int	do_paren(t_info *info, t_b_node *root)
-{
-	pid_t		pid;
-	int			status;
-
-	pid = fork();
-	if (pid < 0)
-		exit(EXIT_FAILURE);
-	else if (pid == 0)
-	{
-		info->plv++;
-		apply_redir(info, root);
-		if (root->right->type == BT_AND)
-			exit(do_and(info, root->right));
-		else if (root->right->type == BT_OR)
-			exit(do_or(info, root->right));
-		else if (root->right->type == BT_CMD)
-			exit(do_cmd(info, root->right));
-		else if (root->right->type == BT_PIPE)
-			exit(do_pipe(info, root->right));
-	}
-	waitpid(pid, &status, 0);
-	return (WEXITSTATUS(status));
 }
