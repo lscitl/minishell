@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 13:36:58 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/23 13:38:32 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	main(void)
 	while (42)
 	{
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
+		info.tokens = NULL;
 		line = readline(SHELL_PROMPT);
 		if (line == NULL)
 		{
@@ -81,7 +82,6 @@ int	main(void)
 				ft_putendl_fd("syntax error!", 2);
 			}
 			token_del(info.tokens);
-			info.tokens = NULL;
 			continue ;
 		}
 		add_history(line);
@@ -109,7 +109,6 @@ int	main(void)
 		signal(SIGINT, &sig_int_exec);
 		del_btree(info.cmd_root);
 		info.cmd_root = NULL;
-		info.tokens = NULL;
 		free(line);
 	}
 	return (0);

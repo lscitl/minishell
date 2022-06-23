@@ -8,7 +8,7 @@ int	main(void)
 	i = 0;
 	while (1)
 	{
-		if (i == 3)
+		if (i == 1)
 			exit(0);
 		if (fork() == 0)
 		{
