@@ -6,12 +6,11 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 15:57:54 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 17:33:38 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 int	do_builtin(t_info *info, char **cmd)
 {
 	int	status;
@@ -57,14 +56,15 @@ int	do_main_builtin(t_info *info, t_b_node *root)
 	return (info->status);
 }
 
+// paren error found. <<asdf cat|((<<qwer cat&&cat)|cat)>aaa
 int	do_cmd(t_info *info, t_b_node *root)
 {
 	pid_t	pid;
 
 	if (is_paren(root))
 	{
-		if (info->plv)
-			return (do_pipe_paren(info, root));
+		// if (info->plv)
+		// 	return (do_pipe_paren(info, root));
 		return (do_main_paren(info, root));
 	}
 	info->cmd = make_cmd_strs(info, root->tokens);

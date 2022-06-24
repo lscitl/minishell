@@ -6,14 +6,14 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 15:56:44 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 17:23:25 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	is_meta_char(char c);
-static int	make_meta_str(char *line, char **str);
+static int	make_meta_str(char **line, char **str);
 static int	chopper_sub(t_token **tokens, t_buffer *buf, char *line, char *str);
 
 int	chopper(t_token **tokens, char *line)
@@ -50,7 +50,8 @@ static int	chopper_sub(t_token **tokens, t_buffer *buf, char *line, char *str)
 		{
 			if (buf->len != 0)
 				token_add_back(tokens, token_new(put_str(buf)));
-			line += make_meta_str(line, &str);
+			if (make_meta_str(&line, &str) == 0)
+				return (-1);
 			token_add_back(tokens, token_new(str));
 		}
 		else
@@ -76,21 +77,20 @@ static int	is_meta_char(char c)
 	return (0);
 }
 
-static int	make_meta_str(char *line, char **str)
+static int	make_meta_str(char **line, char **str)
 {
 	char	prev;
 
-	prev = *line;
-	if (ft_strchr("<>|", prev) && *(line + 1) == prev)
+	prev = **line;
+	if ((ft_strchr("<>|", prev) && *(*line + 1) == prev)
+		|| (**line == '&' && *(*line + 1) == prev))
 	{
-		*str = ft_substr(line, 0, 2);
-		return (1);
+		*str = ft_substr(*line, 0, 2);
+		(*line)++;
 	}
-	if (*line == '&' && *(line + 1) == prev)
-	{
-		*str = ft_substr(line, 0, 2);
-		return (1);
-	}
-	*str = ft_substr(line, 0, 1);
-	return (0);
+	else if (ft_strchr("()<>|", prev))
+		*str = ft_substr(*line, 0, 1);
+	else
+		return (0);
+	return (1);
 }
