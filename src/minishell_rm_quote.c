@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 22:35:22 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 15:39:51 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,7 @@ char	*expand_string_elem(t_info *info, char *str)
 	q_flag = 0;
 	while (str[i])
 	{
-		if (!(q_flag & 2) && str[i] == '\'')
-			q_flag ^= 1;
-		else if (!(q_flag & 1) && str[i] == '"')
-			q_flag ^= 2;
+		q_flag = q_flag_switch(str[i], q_flag);
 		if ((q_flag & 2 || !q_flag) && str[i] == '$')
 			i += do_expand(info, buf, &str[i]);
 		else

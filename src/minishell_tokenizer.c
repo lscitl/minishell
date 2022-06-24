@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 15:35:54 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 15:56:44 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,11 @@ static int	make_meta_str(char *line, char **str)
 
 	prev = *line;
 	if (ft_strchr("<>|", prev) && *(line + 1) == prev)
+	{
+		*str = ft_substr(line, 0, 2);
+		return (1);
+	}
+	if (*line == '&' && *(line + 1) == prev)
 	{
 		*str = ft_substr(line, 0, 2);
 		return (1);
