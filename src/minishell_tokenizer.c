@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 13:49:36 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/24 15:14:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,94 +28,98 @@ int	is_meta_char(char c)
 	return (0);
 }
 
-int	check_quote(int *quote_flag, char c)
-{
-	if (is_quote(c))
-	{
-		*quote_flag |= is_quote(c);
-		return (1);
-	}
-	return (0);
-}
+// int	check_quote(int *q_flag, char *line, char c)
+// {
+// 	int	i;
 
-int	inside_quote(char *line, int *quote_flag)
-{
-	int	i;
+// 	i = 0;
+// 	if (is_quote(c))
+// 		*q_flag |= is_quote(c);
+// 	while (*q_flag)
+// 	{
+// 		i += inside_quote(line, q_flag);
+// 		if (i < start)
+// 			return (FALSE);
+// 	}
+// 	return (0);
+// }
 
-	i = 0;
-	if (is_quote(line[i]))
-	{
-		i++;
-		while (((line[i] != ' ' && !is_meta_char(line[i])) || *quote_flag)
-			&& line[i])
-		{
-			if (is_quote(line[i]) == *quote_flag)
-				*quote_flag ^= is_quote(line[i]);
-			i++;
-		}
-	}
-	if (*quote_flag & 1 || *quote_flag & 2)
-		return (-1);
-	return (i);
-}
+// int	inside_quote(char *line, int *q_flag)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	if (is_quote(line[i]))
+// 	{
+// 		i++;
+// 		while (((line[i] != ' ' && !is_meta_char(line[i])) || *q_flag)
+// 			&& line[i])
+// 		{
+// 			if (is_quote(line[i]) == *q_flag)
+// 				*q_flag ^= is_quote(line[i]);
+// 			i++;
+// 		}
+// 	}
+// 	if (*q_flag & 1 || *q_flag & 2)
+// 		return (-1);
+// 	return (i);
+// }
 
 int	make_meta_str(char *line, char **str)
 {
-	int		len;
 	char	prev;
 
-	len = 0;
-	if (is_meta_char(line[len]))
-		prev = line[len++];
-	if (is_meta_char(line[len]) && line[len] == prev)
-		len++;
-	*str = ft_substr(line, 0, len);
-	return (len);
+	prev = *line;
+	if (ft_strchr("<>|", prev) && *(line + 1) == prev)
+	{
+		*str = ft_substr(line, 0, 2);
+		return (1);
+	}
+	*str = ft_substr(line, 0, 1);
+	return (0);
 }
 
 // int	chopper_sub(t_token **tokens, char *line)
-// {}
+// {
+
+// }
 
 // quote removal error. as""df --> as df
 int	chopper(t_token **tokens, char *line)
 {
-	char	*str;
-	int		i;
-	int		start;
-	int		quote_flag;
+	t_buffer	*buf;
+	char		*str;
+	int			q_flag;
 
-	i = 0;
-	quote_flag = 0;
-	while (line[i])
+	buf = create_buf();
+	q_flag = 0;
+	while (*line)
 	{
-		check_quote(&quote_flag, line[i]);
-		if (is_meta_char(line[i]) && !quote_flag)
+		if (!(q_flag & 2) && *line == '\'')
+			q_flag ^= 1;
+		else if (!(q_flag & 1) && *line == '"')
+			q_flag ^= 2;
+		if (!q_flag && *line == ' ')
 		{
-			start = i;
-			i += make_meta_str(&line[start], &str);
+			if (buf->len != 0)
+				token_add_back(tokens, token_new(put_str(buf)));
+		}
+		else if (!q_flag && is_meta_char(*line))
+		{
+			if (buf->len != 0)
+				token_add_back(tokens, token_new(put_str(buf)));
+			line += make_meta_str(line, &str);
 			token_add_back(tokens, token_new(str));
 		}
-		else if (line[i] != ' ' && line[i])
-		{
-			start = i;
-			while (line[i] != ' ' && line[i])
-			{
-				if (is_quote(line[i]))
-				{
-					i += inside_quote(&line[start], &quote_flag);
-					if (i < start)
-						return (FALSE);
-				}
-				else
-					while (line[i] != ' ' && !is_meta_char(line[i]) && !is_quote(line[i]) && line[i])
-						i++;
-			}
-			str = ft_substr(line, start, (i - start));
-			token_add_back(tokens, token_new(str));
-		}
-		else if (line[i] == ' ')
-			i++;
+		else
+			add_char(buf, *line);
+		line++;
 	}
+	if (buf->len)
+		token_add_back(tokens, token_new(put_str(buf)));
+	del_buf(buf);
+	if (q_flag)
+		return (FALSE);
 	return (TRUE);
 }
 
@@ -137,7 +141,7 @@ int	is_next_token_valid(int prev_type, int curr_type)
 	return (TRUE);
 }
 
-int syntax_error_check(t_token *tokens)
+int	syntax_error_check(t_token *tokens)
 {
 	t_token	*tmp;
 	int		prev_type;
