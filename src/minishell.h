@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 13:54:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 15:35:28 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,8 @@ t_token		*token_last(t_token *tokens);
 void		token_add_back(t_token **tokens, t_token *new);
 int			find_token_type(void *content);
 void		*token_del(t_token *tokens);
+int			q_flag_switch(char c, int q_flag);
+
 //
 void		sort_token_content(t_token **token);
 
