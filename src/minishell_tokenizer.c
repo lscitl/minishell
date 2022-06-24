@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 13:46:11 by seseo            ###   ########seoul.kr  */
+/*   Updated: 2022/06/24 13:49:36 by seseo            ###   ########seoul.kr  */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ int	chopper(t_token **tokens, char *line)
 		else if (line[i] != ' ' && line[i])
 		{
 			start = i;
-			while (line[i] != ' ')
+			while (line[i] != ' ' && line[i])
 			{
 				if (is_quote(line[i]))
 				{
