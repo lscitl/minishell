@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 13:34:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 13:54:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # include <termios.h>
 # include <dirent.h>
 # include <errno.h>
+# include <string.h>
 # include "../libft/include/libft.h"
 
 typedef t_list	t_env_list;
