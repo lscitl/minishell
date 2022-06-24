@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 19:17:58 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 13:50:44 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ void	env_init(t_info *info)
 	t_env_list	*shlvl;
 	int			lvl;
 
-	set_env_node(info, strdup("PWD"), getcwd(NULL, 0));
-	set_env_node(info, strdup("OLDPWD"), NULL);
+	set_env_node(info, ft_strdup("PWD"), getcwd(NULL, 0));
+	set_env_node(info, ft_strdup("OLDPWD"), NULL);
 	shlvl = find_key(info->env_list, "SHLVL");
 	if (shlvl)
 	{

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 20:15:32 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 13:34:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,8 @@ int			search_here_doc(t_token *tokens);
 // exec
 int			is_paren(t_b_node *root);
 int			do_builtin(t_info *info, char **cmd);
-int			do_paren(t_info *info, t_b_node *root);
+int			do_main_paren(t_info *info, t_b_node *root);
+int			do_pipe_paren(t_info *info, t_b_node *root);
 int			do_cmd(t_info *info, t_b_node *root);
 int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
 int			do_pipe(t_info *info, t_b_node *root);

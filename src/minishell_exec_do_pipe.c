@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 21:53:18 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/24 12:59:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args)
 	dup2(args.pipe_oi[1], STDOUT_FILENO);
 	close(args.pipe_oi[1]);
 	if (is_paren(root))
-		exit(do_paren(info, root));
+		exit(do_pipe_paren(info, root));
 	info->cmd = make_cmd_strs(info, root->tokens);
 	if (info->cmd[0] && is_builtin(info->cmd[0]))
 		exit(do_builtin(info, info->cmd));
@@ -89,7 +89,7 @@ static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 		close(args.prev_pipe);
 		apply_redir(info, root);
 		if (is_paren(root))
-			exit(do_paren(info, root));
+			exit(do_pipe_paren(info, root));
 		info->cmd = make_cmd_strs(info, root->tokens);
 		if (info->cmd[0] && is_builtin(info->cmd[0]))
 			exit(do_builtin(info, info->cmd));
