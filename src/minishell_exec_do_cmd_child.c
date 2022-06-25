@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 17:33:38 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 01:02:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,21 +38,37 @@ int	do_builtin(t_info *info, char **cmd)
 	return (status);
 }
 
+int	*backup_std_fd(int *io_fd)
+{
+	io_fd[0] = dup(STDIN_FILENO);
+	io_fd[1] = dup(STDOUT_FILENO);
+	if (io_fd[0] == -1 || io_fd[1] == -1)
+		return (NULL);
+	return (io_fd);
+}
+
 int	do_main_builtin(t_info *info, t_b_node *root)
 {
 	int		io_fd[2];
+	int		rd_fd[2];
 
-	pipe(io_fd);
-	close(io_fd[0]);
-	close(io_fd[1]);
-	dup2(STDIN_FILENO, io_fd[0]);
-	dup2(STDOUT_FILENO, io_fd[1]);
-	apply_redir(info, root);
+	if (root->redir)
+	{
+		backup_std_fd(io_fd);
+		apply_redir(info, root);
+	}
 	info->status = do_builtin(info, info->cmd);
-	dup2(io_fd[0], STDIN_FILENO);
-	close(io_fd[0]);
-	dup2(io_fd[1], STDOUT_FILENO);
-	close(io_fd[1]);
+	if (root->redir)
+	{
+		rd_fd[0] = dup(STDIN_FILENO);
+		rd_fd[1] = dup(STDOUT_FILENO);
+		close(rd_fd[0]);
+		close(rd_fd[1]);
+		dup2(io_fd[0], STDIN_FILENO);
+		close(io_fd[0]);
+		dup2(io_fd[1], STDOUT_FILENO);
+		close(io_fd[1]);
+	}
 	return (info->status);
 }
 
@@ -60,13 +76,10 @@ int	do_main_builtin(t_info *info, t_b_node *root)
 int	do_cmd(t_info *info, t_b_node *root)
 {
 	pid_t	pid;
+	int		status;
 
 	if (is_paren(root))
-	{
-		// if (info->plv)
-		// 	return (do_pipe_paren(info, root));
 		return (do_main_paren(info, root));
-	}
 	info->cmd = make_cmd_strs(info, root->tokens);
 	if (info->cmd[0] && is_builtin(info->cmd[0]))
 		return (do_main_builtin(info, root));
@@ -76,16 +89,17 @@ int	do_cmd(t_info *info, t_b_node *root)
 		if (pid == -1)
 			exit(EXIT_FAILURE);
 		else if (pid == 0)
-			do_cmd_child(info, root);
+		{
+			status = do_cmd_child(info, root);
+			exit(status);
+		}
 		free_strs(info->cmd);
 		waitpid(pid, &info->status, 0);
-		if (WEXITSTATUS(info->status))
-			return (WEXITSTATUS(info->status));
-		return (128 + info->status);
+		return (return_exit_status(info->status));
 	}
 }
 
-void	do_cmd_child(t_info *info, t_b_node *root)
+int	do_cmd_child(t_info *info, t_b_node *root)
 {
 	char	**path;
 	char	**env;
@@ -114,8 +128,25 @@ void	do_cmd_child(t_info *info, t_b_node *root)
 				;
 		}
 		print_err_msg(info->cmd[0]);
-		exit(127);
+		return (127);
 	}
 	print_err_msg(info->cmd[0]);
-	exit(127);
+	return (127);
+}
+
+int	find_bt_type_and_execute(t_info *info, t_b_node *root)
+{
+	int	status;
+
+	if (root->type == BT_CMD)
+		status = do_cmd(info, root);
+	else if (root->type == BT_PIPE)
+		status = do_pipe(info, root);
+	else if (root->type == BT_PAREN)
+		status = do_main_paren(info, root);
+	else if (root->type == BT_AND)
+		status = do_and_or(info, root, CMD_AND);
+	else
+		status = do_and_or(info, root, CMD_OR);
+	return (status);
 }

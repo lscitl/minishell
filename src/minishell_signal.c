@@ -6,14 +6,21 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:55:08 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 22:03:17 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 00:54:39 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	sig_quit(int num)
+void	sig_readline(int num)
 {
+	if (SIGINT == num)
+	{
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		printf("\n");
+		rl_redisplay();
+	}
 	if (SIGQUIT == num)
 	{
 		rl_on_new_line();
@@ -21,26 +28,12 @@ void	sig_quit(int num)
 	}
 }
 
-void	sig_int_readline(int num)
+void	sig_exec(int num)
 {
 	if (SIGINT == num)
-	{
-		rl_on_new_line();
-		rl_replace_line("", 0);
 		printf("\n");
-		rl_redisplay();
-	}
-}
-
-void	sig_int_exec(int num)
-{
-	if (SIGINT == num)
-	{
-		rl_on_new_line();
-		rl_replace_line("", 0);
+	if (SIGQUIT == num)
 		printf("\n");
-		rl_redisplay();
-	}
 }
 
 // void	sig_int_child(int num)

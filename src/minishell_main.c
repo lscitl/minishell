@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 13:50:44 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 01:00:36 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,10 @@ void	shell_init(t_info *info)
 	info->tokens = NULL;
 	info->cmd_root = NULL;
 	info->plv = 0;
-	signal(SIGINT, &sig_int_readline);
-	signal(SIGQUIT, &sig_quit);
 	tcgetattr(STDOUT_FILENO, &info->e_disable);
 	tcgetattr(STDOUT_FILENO, &info->e_enable);
 	info->e_disable.c_lflag &= (~ECHOCTL);
+	info->e_enable.c_lflag &= (ECHOCTL);
 	info->env_list = get_env_list(environ);
 	env_init(info);
 }
@@ -65,12 +64,15 @@ int	main(void)
 	shell_init(&info);
 	while (42)
 	{
+		signal(SIGINT, &sig_readline);
+		signal(SIGQUIT, &sig_readline);
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_disable);
 		info.tokens = NULL;
 		line = readline(SHELL_PROMPT);
 		if (line == NULL)
 		{
 			printf("\e[A%sexit\n", SHELL_PROMPT);
+			tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 			exit(0);
 		}
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
@@ -100,15 +102,18 @@ int	main(void)
 		}
 		info.cmd_root = make_btree_node(info.tokens);
 		make_parse_tree(info.cmd_root);
-		if (info.cmd_root->type == BT_AND)
-			info.status = do_and_or(&info, info.cmd_root, CMD_AND);
-		else if (info.cmd_root->type == BT_OR)
-			info.status = do_and_or(&info, info.cmd_root, CMD_OR);
-		else if (info.cmd_root->type == BT_CMD)
-			info.status = do_cmd(&info, info.cmd_root);
-		else if (info.cmd_root->type == BT_PIPE)
-			info.status = do_pipe(&info, info.cmd_root);
-		signal(SIGINT, &sig_int_exec);
+		// inorder_btree(info.cmd_root);
+		// signal(SIGINT, &sig_exec);
+		// signal(SIGQUIT, &sig_exec);
+		info.status = find_bt_type_and_execute(&info, info.cmd_root);
+		if (info.cmd_root->tokens && ft_strncmp("print", info.cmd_root->tokens->content, -1) == 0)
+		{
+			int	fd;
+			fd = open("testfile", O_TRUNC | O_CREAT | O_WRONLY, 0777);
+			printf("fd: %d\n", fd);
+			close(fd);
+			unlink("testfile");
+		}
 		del_btree(info.cmd_root);
 		info.cmd_root = NULL;
 		free(line);

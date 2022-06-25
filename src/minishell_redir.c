@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 23:37:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 00:04:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/25 21:17:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	apply_redir(t_info *info, t_b_node *root)
 	t_redir	*rd;
 	char	*here_doc;
 	int		fd;
+	int		hd_oi[2];
 
 	rd = root->redir;
 	while (rd)
@@ -74,12 +75,12 @@ void	apply_redir(t_info *info, t_b_node *root)
 		else if (rd->type == TKN_HDC_RD)
 		{
 			here_doc = rm_quote_and_expand(info, rd->value);
-			fd = open(HERE_DOC_TMP_LOC, O_TRUNC | O_WRONLY | O_CREAT, 0777);
-			write(fd, here_doc, ft_strlen(here_doc));
-			close(fd);
-			fd = open(HERE_DOC_TMP_LOC, O_RDONLY, 0777);
-			dup2(fd, STDIN_FILENO);
-			close(fd);
+			if (pipe(hd_oi))
+				exit(EXIT_FAILURE);
+			write(hd_oi[1], here_doc, ft_strlen(here_doc));
+			close(hd_oi[1]);
+			dup2(hd_oi[0], STDIN_FILENO);
+			close(hd_oi[0]);
 		}
 		rd = rd->next->next;
 	}

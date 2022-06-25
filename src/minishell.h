@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 15:35:28 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 00:54:56 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,7 @@ typedef struct s_info
 	char			**cmd;
 	int				status;
 	int				plv;
+	int				in_pt;
 	t_env_list		*env_list;
 	t_token			*tokens;
 	t_b_node		*cmd_root;
@@ -124,10 +125,10 @@ typedef struct s_pipe_args
 t_token		*asterisk_expand(t_info *info, char *str);
 
 // minishell_signal.c
-void		sig_int_readline(int num);
-void		sig_int_exec(int num);
-void		sig_int_child(int num);
-void		sig_quit(int num);
+void		sig_readline(int num);
+void		sig_exec(int num);
+// void		sig_int_child(int num);
+// void		sig_quit(int num);
 
 // minishell_b_*.c
 int			b_pwd(void);
@@ -143,6 +144,8 @@ int			is_builtin(char *cmd);
 void		free_strs(char **strs);
 void		sort_strs(char **strs);
 char		**merge_strs(char **main, char **elem, int idx);
+void		error_exit_wait(int n_wait);
+int			return_exit_status(int	status);
 
 // minishell_list_utils_1.c
 int			is_env_var_invalid(char *var);
@@ -177,7 +180,6 @@ void		token_add_back(t_token **tokens, t_token *new);
 int			find_token_type(void *content);
 void		*token_del(t_token *tokens);
 int			q_flag_switch(char c, int q_flag);
-
 //
 void		sort_token_content(t_token **token);
 
@@ -206,13 +208,13 @@ int			search_here_doc(t_token *tokens);
 
 // exec
 int			is_paren(t_b_node *root);
-int			do_builtin(t_info *info, char **cmd);
+int			do_main_builtin(t_info *info, t_b_node *root);
 int			do_main_paren(t_info *info, t_b_node *root);
 int			do_pipe_paren(t_info *info, t_b_node *root);
 int			do_cmd(t_info *info, t_b_node *root);
 int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
 int			do_pipe(t_info *info, t_b_node *root);
-void		do_cmd_child(t_info *info, t_b_node *root);
+int			do_cmd_child(t_info *info, t_b_node *root);
 
 void		print_content(t_token *tokens);
 void		print_strs(char **env);
@@ -221,6 +223,6 @@ char		**make_cmd_strs(t_info *info, t_token *token);
 
 int			print_err_msg(char *cmd);
 
-void		error_exit_wait(int n_wait);
-
+void	inorder_btree(t_b_node *p_node);
+int			find_bt_type_and_execute(t_info *info, t_b_node *root);
 #endif

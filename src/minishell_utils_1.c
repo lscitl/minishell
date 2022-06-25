@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 14:50:31 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 00:36:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,20 @@ char	**merge_strs(char **main, char **elem, int idx)
 	free_strs(main);
 	free_strs(elem);
 	return (r_strs);
+}
+
+void	error_exit_wait(int n_wait)
+{
+	while (n_wait-- > 0)
+		waitpid(-1, NULL, 0);
+	exit(EXIT_FAILURE);
+}
+
+int	return_exit_status(int	status)
+{
+	if (WEXITSTATUS(status))
+		return (WEXITSTATUS(status));
+	else if (status)
+		return (128 + status);
+	return (status);
 }

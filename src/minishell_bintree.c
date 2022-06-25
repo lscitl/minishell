@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/18 16:07:31 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 00:45:08 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/25 20:04:45 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,12 +89,11 @@ void	preorder_btree(t_b_node *p_node)
 {
 	if (p_node == NULL)
 		return ;
-	// do something
-	// printf("%c ", p_node->data);
 	if (p_node->type == BT_CMD)
+	{
 		print_content(p_node->tokens);
-	preorder_btree(p_node->left);
-	preorder_btree(p_node->right);
+		print_content(p_node->redir);
+	}
 }
 
 void	inorder_btree(t_b_node *p_node)
@@ -102,8 +101,12 @@ void	inorder_btree(t_b_node *p_node)
 	if (p_node == NULL)
 		return ;
 	inorder_btree(p_node->left);
-	// do something
-	// printf("%c ", p_node->data);
+	fprintf(stderr, "CMD_TYPE: %d\n", p_node->type);
+	fprintf(stderr, "token: ");
+	print_content(p_node->tokens);
+	fprintf(stderr, "redir: ");
+	print_content(p_node->redir);
+	fprintf(stderr, "\n");
 	inorder_btree(p_node->right);
 }
 

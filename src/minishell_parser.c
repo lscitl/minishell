@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:13:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 20:29:14 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/25 20:06:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void	make_paren_node(t_b_node *root)
 	t_token	*l_paren;
 	t_token	*r_paren;
 
+	root->type = BT_PAREN;
 	l_paren = root->tokens;
 	tmp = root->tokens;
 	while (tmp->next->next != NULL)

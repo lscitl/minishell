@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 17:30:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 01:02:35 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 	i = 0;
 	args.prev_pipe = -1;
 	args.n_pipe = count_pipe(root);
+	// fprintf(stderr, "pipe\n");
 	while (i++ < args.n_pipe)
 	{
 		if (pipe(args.pipe_oi))
@@ -60,6 +61,8 @@ static int	count_pipe(t_b_node *root)
 
 static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args)
 {
+	int	status;
+
 	if (args.prev_pipe != -1)
 	{
 		dup2(args.prev_pipe, STDIN_FILENO);
@@ -69,16 +72,22 @@ static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args)
 	dup2(args.pipe_oi[1], STDOUT_FILENO);
 	close(args.pipe_oi[1]);
 	if (is_paren(root))
-		exit(do_main_paren(info, root));
-	info->cmd = make_cmd_strs(info, root->tokens);
-	if (info->cmd[0] && is_builtin(info->cmd[0]))
-		exit(do_builtin(info, info->cmd));
-	do_cmd_child(info, root);
+		status = do_pipe_paren(info, root);
+	else
+	{
+		info->cmd = make_cmd_strs(info, root->tokens);
+		if (info->cmd[0] && is_builtin(info->cmd[0]))
+			status = do_main_builtin(info, root);
+		else
+			status = do_cmd_child(info, root);
+	}
+	exit(status);
 }
 
 static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 {
 	int	i;
+	int	status;
 
 	args.pid = fork();
 	if (args.pid == -1)
@@ -87,27 +96,23 @@ static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 	{
 		dup2(args.prev_pipe, STDIN_FILENO);
 		close(args.prev_pipe);
-		apply_redir(info, root);
 		if (is_paren(root))
-			exit(do_main_paren(info, root));
-		info->cmd = make_cmd_strs(info, root->tokens);
-		if (info->cmd[0] && is_builtin(info->cmd[0]))
-			exit(do_builtin(info, info->cmd));
-		do_cmd_child(info, root);
+			status = do_pipe_paren(info, root);
+		else
+		{
+			info->cmd = make_cmd_strs(info, root->tokens);
+			if (info->cmd[0] && is_builtin(info->cmd[0]))
+				status = do_main_builtin(info, root);
+			else
+				status = do_cmd_child(info, root);
+		}
+		exit(status);
 	}
 	close(args.prev_pipe);
 	i = args.n_pipe + 1;
 	while (i-- > 0)
 		if (waitpid(-1, &args.status, 0) == args.pid)
 			info->status = args.status;
-	if (WEXITSTATUS(info->status))
-		return (WEXITSTATUS(info->status));
-	return (info->status);
+	return (return_exit_status(info->status));
 }
 
-void	error_exit_wait(int n_wait)
-{
-	while (n_wait-- > 0)
-		waitpid(-1, NULL, 0);
-	exit(EXIT_FAILURE);
-}
