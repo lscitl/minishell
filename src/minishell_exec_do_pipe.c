@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 01:02:35 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 17:43:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static int	count_pipe(t_b_node *root);
 static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args);
 static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args);
+static int	final_cmd_child(t_info *info, t_b_node *root, t_pipe_args args);
 
 int	do_pipe(t_info *info, t_b_node *root)
 {
@@ -24,7 +25,6 @@ int	do_pipe(t_info *info, t_b_node *root)
 	i = 0;
 	args.prev_pipe = -1;
 	args.n_pipe = count_pipe(root);
-	// fprintf(stderr, "pipe\n");
 	while (i++ < args.n_pipe)
 	{
 		if (pipe(args.pipe_oi))
@@ -87,27 +87,12 @@ static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args)
 static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 {
 	int	i;
-	int	status;
 
 	args.pid = fork();
 	if (args.pid == -1)
 		error_exit_wait(args.n_pipe);
 	else if (args.pid == 0)
-	{
-		dup2(args.prev_pipe, STDIN_FILENO);
-		close(args.prev_pipe);
-		if (is_paren(root))
-			status = do_pipe_paren(info, root);
-		else
-		{
-			info->cmd = make_cmd_strs(info, root->tokens);
-			if (info->cmd[0] && is_builtin(info->cmd[0]))
-				status = do_main_builtin(info, root);
-			else
-				status = do_cmd_child(info, root);
-		}
-		exit(status);
-	}
+		exit(final_cmd_child(info, root, args));
 	close(args.prev_pipe);
 	i = args.n_pipe + 1;
 	while (i-- > 0)
@@ -116,3 +101,21 @@ static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 	return (return_exit_status(info->status));
 }
 
+static int	final_cmd_child(t_info *info, t_b_node *root, t_pipe_args args)
+{
+	int	status;
+
+	dup2(args.prev_pipe, STDIN_FILENO);
+	close(args.prev_pipe);
+	if (is_paren(root))
+		status = do_pipe_paren(info, root);
+	else
+	{
+		info->cmd = make_cmd_strs(info, root->tokens);
+		if (info->cmd[0] && is_builtin(info->cmd[0]))
+			status = do_main_builtin(info, root);
+		else
+			status = do_cmd_child(info, root);
+	}
+	return (status);
+}
