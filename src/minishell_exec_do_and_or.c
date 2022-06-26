@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 22:46:22 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/25 23:11:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 15:08:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ int	do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or)
 	else
 		status = do_pipe(info, root->left);
 	if (and_or == !!status)
-		status = find_bt_type_and_execute(info, root->right);
+		status = execute_bt_node(info, root->right);
 	return (status);
 }

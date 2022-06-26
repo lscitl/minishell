@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 01:00:36 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 15:11:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	shell_init(t_info *info)
 	tcgetattr(STDOUT_FILENO, &info->e_disable);
 	tcgetattr(STDOUT_FILENO, &info->e_enable);
 	info->e_disable.c_lflag &= (~ECHOCTL);
-	info->e_enable.c_lflag &= (ECHOCTL);
+	info->e_enable.c_lflag |= (ECHOCTL);
 	info->env_list = get_env_list(environ);
 	env_init(info);
 }
@@ -103,9 +103,9 @@ int	main(void)
 		info.cmd_root = make_btree_node(info.tokens);
 		make_parse_tree(info.cmd_root);
 		// inorder_btree(info.cmd_root);
-		// signal(SIGINT, &sig_exec);
-		// signal(SIGQUIT, &sig_exec);
-		info.status = find_bt_type_and_execute(&info, info.cmd_root);
+		signal(SIGINT, &sig_exec);
+		signal(SIGQUIT, &sig_exec);
+		info.status = execute_bt_node(&info, info.cmd_root);
 		if (info.cmd_root->tokens && ft_strncmp("print", info.cmd_root->tokens->content, -1) == 0)
 		{
 			int	fd;

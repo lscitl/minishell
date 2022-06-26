@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 00:54:56 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 16:14:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ enum e_token
 	TKN_STR,
 	TKN_INP_RD,
 	TKN_OUT_RD,
-	TKN_HDC_RD,
 	TKN_APP_RD,
+	TKN_HDC_RD,
 	TKN_PIPE,
 	TKN_AND,
 	TKN_OR,
@@ -127,6 +127,7 @@ t_token		*asterisk_expand(t_info *info, char *str);
 // minishell_signal.c
 void		sig_readline(int num);
 void		sig_exec(int num);
+void		sig_exec_child(int num);
 // void		sig_int_child(int num);
 // void		sig_quit(int num);
 
@@ -201,7 +202,7 @@ char		*expand_string_elem(t_info *info, char *str);
 
 // minishell_redir.c
 void		set_redir(t_b_node *root);
-void		apply_redir(t_info *info, t_b_node *root);
+int			apply_redir(t_info *info, t_b_node *root);
 
 // here_doc
 int			search_here_doc(t_token *tokens);
@@ -224,5 +225,5 @@ char		**make_cmd_strs(t_info *info, t_token *token);
 int			print_err_msg(char *cmd);
 
 void	inorder_btree(t_b_node *p_node);
-int			find_bt_type_and_execute(t_info *info, t_b_node *root);
+int			execute_bt_node(t_info *info, t_b_node *root);
 #endif

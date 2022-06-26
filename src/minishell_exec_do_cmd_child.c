@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 01:02:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 17:29:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ int	do_builtin(t_info *info, char **cmd)
 
 int	*backup_std_fd(int *io_fd)
 {
+	io_fd[0] = -1;
+	io_fd[1] = -1;
 	io_fd[0] = dup(STDIN_FILENO);
 	io_fd[1] = dup(STDOUT_FILENO);
 	if (io_fd[0] == -1 || io_fd[1] == -1)
@@ -52,12 +54,14 @@ int	do_main_builtin(t_info *info, t_b_node *root)
 	int		io_fd[2];
 	int		rd_fd[2];
 
+	info->status = 0;
 	if (root->redir)
-	{
-		backup_std_fd(io_fd);
-		apply_redir(info, root);
-	}
-	info->status = do_builtin(info, info->cmd);
+		if (backup_std_fd(io_fd))
+			info->status = apply_redir(info, root);
+	if (io_fd[0] == -1 || io_fd[1] == -1)
+		exit(EXIT_FAILURE);
+	if (!info->status)
+		info->status = do_builtin(info, info->cmd);
 	if (root->redir)
 	{
 		rd_fd[0] = dup(STDIN_FILENO);
@@ -104,9 +108,14 @@ int	do_cmd_child(t_info *info, t_b_node *root)
 	char	**path;
 	char	**env;
 	int		i;
+	int		redir_status;
 
 	info->plv++;
-	apply_redir(info, root);
+	redir_status = apply_redir(info, root);
+	// signal(SIGINT, &sig_exec_child);
+	// signal(SIGQUIT, &sig_exec_child);
+	if (redir_status)
+		return (redir_status);
 	if (info->cmd[0] == NULL)
 		exit (EXIT_SUCCESS);
 	path = ft_split(find_key(info->env_list, "PATH")->value, ':');
@@ -134,7 +143,7 @@ int	do_cmd_child(t_info *info, t_b_node *root)
 	return (127);
 }
 
-int	find_bt_type_and_execute(t_info *info, t_b_node *root)
+int	execute_bt_node(t_info *info, t_b_node *root)
 {
 	int	status;
 

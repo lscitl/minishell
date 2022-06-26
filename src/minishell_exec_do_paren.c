@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 20:28:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 01:03:45 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 16:14:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,13 @@
 
 int	do_pipe_paren(t_info *info, t_b_node *root)
 {
+	int	redir_status;
 	// fprintf(stderr, "pipe_paren\n");
-	apply_redir(info, root);
+	redir_status = apply_redir(info, root);
+	if (redir_status)
+		return (redir_status);
 	info->in_pt++;
-	info->status = find_bt_type_and_execute(info, root->right);
+	info->status = execute_bt_node(info, root->right);
 	return (info->status);
 }
 
