@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 21:22:22 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 00:29:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,15 @@
 
 # define TRUE 1
 # define FALSE 0
+# define ERROR_PERMISSION 126
+# define ERROR_EXIT 127
 # define SHELL_NAME "minishell"
 # define SHELL_PROMPT "minishell $ "
 # define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
 
 # include <unistd.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <signal.h>
@@ -34,7 +37,6 @@
 # include "../libft/include/libft.h"
 
 typedef t_list	t_env_list;
-// typedef t_list	t_dir_list;
 
 enum e_and_or
 {
@@ -135,8 +137,6 @@ void		asterisk_sub2(t_token **dir_list, char **ast_strs,
 void		sig_readline(int num);
 void		sig_exec(int num);
 void		sig_exec_child(int num);
-// void		sig_int_child(int num);
-// void		sig_quit(int num);
 
 // minishell_b_*.c
 int			b_pwd(void);
@@ -149,12 +149,17 @@ int			b_export(t_info *info, char **cmd);
 
 // minishell_exec_*.c
 int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
+
 int			do_main_builtin(t_info *info, t_b_node *root);
 int			is_builtin(char *cmd);
+
 int			do_cmd(t_info *info, t_b_node *root);
 int			do_cmd_child(t_info *info, t_b_node *root);
+int			execute_bt_node(t_info *info, t_b_node *root);
+
 int			do_main_paren(t_info *info, t_b_node *root);
 int			do_pipe_paren(t_info *info, t_b_node *root);
+
 int			do_pipe(t_info *info, t_b_node *root);
 
 // minishell_bintree.c
@@ -174,6 +179,7 @@ void		make_left_node(t_token	*token, t_token *root);
 
 // minishell_print_err.c
 int			print_err_msg(char *cmd, char *errmsg);
+int			print_err_msg_no_cmd(char *errmsg);
 
 // minishell_redir.c
 void		set_redir(t_b_node *root);
@@ -223,8 +229,6 @@ void		sort_token_content(t_token **token);
 
 void		print_content(t_token *tokens);
 void		print_strs(char **env);
-
 void		inorder_btree(t_b_node *p_node);
-int			execute_bt_node(t_info *info, t_b_node *root);
 
 #endif
