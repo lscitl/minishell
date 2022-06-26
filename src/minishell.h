@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 21:20:37 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 21:22:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@ typedef struct s_pipe_args
 }	t_pipe_args;
 
 // minishell_aster_1.c
-t_token		*asterisk_expand(t_info *info, char *str);
+t_token		*asterisk_expand(char *str);
 
 // minishell_aster_2.c
 void		asterisk_add_files(t_token **dir_list, char **ast_strs,

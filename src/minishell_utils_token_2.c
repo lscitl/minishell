@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:07:35 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/06/26 20:32:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 21:23:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char	**make_cmd_strs(t_info *info, t_token *token)
 	while (cur)
 	{
 		tmp = expand_string_elem(info, cur->content);
-		token_add_back(&dir, asterisk_expand(info, tmp));
+		token_add_back(&dir, asterisk_expand(tmp));
 		free(tmp);
 		cur = cur->next;
 	}
