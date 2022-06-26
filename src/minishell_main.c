@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 15:11:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 19:28:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ extern char	**environ;
 
 void	print_strs(char **env)
 {
+	// for debug
 	int	i;
 
 	i = 0;
@@ -75,7 +76,6 @@ int	main(void)
 			tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 			exit(0);
 		}
-		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		if (!chopper(&info.tokens, line) || info.tokens == NULL)
 		{
 			if (info.tokens != NULL)
@@ -98,11 +98,12 @@ int	main(void)
 		if (search_here_doc(info.tokens) == FALSE)
 		{
 			token_del(info.tokens);
+			free(line);
 			continue ;
 		}
+		tcsetattr(STDOUT_FILENO, TCSANOW, &info.e_enable);
 		info.cmd_root = make_btree_node(info.tokens);
 		make_parse_tree(info.cmd_root);
-		// inorder_btree(info.cmd_root);
 		signal(SIGINT, &sig_exec);
 		signal(SIGQUIT, &sig_exec);
 		info.status = execute_bt_node(&info, info.cmd_root);

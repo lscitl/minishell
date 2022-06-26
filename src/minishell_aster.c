@@ -6,14 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 21:19:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 20:53:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	asterisk_sub(t_info *info, t_token **dir_list,
-				DIR *p_dir, char *str);
+static void	asterisk_sub(t_token **dir_list, DIR *p_dir, char *str);
 static int	asterisk_set_flag(char **ast_strs, char *str);
 static void	asterisk_sub2(t_token **dir_list,
 				char **ast_strs, char *d_name, int ad_flag);
@@ -53,7 +52,7 @@ t_token	*asterisk_expand(t_info *info, char *str)
 		return (NULL);
 	}
 	dir_list = NULL;
-	asterisk_sub(info, &dir_list, p_dir, str);
+	asterisk_sub(&dir_list, p_dir, str);
 	closedir(p_dir);
 	if (dir_list == NULL)
 		dir_list = token_new(rm_quote(str));
@@ -61,7 +60,7 @@ t_token	*asterisk_expand(t_info *info, char *str)
 	return (dir_list);
 }
 
-static void	asterisk_sub(t_info *info, t_token **dir_list, DIR *p_dir, char *str)
+static void	asterisk_sub(t_token **dir_list, DIR *p_dir, char *str)
 {
 	struct dirent	*f;
 	char			**ast_strs;
@@ -69,7 +68,6 @@ static void	asterisk_sub(t_info *info, t_token **dir_list, DIR *p_dir, char *str
 	int				ad_flag;
 	int				i;
 
-	(void)info;
 	ast_strs = split_wildcard(str, '*');
 	i = 0;
 	while (ast_strs[i])
@@ -126,7 +124,8 @@ static int	asterisk_set_flag(char **ast_strs, char *str)
 static void	asterisk_sub2(t_token **dir_list,
 						char **ast_strs, char *d_name, int ad_flag)
 {
-	if ((ad_flag && ast_strs[0] == NULL) || (ad_flag & DT_DIR && !ast_strs[0][0]))
+	if ((ad_flag && ast_strs[0] == NULL)
+		|| (ad_flag & DT_DIR && !ast_strs[0][0]))
 	{
 		if (d_name[0] != '.')
 		{

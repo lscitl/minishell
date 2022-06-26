@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 16:14:43 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 20:47:46 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # define TRUE 1
 # define FALSE 0
+# define SHELL_NAME "minishell"
 # define SHELL_PROMPT "minishell $ "
 # define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
 
@@ -135,95 +136,91 @@ void		sig_exec_child(int num);
 int			b_pwd(void);
 int			b_echo(t_info *info, char **cmd);
 void		b_exit(t_info *info, int code);
-int			b_cd(char **cmd, t_info *info);
-int			b_unset(char **cmd, t_env_list **env_list);
-int			b_env(t_env_list *env_list);
-int			b_export(char **cmd, t_info *info);
+int			b_cd(t_info *info, char **cmd);
+int			b_unset(t_env_list **env_list, char **cmd);
+int			b_env(t_info *info, t_env_list *env_list);
+int			b_export(t_info *info, char **cmd);
 
-// minishell_utils_1.c
+// minishell_exec_*.c
+int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
+int			do_main_builtin(t_info *info, t_b_node *root);
 int			is_builtin(char *cmd);
-void		free_strs(char **strs);
-void		sort_strs(char **strs);
-char		**merge_strs(char **main, char **elem, int idx);
-void		error_exit_wait(int n_wait);
-int			return_exit_status(int	status);
+int			do_cmd(t_info *info, t_b_node *root);
+int			do_cmd_child(t_info *info, t_b_node *root);
+int			do_main_paren(t_info *info, t_b_node *root);
+int			do_pipe_paren(t_info *info, t_b_node *root);
+int			do_pipe(t_info *info, t_b_node *root);
 
-// minishell_list_utils_1.c
-int			is_env_var_invalid(char *var);
-t_env_list	*find_key(t_env_list *env_list, char *key);
-void		set_env_node(t_info *info, char *key, char *val);
-char		**get_env_strs(t_info *info);
-
-// minishell_list_utils_2.c
-t_env_list	*get_env_list(char **env);
-char		**list_to_str(t_list *list);
-char		**tokens_to_str(t_token *tokens);
-
-// bintree.c
+// minishell_bintree.c
 t_b_node	*make_btree_node(void *content);
-t_b_node	*insert_left_child(t_b_node *p_node, t_b_node *node);
-t_b_node	*insert_right_child(t_b_node *p_node, t_b_node *node);
-t_b_node	*get_left_child(t_b_node *node);
-t_b_node	*get_right_child(t_b_node *node);
 void		del_btree(t_b_node *root_node);
 void		del_btree_node(t_b_node *node);
 
-// void		preorder_b_tree(t_b_node *p_node);
-// void		inorder_b_tree(t_b_node *p_node);
-// void		postorder_b_tree(t_b_node *p_node);
+// here_doc
+int			search_here_doc(t_token *tokens);
 
-// t_b_node	*searchBinTreeNode(t_b_node *root_node, char c);
-
-// minishell_token_utils.c
-t_token		*token_new(void *content);
-t_token		*token_last(t_token *tokens);
-void		token_add_back(t_token **tokens, t_token *new);
-int			find_token_type(void *content);
-void		*token_del(t_token *tokens);
-int			q_flag_switch(char c, int q_flag);
-//
-void		sort_token_content(t_token **token);
-
-// minishell_tokenizer.c
-int			chopper(t_token **tokens, char *line);
-int			syntax_error_check(t_token *tokens);
-
-// minishell_parser.c
+// minishell_parser_1.c
 void		make_parse_tree(t_b_node *b_node);
 
-// minishell_parser_utils.c
-int			is_quote(char c);
-char		*skip_quote(char *s);
+// minishell_parser_2.c
+void		make_paren_node(t_b_node *root);
+void		make_left_node(t_token	*token, t_token *root);
 
-// minishell_rm_quote.c
-char		*rm_quote_and_expand(t_info *info, char *str);
-char		*rm_quote(char *str);
-char		*expand_string_elem(t_info *info, char *str);
+// minishell_print_err.c
+int			print_err_msg(char *cmd, char *errmsg);
 
 // minishell_redir.c
 void		set_redir(t_b_node *root);
 int			apply_redir(t_info *info, t_b_node *root);
 
-// here_doc
-int			search_here_doc(t_token *tokens);
+// minishell_rm_quote.c
+char		*rm_quote(char *str);
+char		*expand_string_elem(t_info *info, char *str);
 
-// exec
+// minishell_tokenizer.c
+int			chopper(t_token **tokens, char *line);
+int			syntax_error_check(t_token *tokens);
+
+// minishell_utils_1.c
+void		free_strs(char **strs);
+void		sort_strs(char **strs);
+char		**merge_strs(char **main, char **elem, int idx);
+void		error_exit_wait(int n_wait);
+int			return_exit_status(int status);
+
+// minishell_utils_list_1.c
+int			is_env_var_invalid(char *var);
+t_env_list	*find_key(t_env_list *env_list, char *key);
+void		set_env_node(t_info *info, char *key, char *val);
+char		**get_env_strs(t_info *info);
+
+// minishell_utils_list_2.c
+t_env_list	*get_env_list(char **env);
+char		**list_to_str(t_list *list);
+
+// minishell_utils_parser.c
+int			is_quote(char c);
+char		*skip_quote(char *s);
 int			is_paren(t_b_node *root);
-int			do_main_builtin(t_info *info, t_b_node *root);
-int			do_main_paren(t_info *info, t_b_node *root);
-int			do_pipe_paren(t_info *info, t_b_node *root);
-int			do_cmd(t_info *info, t_b_node *root);
-int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
-int			do_pipe(t_info *info, t_b_node *root);
-int			do_cmd_child(t_info *info, t_b_node *root);
+
+// minishell_utils_token_1.c
+t_token		*token_new(void *content);
+t_token		*token_last(t_token *tokens);
+void		token_add_back(t_token **tokens, t_token *new);
+void		*token_del(t_token *tokens);
+
+// minishell_utils_token_2.c
+int			q_flag_switch(char c, int q_flag);
+char		**make_cmd_strs(t_info *info, t_token *token);
+char		**tokens_to_str(t_token *tokens);
+void		sort_token_content(t_token **token);
+
+
 
 void		print_content(t_token *tokens);
 void		print_strs(char **env);
 
-char		**make_cmd_strs(t_info *info, t_token *token);
-
-int			print_err_msg(char *cmd);
-
 void	inorder_btree(t_b_node *p_node);
 int			execute_bt_node(t_info *info, t_b_node *root);
+
 #endif

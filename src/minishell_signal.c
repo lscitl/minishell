@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:55:08 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 15:24:01 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 20:37:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,8 @@ void	sig_readline(int num)
 void	sig_exec(int num)
 {
 	if (SIGINT == num)
-	{}
-		// printf("\n");
-	// if (SIGQUIT == num)
-		// printf("Quit: 3\n");
+	{
+	}
 }
 
 void	sig_exec_child(int num)
