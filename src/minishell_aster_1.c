@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 21:17:28 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 21:22:09 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static void	asterisk_sub(t_token **dir_list, DIR *p_dir, char *str);
 static void	asterisk_remove_quote(char **ast_strs);
 static int	asterisk_set_flag(char **ast_strs, char *str);
 
-t_token	*asterisk_expand(t_info *info, char *str)
+t_token	*asterisk_expand(char *str)
 {
 	t_token		*dir_list;
 	DIR			*p_dir;
