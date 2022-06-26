@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 23:37:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 17:34:16 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 18:53:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	apply_redir(t_info *info, t_b_node *root)
 			redir_status = redirection_open_fd(rd);
 		else
 		{
-			here_doc = rm_quote_and_expand(info, rd->value);
+			here_doc = expand_string_elem(info, rd->value);
 			if (pipe(hd_oi))
 				exit(EXIT_FAILURE);
 			write(hd_oi[1], here_doc, ft_strlen(here_doc));
@@ -106,7 +106,7 @@ static int	open_check_and_dup(char *file_name, int fd1, int fd2)
 {
 	if (fd1 == -1)
 	{
-		print_err_msg(file_name);
+		print_err_msg(file_name, strerror(errno));
 		return (1);
 	}
 	else
