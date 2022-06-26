@@ -6,22 +6,23 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 16:20:28 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/25 21:10:15 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 18:49:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	print_err_msg(char *cmd)
+int	print_err_msg(char *cmd, char *errmsg)
 {
 	t_buffer	*buf;
 	char		*err_msg;
 
 	buf = create_buf();
-	add_str(buf, "minishell: ");
+	add_str(buf, SHELL_NAME);
+	add_str(buf, ": ");
 	add_str(buf, cmd);
 	add_str(buf, ": ");
-	add_str(buf, strerror(errno));
+	add_str(buf, errmsg);
 	add_char(buf, '\n');
 	err_msg = put_str(buf);
 	ft_putstr_fd(err_msg, 2);
