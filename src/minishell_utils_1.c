@@ -6,28 +6,11 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 00:36:53 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 20:50:21 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	is_builtin(char *cmd)
-{
-	int			i;
-	static char	*built_in_fuc[7]
-		= {"echo", "cd", "pwd", "export", "unset", "env", "exit"};
-
-	i = 0;
-	if (cmd == NULL)
-		return (FALSE);
-	while (i < 7)
-	{
-		if (ft_strncmp(cmd, built_in_fuc[i++], -1) == 0)
-			return (i);
-	}
-	return (FALSE);
-}
 
 void	free_strs(char **strs)
 {
@@ -100,7 +83,7 @@ void	error_exit_wait(int n_wait)
 	exit(EXIT_FAILURE);
 }
 
-int	return_exit_status(int	status)
+int	return_exit_status(int status)
 {
 	if (WEXITSTATUS(status))
 		return (WEXITSTATUS(status));
