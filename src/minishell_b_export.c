@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 13:43:41 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 12:38:26 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 17:54:45 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	print_envs_sub(char **env, t_env_list *env_list);
 static void	print_envs(t_env_list *env_list);
 static void	add_env_node(t_info *info, char *cmd);
 
-int	b_export(char **cmd, t_info *info)
+int	b_export(t_info *info, char **cmd)
 {
 	int		i;
 	int		e_flg;

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/23 21:27:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 17:54:53 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static int	change_dir_home(t_info *info);
 static int	change_dir_input(t_info *info, char *dir);
 
 // cd - print path check
-int	b_cd(char **cmd, t_info *info)
+int	b_cd(t_info *info, char **cmd)
 {
 	if (cmd[1])
 	{
