@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/26 20:16:37 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/26 21:17:53 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ CPPFLAGS=-I/Users/seseo/.brew/opt/readline/include
 SRCS_DIR 		:=	src
 OBJ_DIR			:=	obj
 
-SRC				:=	minishell_aster.c \
+SRC				:=	minishell_aster_1.c \
+					minishell_aster_2.c \
 					minishell_b_cd.c \
 					minishell_b_echo.c \
 					minishell_b_env.c \

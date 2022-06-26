@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 20:47:46 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/26 21:20:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,8 +122,14 @@ typedef struct s_pipe_args
 	int		status;
 }	t_pipe_args;
 
-// minishell_aster.c
+// minishell_aster_1.c
 t_token		*asterisk_expand(t_info *info, char *str);
+
+// minishell_aster_2.c
+void		asterisk_add_files(t_token **dir_list, char **ast_strs,
+				char *d_name, int ad_flag);
+void		asterisk_sub2(t_token **dir_list, char **ast_strs,
+				char *d_name, int ad_flag);
 
 // minishell_signal.c
 void		sig_readline(int num);
@@ -215,12 +221,10 @@ char		**make_cmd_strs(t_info *info, t_token *token);
 char		**tokens_to_str(t_token *tokens);
 void		sort_token_content(t_token **token);
 
-
-
 void		print_content(t_token *tokens);
 void		print_strs(char **env);
 
-void	inorder_btree(t_b_node *p_node);
+void		inorder_btree(t_b_node *p_node);
 int			execute_bt_node(t_info *info, t_b_node *root);
 
 #endif
