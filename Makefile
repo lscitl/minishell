@@ -6,12 +6,12 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/26 21:17:53 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/26 23:20:09 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-LDFLAGS=-L/Users/seseo/.brew/opt/readline/lib
-CPPFLAGS=-I/Users/seseo/.brew/opt/readline/include
+LDFLAGS=-L$(HOME)/.brew/opt/readline/lib
+CPPFLAGS=-I$(HOME)/.brew/opt/readline/include
 
 SRCS_DIR 		:=	src
 OBJ_DIR			:=	obj
@@ -58,7 +58,7 @@ LIB_PATH		:=	libft
 
 $(OBJ_DIR)/%.o:		$(SRCS_DIR)/%.c
 					@mkdir -p $(@D)
-					$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+					@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
 
 $(NAME):			$(OBJS)
 					@$(MAKE) BONUS=true -C $(LIB_PATH)
@@ -76,5 +76,7 @@ fclean:				clean
 
 re:					fclean
 					@$(MAKE) all
+
+bonus:				all
 
 .PHONY:				all clean fclean re
