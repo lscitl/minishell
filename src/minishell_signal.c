@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:55:08 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 00:54:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 18:38:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,13 @@ void	sig_here_doc(int sig)
 {
 	if (sig == SIGINT)
 		printf("\n");
+}
+
+void	sig_here_doc_child(int sig)
+{
+	if (sig == SIGQUIT)
+	{
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }

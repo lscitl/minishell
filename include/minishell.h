@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/22 20:10:48 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 18:56:16 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void		sort_strs(char **strs);
 
 // minishell_list_utils_1.c
 int			is_env_var_invalid(char *var);
-t_env_list	*find_key(t_env_list *env_list, char *key);
+t_env_list	*find_env_node(t_env_list *env_list, char *key);
 void		set_env_node(t_info *info, char *key, char *val);
 char		**get_env_strs(t_info *info);
 
@@ -155,7 +155,7 @@ int			find_token_type(void *content);
 void		*token_del(t_token *tokens);
 
 // tokenizer.c
-void		chopper(t_token **tokens, char *line);
+void		split_line_to_token(t_token **tokens, char *line);
 int			syntax_error_check(t_token *tokens);
 
 // parser.c

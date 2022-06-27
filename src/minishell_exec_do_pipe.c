@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 17:43:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 21:57:03 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	do_pipe(t_info *info, t_b_node *root)
 	args.n_pipe = count_pipe(root);
 	while (i++ < args.n_pipe)
 	{
-		if (pipe(args.pipe_oi))
+		if (pipe(args.pipe_io))
 			error_exit_wait(i - 1);
 		args.pid = fork();
 		if (args.pid == -1)
@@ -36,10 +36,10 @@ int	do_pipe(t_info *info, t_b_node *root)
 			do_pipe_child(info, root->left, args);
 		else
 		{
-			close(args.pipe_oi[1]);
+			close(args.pipe_io[1]);
 			if (args.prev_pipe != -1)
 				close(args.prev_pipe);
-			args.prev_pipe = args.pipe_oi[0];
+			args.prev_pipe = args.pipe_io[0];
 			root = root->right;
 		}
 	}
@@ -68,9 +68,9 @@ static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args)
 		dup2(args.prev_pipe, STDIN_FILENO);
 		close(args.prev_pipe);
 	}
-	close(args.pipe_oi[0]);
-	dup2(args.pipe_oi[1], STDOUT_FILENO);
-	close(args.pipe_oi[1]);
+	close(args.pipe_io[0]);
+	dup2(args.pipe_io[1], STDOUT_FILENO);
+	close(args.pipe_io[1]);
 	if (is_paren(root))
 		status = do_pipe_paren(info, root);
 	else
@@ -105,6 +105,7 @@ static int	final_cmd_child(t_info *info, t_b_node *root, t_pipe_args args)
 {
 	int	status;
 
+	info->plv++;
 	dup2(args.prev_pipe, STDIN_FILENO);
 	close(args.prev_pipe);
 	if (is_paren(root))

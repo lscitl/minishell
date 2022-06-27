@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/24 17:23:25 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 20:30:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 static int	is_meta_char(char c);
 static int	make_meta_str(char **line, char **str);
-static int	chopper_sub(t_token **tokens, t_buffer *buf, char *line, char *str);
+static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf,
+				char *line, char *str);
 
-int	chopper(t_token **tokens, char *line)
+int	split_line_to_token(t_token **tokens, char *line)
 {
 	t_buffer	*buf;
 	char		*str;
@@ -24,7 +25,7 @@ int	chopper(t_token **tokens, char *line)
 
 	str = NULL;
 	buf = create_buf();
-	q_flag = chopper_sub(tokens, buf, line, str);
+	q_flag = split_line_to_token_sub(tokens, buf, line, str);
 	if (buf->len)
 		token_add_back(tokens, token_new(put_str(buf)));
 	del_buf(buf);
@@ -33,7 +34,8 @@ int	chopper(t_token **tokens, char *line)
 	return (TRUE);
 }
 
-static int	chopper_sub(t_token **tokens, t_buffer *buf, char *line, char *str)
+static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf,
+				char *line, char *str)
 {
 	int	q_flag;
 

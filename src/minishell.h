@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 00:29:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 21:57:03 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # define FALSE 0
 # define ERROR_PERMISSION 126
 # define ERROR_EXIT 127
+# define ERROR_SYNTAX 258
 # define SHELL_NAME "minishell"
 # define SHELL_PROMPT "minishell $ "
 # define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
@@ -119,7 +120,7 @@ typedef struct s_pipe_args
 {
 	pid_t	pid;
 	int		n_pipe;
-	int		pipe_oi[2];
+	int		pipe_io[2];
 	int		prev_pipe;
 	int		status;
 }	t_pipe_args;
@@ -133,11 +134,6 @@ void		asterisk_add_files(t_token **dir_list, char **ast_strs,
 void		asterisk_sub2(t_token **dir_list, char **ast_strs,
 				char *d_name, int ad_flag);
 
-// minishell_signal.c
-void		sig_readline(int num);
-void		sig_exec(int num);
-void		sig_exec_child(int num);
-
 // minishell_b_*.c
 int			b_pwd(void);
 int			b_echo(t_info *info, char **cmd);
@@ -146,6 +142,11 @@ int			b_cd(t_info *info, char **cmd);
 int			b_unset(t_env_list **env_list, char **cmd);
 int			b_env(t_info *info, t_env_list *env_list);
 int			b_export(t_info *info, char **cmd);
+
+// minishell_bintree.c
+t_b_node	*make_btree_node(void *content);
+void		del_btree(t_b_node *root_node);
+void		del_btree_node(t_b_node *node);
 
 // minishell_exec_*.c
 int			do_and_or(t_info *info, t_b_node *root, enum e_and_or and_or);
@@ -162,13 +163,12 @@ int			do_pipe_paren(t_info *info, t_b_node *root);
 
 int			do_pipe(t_info *info, t_b_node *root);
 
-// minishell_bintree.c
-t_b_node	*make_btree_node(void *content);
-void		del_btree(t_b_node *root_node);
-void		del_btree_node(t_b_node *node);
-
-// here_doc
+// minishell_here_doc.c
 int			search_here_doc(t_token *tokens);
+
+// minishell_main_sub.c
+int			get_here_doc_strs(t_info *info, char *line);
+void		make_tree_and_execute(t_info *info, char *line);
 
 // minishell_parser_1.c
 void		make_parse_tree(t_b_node *b_node);
@@ -178,8 +178,9 @@ void		make_paren_node(t_b_node *root);
 void		make_left_node(t_token	*token, t_token *root);
 
 // minishell_print_err.c
-int			print_err_msg(char *cmd, char *errmsg);
-int			print_err_msg_no_cmd(char *errmsg);
+void		print_err_msg_no_cmd(char *errmsg);
+void		print_err_msg(char *cmd, char *errmsg);
+void		print_err_msg_arg(char *cmd, char *arg, char *errmsg);
 
 // minishell_redir.c
 void		set_redir(t_b_node *root);
@@ -189,8 +190,14 @@ int			apply_redir(t_info *info, t_b_node *root);
 char		*rm_quote(char *str);
 char		*expand_string_elem(t_info *info, char *str);
 
+// minishell_signal.c
+void		sig_readline(int num);
+void		sig_exec(int num);
+void		sig_here_doc(int sig);
+void		sig_here_doc_child(int sig);
+
 // minishell_tokenizer.c
-int			chopper(t_token **tokens, char *line);
+int			split_line_to_token(t_token **tokens, char *line);
 int			syntax_error_check(t_token *tokens);
 
 // minishell_utils_1.c
@@ -202,7 +209,7 @@ int			return_exit_status(int status);
 
 // minishell_utils_list_1.c
 int			is_env_var_invalid(char *var);
-t_env_list	*find_key(t_env_list *env_list, char *key);
+t_env_list	*find_env_node(t_env_list *env_list, char *key);
 void		set_env_node(t_info *info, char *key, char *val);
 char		**get_env_strs(t_info *info);
 

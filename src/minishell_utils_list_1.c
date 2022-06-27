@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/11 19:55:58 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 20:13:25 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 13:23:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	is_env_var_invalid(char *var)
 	return (0);
 }
 
-t_env_list	*find_key(t_env_list *env_list, char *key)
+t_env_list	*find_env_node(t_env_list *env_list, char *key)
 {
 	while (env_list)
 	{
@@ -46,7 +46,7 @@ void	set_env_node(t_info *info, char *key, char *val)
 {
 	t_env_list	*tmp;
 
-	tmp = find_key(info->env_list, key);
+	tmp = find_env_node(info->env_list, key);
 	if (tmp)
 	{
 		free(key);
