@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 13:43:41 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 17:54:45 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/27 13:51:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ int	b_export(t_info *info, char **cmd)
 			e_flg = is_env_var_invalid(cmd[i]);
 			if (e_flg == 0)
 				add_env_node(info, cmd[i]);
+			else
+				print_err_msg_arg("export", cmd[i], "not a valid identifier");
 			r_flg |= e_flg;
 			i++;
 		}
@@ -82,7 +84,7 @@ static void	print_envs_sub(char **env, t_env_list *env_list)
 	{
 		if (ft_strncmp(env[i], "_", -1) != 0)
 		{
-			val = find_key(env_list, env[i])->value;
+			val = find_env_node(env_list, env[i])->value;
 			if (val)
 				printf("declare -x %s=\"%s\"\n", env[i], val);
 			else
