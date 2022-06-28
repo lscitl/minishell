@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:57:03 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 19:54:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,12 +92,18 @@ static int	do_pipe_final_cmd(t_info *info, t_b_node *root, t_pipe_args args)
 	if (args.pid == -1)
 		error_exit_wait(args.n_pipe);
 	else if (args.pid == 0)
-		exit(final_cmd_child(info, root, args));
+	{
+		info->status = final_cmd_child(info, root, args);
+		exit(info->status);
+	}
 	close(args.prev_pipe);
-	i = args.n_pipe + 1;
-	while (i-- > 0)
+	i = 0;
+	while (i < args.n_pipe + 1)
+	{
 		if (waitpid(-1, &args.status, 0) == args.pid)
 			info->status = args.status;
+		i++;
+	}
 	return (return_exit_status(info->status));
 }
 

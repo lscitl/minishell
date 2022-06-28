@@ -6,41 +6,16 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 23:32:45 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 01:06:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	do_cmd_actual_path(t_info *info);
+static int	exec_dot_cmd(t_info *info);
 static int	do_cmd_env_path(t_info *info, t_env_list *path_node);
 static int	make_path_and_exec_cmd(t_info *info, char **path);
-
-int	do_cmd(t_info *info, t_b_node *root)
-{
-	pid_t	pid;
-	int		status;
-
-	if (is_paren(root))
-		return (do_main_paren(info, root));
-	info->cmd = make_cmd_strs(info, root->tokens);
-	if (info->cmd[0] && is_builtin(info->cmd[0]))
-		return (do_main_builtin(info, root));
-	else
-	{
-		pid = fork();
-		if (pid == -1)
-			exit(EXIT_FAILURE);
-		else if (pid == 0)
-		{
-			status = do_cmd_child(info, root);
-			exit(status);
-		}
-		free_strs(info->cmd);
-		waitpid(pid, &info->status, 0);
-		return (return_exit_status(info->status));
-	}
-}
 
 int	do_cmd_child(t_info *info, t_b_node *root)
 {
@@ -55,6 +30,8 @@ int	do_cmd_child(t_info *info, t_b_node *root)
 		return (EXIT_SUCCESS);
 	if (ft_strchr(info->cmd[0], '/'))
 		return (do_cmd_actual_path(info));
+	else if (ft_strncmp(info->cmd[0], ".", -1) == 0)
+		return (exec_dot_cmd(info));
 	path_node = find_env_node(info->env_list, "PATH");
 	if (path_node)
 		return (do_cmd_env_path(info, path_node));
@@ -84,6 +61,35 @@ static int	do_cmd_actual_path(t_info *info)
 	return (ERROR_EXIT);
 }
 
+static int	exec_dot_cmd(t_info *info)
+{
+	char	*dot_path;
+	char	**env;
+
+	env = get_env_strs(info);
+	if (info->cmd[1])
+	{
+		dot_path = ft_strjoin("./", info->cmd[1]);
+		execve(dot_path, &info->cmd[1], env);
+		if (errno != ENOENT)
+		{
+			print_err_msg(info->cmd[1], strerror(errno));
+			free(dot_path);
+			return (EXIT_FAILURE);
+		}
+		else
+			print_err_msg(info->cmd[1], "command not found");
+		free(dot_path);
+		return (ERROR_EXIT);
+	}
+	else
+	{
+		print_err_msg(info->cmd[0], "filename argument required");
+		free_strs(info->cmd);
+		return (ERROR_EXEC_DOT);
+	}
+}
+
 static int	do_cmd_env_path(t_info *info, t_env_list *path_node)
 {
 	char		**path;
@@ -93,8 +99,15 @@ static int	do_cmd_env_path(t_info *info, t_env_list *path_node)
 	i = make_path_and_exec_cmd(info, path);
 	if (errno == ENOENT)
 		print_err_msg(info->cmd[0], "command not found");
+	else if (path)
+	{
+		if (ft_strncmp(info->cmd[0], "..", -1) == 0)
+			print_err_msg(info->cmd[0], "is a directory");
+		else
+			print_err_msg(path[i], strerror(errno));
+	}
 	else
-		print_err_msg(path[i], strerror(errno));
+		print_err_msg(info->cmd[0], "No such file or directory");
 	free_strs(info->cmd);
 	free_strs(path);
 	return (ERROR_EXIT);
@@ -109,6 +122,8 @@ static int	make_path_and_exec_cmd(t_info *info, char **path)
 	env = get_env_strs(info);
 	buf = create_buf();
 	i = 0;
+	if (!path)
+		return (0);
 	while (path[i])
 	{
 		add_str(buf, path[i]);
@@ -124,21 +139,4 @@ static int	make_path_and_exec_cmd(t_info *info, char **path)
 	del_buf(buf);
 	free_strs(env);
 	return (i);
-}
-
-int	execute_bt_node(t_info *info, t_b_node *root)
-{
-	int	status;
-
-	if (root->type == BT_CMD)
-		status = do_cmd(info, root);
-	else if (root->type == BT_PIPE)
-		status = do_pipe(info, root);
-	else if (root->type == BT_PAREN)
-		status = do_main_paren(info, root);
-	else if (root->type == BT_AND)
-		status = do_and_or(info, root, CMD_AND);
-	else
-		status = do_and_or(info, root, CMD_OR);
-	return (status);
 }

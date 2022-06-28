@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 17:45:59 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 20:48:04 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 15:54:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	do_main_builtin(t_info *info, t_b_node *root)
 		exit(EXIT_FAILURE);
 	if (!info->status)
 		info->status = do_builtin(info, info->cmd);
+	free_strs(info->cmd);
+	info->cmd = NULL;
 	if (root->redir)
 	{
 		rd_fd[0] = dup(STDIN_FILENO);
@@ -59,7 +61,7 @@ static int	do_builtin(t_info *info, char **cmd)
 
 	status = 0;
 	if (ft_strncmp(cmd[0], "echo", -1) == 0)
-		status = b_echo(info, cmd);
+		status = b_echo(cmd);
 	else if (ft_strncmp(cmd[0], "exit", -1) == 0)
 	{
 		if (cmd[1])
@@ -76,7 +78,6 @@ static int	do_builtin(t_info *info, char **cmd)
 		status = b_cd(info, cmd);
 	else
 		status = b_export(info, cmd);
-	free_strs(cmd);
 	return (status);
 }
 
