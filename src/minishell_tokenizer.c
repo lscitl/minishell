@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 13:10:11 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 20:30:12 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 23:07:36 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static int	is_meta_char(char c);
 static int	make_meta_str(char **line, char **str);
-static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf,
-				char *line, char *str);
+static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf, \
+														char *line, char *str);
 
 int	split_line_to_token(t_token **tokens, char *line)
 {
@@ -30,12 +30,18 @@ int	split_line_to_token(t_token **tokens, char *line)
 		token_add_back(tokens, token_new(put_str(buf)));
 	del_buf(buf);
 	if (q_flag)
+	{
+		if (q_flag & S_QUOTE)
+			print_err_msg_no_cmd("syntax error near unexpected token `''");
+		else if (q_flag & D_QUOTE)
+			print_err_msg_no_cmd("syntax error near unexpected token `\"'");
 		return (FALSE);
+	}
 	return (TRUE);
 }
 
-static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf,
-				char *line, char *str)
+static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf, \
+														char *line, char *str)
 {
 	int	q_flag;
 
@@ -53,7 +59,7 @@ static int	split_line_to_token_sub(t_token **tokens, t_buffer *buf,
 			if (buf->len != 0)
 				token_add_back(tokens, token_new(put_str(buf)));
 			if (make_meta_str(&line, &str) == 0)
-				return (-1);
+				return (4);
 			token_add_back(tokens, token_new(str));
 		}
 		else
@@ -73,10 +79,10 @@ static int	is_meta_char(char c)
 	while (metas[i])
 	{
 		if (c == metas[i])
-			return (1);
+			return (TRUE);
 		i++;
 	}
-	return (0);
+	return (FALSE);
 }
 
 static int	make_meta_str(char **line, char **str)
@@ -93,6 +99,9 @@ static int	make_meta_str(char **line, char **str)
 	else if (ft_strchr("()<>|", prev))
 		*str = ft_substr(*line, 0, 1);
 	else
+	{
+		print_err_msg_no_cmd("syntax error near unexpected token `&'");
 		return (0);
+	}
 	return (1);
 }

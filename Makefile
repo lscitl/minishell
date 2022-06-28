@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/27 20:28:23 by seseo            ###   ########.fr        #
+#    Updated: 2022/06/29 00:18:41 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,6 +29,7 @@ SRC				:=	minishell_aster_1.c \
 					minishell_exec_do_and_or.c \
 					minishell_exec_do_builtin.c \
 					minishell_exec_do_cmd_child.c \
+					minishell_exec_do_cmd.c \
 					minishell_exec_do_paren.c \
 					minishell_exec_do_pipe.c \
 					minishell_here_doc.c \
@@ -40,6 +41,7 @@ SRC				:=	minishell_aster_1.c \
 					minishell_redir.c \
 					minishell_rm_quote.c \
 					minishell_signal.c \
+					minishell_token_error_check.c \
 					minishell_tokenizer.c \
 					minishell_utils_1.c \
 					minishell_utils_list_1.c \
@@ -54,7 +56,7 @@ OBJS			:=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 NAME			:=	minishell
 CC				:=	gcc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror -Iinclude #-g -fsanitize=address,undefined
+CFLAGS			:=	-Wall -Wextra -Werror -Iinclude -g #-fsanitize=address,undefined
 LIB_PATH		:=	libft
 
 $(OBJ_DIR)/%.o:		$(SRCS_DIR)/%.c

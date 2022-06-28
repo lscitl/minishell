@@ -6,21 +6,18 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/21 19:36:47 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 20:20:37 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 00:18:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	is_next_token_valid(int prev_type, int curr_type);
-
-// ': retuen 1, ": return 2, else 0
 int	is_quote(char c)
 {
 	if (c == '\'')
-		return (1);
+		return (S_QUOTE);
 	else if (c == '"')
-		return (2);
+		return (D_QUOTE);
 	return (0);
 }
 
@@ -58,46 +55,4 @@ int	is_paren(t_b_node *root)
 		tmp = tmp->next;
 	}
 	return (FALSE);
-}
-
-int	syntax_error_check(t_token *tokens)
-{
-	t_token	*tmp;
-	int		prev_type;
-
-	tmp = tokens;
-	if ((5 <= tmp->type && tmp->type <= 7) || \
-	tmp->type == 9 || tmp->type == 10)
-		return (FALSE);
-	while (tmp)
-	{
-		prev_type = tmp->type;
-		if (tmp->next)
-			tmp = tmp->next;
-		else
-			break ;
-		if (is_next_token_valid(prev_type, tmp->type) == FALSE)
-			return (FALSE);
-	}
-	if (tmp->type != TKN_STR && tmp->type != TKN_R_PT)
-		return (FALSE);
-	return (TRUE);
-}
-
-static int	is_next_token_valid(int prev_type, int curr_type)
-{
-	if (prev_type == TKN_STR && \
-	(curr_type == TKN_L_PT || curr_type == TKN_INVAL))
-		return (FALSE);
-	else if ((1 <= prev_type && prev_type <= 4) && curr_type != TKN_STR)
-		return (FALSE);
-	else if ((5 <= prev_type && prev_type <= 8) && \
-	!((0 <= curr_type && curr_type <= 4) || curr_type == TKN_L_PT))
-		return (FALSE);
-	else if (prev_type == TKN_R_PT && (curr_type == TKN_STR || \
-	curr_type == TKN_L_PT || curr_type == TKN_INVAL))
-		return (FALSE);
-	else if (prev_type == TKN_INVAL)
-		return (FALSE);
-	return (TRUE);
 }

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 20:57:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:16:49 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 23:49:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static char	*here_doc_fork(char *delimiter)
 		here_doc_child(delimiter, io_fd);
 	close(io_fd[1]);
 	waitpid(pid, &status, 0);
-	if (return_exit_status(status) == 0)
+	if (return_exit_status(status) == EXIT_SUCCESS)
 		return (here_doc_return_char(io_fd));
 	close(io_fd[0]);
 	return (NULL);

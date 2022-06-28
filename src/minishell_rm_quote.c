@@ -6,14 +6,14 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:15:48 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:30:50 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 23:18:44 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	do_expand(t_info *info, t_buffer *buf, char *str);
-static int	str_is_digit_or_qmark(t_info *info, t_buffer *buf, char *str);
+static int	str_is_digit_or_qmark(t_buffer *buf, char *str);
 static int	get_env_len(char *str);
 
 char	*rm_quote(char *str)
@@ -28,10 +28,10 @@ char	*rm_quote(char *str)
 	q_flag = 0;
 	while (str[i])
 	{
-		if (!(q_flag & 2) && str[i] == '\'')
-			q_flag ^= 1;
-		else if (!(q_flag & 1) && str[i] == '"')
-			q_flag ^= 2;
+		if (!(q_flag & D_QUOTE) && str[i] == '\'')
+			q_flag ^= S_QUOTE;
+		else if (!(q_flag & S_QUOTE) && str[i] == '"')
+			q_flag ^= D_QUOTE;
 		else
 			add_char(buf, str[i]);
 		i++;
@@ -54,7 +54,7 @@ char	*expand_string_elem(t_info *info, char *str)
 	while (str[i])
 	{
 		q_flag = q_flag_switch(str[i], q_flag);
-		if ((q_flag & 2 || !q_flag) && str[i] == '$')
+		if ((q_flag & D_QUOTE || !q_flag) && str[i] == '$')
 			i += do_expand(info, buf, &str[i]);
 		else
 			add_char(buf, str[i]);
@@ -71,7 +71,7 @@ static int	do_expand(t_info *info, t_buffer *buf, char *str)
 	char		*key;
 	int			len;
 
-	if (str_is_digit_or_qmark(info, buf, str) == 1)
+	if (str_is_digit_or_qmark(buf, str) == 1)
 		return (1);
 	if (str && !ft_isalnum(str[1]) && str[1] != '_')
 	{
@@ -87,7 +87,7 @@ static int	do_expand(t_info *info, t_buffer *buf, char *str)
 	return (len);
 }
 
-static int	str_is_digit_or_qmark(t_info *info, t_buffer *buf, char *str)
+static int	str_is_digit_or_qmark(t_buffer *buf, char *str)
 {
 	char		*tmp;
 
@@ -95,7 +95,7 @@ static int	str_is_digit_or_qmark(t_info *info, t_buffer *buf, char *str)
 		return (1);
 	if (str && str[1] == '?')
 	{
-		tmp = ft_itoa(info->status);
+		tmp = ft_itoa(g_status);
 		add_str(buf, tmp);
 		free(tmp);
 		return (1);

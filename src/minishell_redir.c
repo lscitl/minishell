@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 23:37:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:57:03 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 18:50:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,12 +107,12 @@ static int	open_check_and_dup(char *file_name, int fd1, int fd2)
 	if (fd1 == -1)
 	{
 		print_err_msg(file_name, strerror(errno));
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	else
 	{
 		dup2(fd1, fd2);
 		close(fd1);
-		return (0);
+		return (EXIT_SUCCESS);
 	}
 }

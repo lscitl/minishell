@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:57:03 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 01:00:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 
 # define TRUE 1
 # define FALSE 0
+# define S_QUOTE 1
+# define D_QUOTE 2
 # define ERROR_PERMISSION 126
 # define ERROR_EXIT 127
 # define ERROR_SYNTAX 258
+# define ERROR_EXEC_DOT 2
 # define SHELL_NAME "minishell"
 # define SHELL_PROMPT "minishell $ "
 # define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
@@ -36,8 +39,6 @@
 # include <errno.h>
 # include <string.h>
 # include "../libft/include/libft.h"
-
-typedef t_list	t_env_list;
 
 enum e_and_or
 {
@@ -83,6 +84,9 @@ enum	e_type
 	BT_NONE
 };
 
+extern char		**environ;
+int				g_status;
+
 typedef struct s_token
 {
 	enum e_token	type;
@@ -91,6 +95,7 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+typedef t_list	t_env_list;
 typedef t_token	t_redir;
 
 typedef struct s_b_node
@@ -136,7 +141,7 @@ void		asterisk_sub2(t_token **dir_list, char **ast_strs,
 
 // minishell_b_*.c
 int			b_pwd(void);
-int			b_echo(t_info *info, char **cmd);
+int			b_echo(char **cmd);
 void		b_exit(t_info *info, int code);
 int			b_cd(t_info *info, char **cmd);
 int			b_unset(t_env_list **env_list, char **cmd);
@@ -167,6 +172,7 @@ int			do_pipe(t_info *info, t_b_node *root);
 int			search_here_doc(t_token *tokens);
 
 // minishell_main_sub.c
+int			check_return_to_readline(t_info *info, char *line);
 int			get_here_doc_strs(t_info *info, char *line);
 void		make_tree_and_execute(t_info *info, char *line);
 
@@ -181,6 +187,7 @@ void		make_left_node(t_token	*token, t_token *root);
 void		print_err_msg_no_cmd(char *errmsg);
 void		print_err_msg(char *cmd, char *errmsg);
 void		print_err_msg_arg(char *cmd, char *arg, char *errmsg);
+int			print_token_error(char *token_str);
 
 // minishell_redir.c
 void		set_redir(t_b_node *root);
@@ -196,9 +203,12 @@ void		sig_exec(int num);
 void		sig_here_doc(int sig);
 void		sig_here_doc_child(int sig);
 
+// minishell_token_error_check.c
+int			check_paren_pair(t_token *tokens);
+int			syntax_error_check(t_token *tokens);
+
 // minishell_tokenizer.c
 int			split_line_to_token(t_token **tokens, char *line);
-int			syntax_error_check(t_token *tokens);
 
 // minishell_utils_1.c
 void		free_strs(char **strs);

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:07:35 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/06/26 21:23:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 23:08:12 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ static void	find_min_str(t_token **tmp1, t_token **t1_prev);
 
 int	q_flag_switch(char c, int q_flag)
 {
-	if (!(q_flag & 2) && c == '\'')
-		q_flag ^= 1;
-	else if (!(q_flag & 1) && c == '"')
-		q_flag ^= 2;
+	if (!(q_flag & D_QUOTE) && c == '\'')
+		q_flag ^= S_QUOTE;
+	else if (!(q_flag & S_QUOTE) && c == '"')
+		q_flag ^= D_QUOTE;
 	return (q_flag);
 }
 
