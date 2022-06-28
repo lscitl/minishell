@@ -6,17 +6,15 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:50:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 01:14:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-extern char	**environ;
 static void	shell_init(t_info *info);
 static void	env_init(t_info *info);
 static char	*readline_main(t_info *info);
-static int	check_return_to_readline(t_info *info, char *line);
 
 int	main(void)
 {
@@ -38,6 +36,7 @@ int	main(void)
 
 static void	shell_init(t_info *info)
 {
+	g_status = 0;
 	info->tokens = NULL;
 	info->cmd_root = NULL;
 	info->plv = 0;
@@ -82,32 +81,4 @@ static char	*readline_main(t_info *info)
 		exit(0);
 	}
 	return (line);
-}
-
-static int	check_return_to_readline(t_info *info, char *line)
-{
-	if (!split_line_to_token(&info->tokens, line) && info->tokens)
-	{
-		add_history(line);
-		print_err_msg_no_cmd("syntax error");
-		token_del(info->tokens);
-		free(line);
-		info->status = ERROR_SYNTAX;
-		return (TRUE);
-	}
-	if (info->tokens == NULL)
-	{
-		free(line);
-		return (TRUE);
-	}
-	add_history(line);
-	if (!syntax_error_check(info->tokens))
-	{
-		info->tokens = token_del(info->tokens);
-		print_err_msg_no_cmd("syntax error");
-		free(line);
-		info->status = ERROR_SYNTAX;
-		return (TRUE);
-	}
-	return (FALSE);
 }
