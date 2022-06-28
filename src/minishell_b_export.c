@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 13:43:41 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 13:51:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 16:00:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static void	print_envs(t_env_list *env_list)
 	}
 	env = malloc(sizeof(char *) * (len + 1));
 	if (env == NULL)
-		exit(1);
+		exit(EXIT_FAILURE);
 	env[len] = NULL;
 	len = 0;
 	tmp = env_list;
@@ -106,13 +106,13 @@ static void	add_env_node(t_info *info, char *cmd)
 		key = ft_substr(cmd, 0, eq_pos - cmd);
 		val = ft_substr(cmd, eq_pos - cmd + 1, -1);
 		if (!key || !val)
-			exit (0);
+			exit (EXIT_FAILURE);
 	}
 	else
 	{
 		key = ft_strdup(cmd);
 		if (!key)
-			exit (0);
+			exit (EXIT_FAILURE);
 		val = NULL;
 	}
 	set_env_node(info, key, val);

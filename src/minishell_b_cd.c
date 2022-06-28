@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 21:24:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 23:47:09 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ static void	print_err_no_env(char *env_name)
 	add_str(buf, env_name);
 	add_str(buf, " not set\n");
 	err_msg = put_str(buf);
-	ft_putstr_fd(err_msg, 2);
+	ft_putstr_fd(err_msg, STDERR_FILENO);
 	del_buf(buf);
 	free(err_msg);
 }
