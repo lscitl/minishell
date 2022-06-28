@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:55:08 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/27 18:38:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/28 20:09:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	sig_readline(int sig)
 {
 	if (sig == SIGINT)
 	{
+		g_status = 1;
 		rl_on_new_line();
 		rl_replace_line("", 0);
 		printf("\n");
