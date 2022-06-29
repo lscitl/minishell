@@ -35,7 +35,8 @@
 		"cstdlib": "c",
 		"ostream": "c",
 		"errno.h": "c",
-		"stat.h": "c"
+		"stat.h": "c",
+		"history.h": "c"
 	},
 
 	"42header.username": "seseo",

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 01:00:37 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 22:41:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,8 @@
 # define ERROR_PERMISSION 126
 # define ERROR_EXIT 127
 # define ERROR_SYNTAX 258
-# define ERROR_EXEC_DOT 2
 # define SHELL_NAME "minishell"
 # define SHELL_PROMPT "minishell $ "
-# define HERE_DOC_TMP_LOC "/tmp/minishell.tmp"
 
 # include <unistd.h>
 # include <sys/wait.h>
@@ -70,8 +68,7 @@ enum e_token
 	TKN_L_PT,
 	TKN_R_PT,
 	TKN_EXPAN_STR,
-	TKN_QUOTE_STR,
-	TKN_INVAL
+	TKN_QUOTE_STR
 };
 
 enum	e_type
@@ -201,7 +198,6 @@ char		*expand_string_elem(t_info *info, char *str);
 void		sig_readline(int num);
 void		sig_exec(int num);
 void		sig_here_doc(int sig);
-void		sig_here_doc_child(int sig);
 
 // minishell_token_error_check.c
 int			check_paren_pair(t_token *tokens);

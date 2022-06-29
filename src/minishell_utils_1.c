@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 20:50:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 20:51:11 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,7 @@ void	error_exit_wait(int n_wait)
 
 int	return_exit_status(int status)
 {
-	if (WEXITSTATUS(status))
+	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	else if (status)
-		return (128 + status);
-	return (status);
+	return (WCOREFLAG | WTERMSIG(status));
 }
