@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 21:22:09 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 23:59:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,12 @@ t_token	*asterisk_expand(char *str)
 	char		*cwd;
 
 	if (!is_there_asterisk(str))
-	{
-		dir_list = token_new(rm_quote(str));
-		return (dir_list);
-	}
+		return (token_new(rm_quote(str)));
 	cwd = getcwd(NULL, 0);
 	p_dir = opendir(cwd);
 	free(cwd);
-	if (cwd == NULL || p_dir == NULL)
-	{
-		free(cwd);
+	if (p_dir == NULL)
 		return (NULL);
-	}
 	dir_list = NULL;
 	asterisk_sub(&dir_list, p_dir, str);
 	closedir(p_dir);
