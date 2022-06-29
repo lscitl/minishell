@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/29 00:17:19 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 01:09:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 14:16:16 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	is_next_token_valid(int prev_type, int cur_type);
 int	syntax_error_check(t_token *tokens)
 {
 	t_token	*tmp;
-	int		prev_type;
+	t_token	*prev;
 
 	tmp = tokens;
 	if ((TKN_PIPE <= tmp->type && tmp->type <= TKN_OR) \
@@ -25,14 +25,13 @@ int	syntax_error_check(t_token *tokens)
 		return (print_token_error(tmp->content));
 	while (tmp->next)
 	{
-		prev_type = tmp->type;
+		prev = tmp;
 		tmp = tmp->next;
-		if (is_next_token_valid(prev_type, tmp->type) == FALSE)
+		if (is_next_token_valid(prev->type, tmp->type) == FALSE)
 		{
-			if (TKN_INP_RD <= tmp->type && tmp->type <= TKN_HDC_RD)
-				return (print_token_error("newline"));
-			else
+			if (TKN_INP_RD <= prev->type && prev->type <= TKN_HDC_RD)
 				return (print_token_error(tmp->content));
+			return (print_token_error(prev->content));
 		}
 	}
 	if (tmp->type != TKN_STR && tmp->type != TKN_R_PT)
@@ -44,7 +43,7 @@ static int	is_next_token_valid(int prev_type, int cur_type)
 {
 	if (prev_type == TKN_STR && cur_type == TKN_L_PT)
 		return (FALSE);
-	else if ((TKN_HDC_RD <= prev_type && prev_type <= TKN_HDC_RD) \
+	else if ((TKN_INP_RD <= prev_type && prev_type <= TKN_HDC_RD) \
 														&& cur_type != TKN_STR)
 		return (FALSE);
 	else if ((TKN_PIPE <= prev_type && prev_type <= TKN_L_PT) \
