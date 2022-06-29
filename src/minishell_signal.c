@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 13:55:08 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 20:09:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 22:42:30 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,9 @@ void	sig_readline(int sig)
 	if (sig == SIGINT)
 	{
 		g_status = 1;
+		printf("\n");
 		rl_on_new_line();
 		rl_replace_line("", 0);
-		printf("\n");
-		rl_redisplay();
-	}
-	else if (sig == SIGQUIT)
-	{
-		rl_on_new_line();
 		rl_redisplay();
 	}
 }
@@ -41,13 +36,4 @@ void	sig_here_doc(int sig)
 {
 	if (sig == SIGINT)
 		printf("\n");
-}
-
-void	sig_here_doc_child(int sig)
-{
-	if (sig == SIGQUIT)
-	{
-		rl_on_new_line();
-		rl_redisplay();
-	}
 }

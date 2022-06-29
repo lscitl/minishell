@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/19 23:37:36 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 18:50:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 00:09:18 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 static void	cnt_parenthesis(t_token *cur, int *pt_cnt);
 static int	redirection_open_fd(t_redir *rd);
 static int	open_check_and_dup(char *file_name, int fd1, int fd2);
+static void	apply_here_doc(t_info *info, t_redir *rd);
 
 void	set_redir(t_b_node *root)
 {
@@ -56,8 +57,6 @@ static void	cnt_parenthesis(t_token *cur, int *pt_cnt)
 int	apply_redir(t_info *info, t_b_node *root)
 {
 	t_redir	*rd;
-	char	*here_doc;
-	int		hd_io[2];
 	int		redir_status;
 
 	rd = root->redir;
@@ -67,18 +66,33 @@ int	apply_redir(t_info *info, t_b_node *root)
 		if (rd->type < TKN_HDC_RD)
 			redir_status = redirection_open_fd(rd);
 		else
-		{
-			here_doc = expand_string_elem(info, rd->value);
-			if (pipe(hd_io))
-				exit(EXIT_FAILURE);
-			write(hd_io[1], here_doc, ft_strlen(here_doc));
-			close(hd_io[1]);
-			dup2(hd_io[0], STDIN_FILENO);
-			close(hd_io[0]);
-		}
+			apply_here_doc(info, rd);
 		rd = rd->next->next;
 	}
 	return (redir_status);
+}
+
+static void	apply_here_doc(t_info *info, t_redir *rd)
+{
+	char	*here_doc;
+	char	*delim;
+	char	*delim_rm_quote;
+	int		hd_io[2];
+
+	delim = rd->next->content;
+	delim_rm_quote = rm_quote(delim);
+	if (ft_strncmp(delim, delim_rm_quote, -1) == 0)
+		here_doc = expand_string_elem(info, rd->value);
+	else
+		here_doc = ft_strdup(rd->value);
+	if (pipe(hd_io))
+		exit(EXIT_FAILURE);
+	write(hd_io[1], here_doc, ft_strlen(here_doc));
+	close(hd_io[1]);
+	dup2(hd_io[0], STDIN_FILENO);
+	close(hd_io[0]);
+	free(delim_rm_quote);
+	free(here_doc);
 }
 
 static int	redirection_open_fd(t_redir *rd)

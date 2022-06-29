@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/27 19:18:50 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 01:08:51 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 22:39:33 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ static int	syntax_and_paren_pair_check(t_info *info, char *line)
 int	get_here_doc_strs(t_info *info, char *line)
 {
 	signal(SIGINT, &sig_here_doc);
-	signal(SIGQUIT, &sig_here_doc);
 	if (search_here_doc(info->tokens) == FALSE)
 	{
 		token_del(info->tokens);

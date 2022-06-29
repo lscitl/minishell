@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 01:14:55 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 22:39:41 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static char	*readline_main(t_info *info)
 	char	*line;
 
 	signal(SIGINT, &sig_readline);
-	signal(SIGQUIT, &sig_readline);
+	signal(SIGQUIT, SIG_IGN);
 	tcsetattr(STDOUT_FILENO, TCSANOW, &info->e_disable);
 	info->tokens = NULL;
 	line = readline(SHELL_PROMPT);

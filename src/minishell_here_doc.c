@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 20:57:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 23:49:15 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 22:40:29 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ static void	here_doc_child(char *delimiter, int *io_fd)
 	char		*ret;
 
 	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, &sig_here_doc_child);
 	close(io_fd[0]);
 	buf = create_buf();
 	while (TRUE)
