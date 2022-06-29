@@ -6,14 +6,13 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 01:06:17 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 01:35:36 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	do_cmd_actual_path(t_info *info);
-static int	exec_dot_cmd(t_info *info);
 static int	do_cmd_env_path(t_info *info, t_env_list *path_node);
 static int	make_path_and_exec_cmd(t_info *info, char **path);
 
@@ -30,8 +29,6 @@ int	do_cmd_child(t_info *info, t_b_node *root)
 		return (EXIT_SUCCESS);
 	if (ft_strchr(info->cmd[0], '/'))
 		return (do_cmd_actual_path(info));
-	else if (ft_strncmp(info->cmd[0], ".", -1) == 0)
-		return (exec_dot_cmd(info));
 	path_node = find_env_node(info->env_list, "PATH");
 	if (path_node)
 		return (do_cmd_env_path(info, path_node));
@@ -59,35 +56,6 @@ static int	do_cmd_actual_path(t_info *info)
 	print_err_msg(info->cmd[0], strerror(errno));
 	free_strs(info->cmd);
 	return (ERROR_EXIT);
-}
-
-static int	exec_dot_cmd(t_info *info)
-{
-	char	*dot_path;
-	char	**env;
-
-	env = get_env_strs(info);
-	if (info->cmd[1])
-	{
-		dot_path = ft_strjoin("./", info->cmd[1]);
-		execve(dot_path, &info->cmd[1], env);
-		if (errno != ENOENT)
-		{
-			print_err_msg(info->cmd[1], strerror(errno));
-			free(dot_path);
-			return (EXIT_FAILURE);
-		}
-		else
-			print_err_msg(info->cmd[1], "command not found");
-		free(dot_path);
-		return (ERROR_EXIT);
-	}
-	else
-	{
-		print_err_msg(info->cmd[0], "filename argument required");
-		free_strs(info->cmd);
-		return (ERROR_EXEC_DOT);
-	}
 }
 
 static int	do_cmd_env_path(t_info *info, t_env_list *path_node)

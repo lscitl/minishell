@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/18 13:33:46 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 19:54:27 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 14:46:23 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static void	do_pipe_child(t_info *info, t_b_node *root, t_pipe_args args)
 	close(args.pipe_io[0]);
 	dup2(args.pipe_io[1], STDOUT_FILENO);
 	close(args.pipe_io[1]);
-	if (is_paren(root))
+	if (root->type == BT_PAREN)
 		status = do_pipe_paren(info, root);
 	else
 	{

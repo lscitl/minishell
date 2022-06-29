@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 21:43:35 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 21:46:32 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 14:48:58 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ int	do_cmd(t_info *info, t_b_node *root)
 	pid_t	pid;
 	int		status;
 
-	if (is_paren(root))
-		return (do_main_paren(info, root));
 	info->cmd = make_cmd_strs(info, root->tokens);
 	if (info->cmd[0] && is_builtin(info->cmd[0]))
 		return (do_main_builtin(info, root));

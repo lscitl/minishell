@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 20:28:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/26 20:19:56 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/29 22:36:02 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ int	do_pipe_paren(t_info *info, t_b_node *root)
 {
 	int	redir_status;
 
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	redir_status = apply_redir(info, root);
 	if (redir_status)
 		return (redir_status);
