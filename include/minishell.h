@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/30 20:44:06 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 21:23:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # define ERROR_PERMISSION 126
 # define ERROR_EXIT 127
 # define ERROR_SYNTAX 258
+
 # define SHELL_NAME "minishell"
 # define SHELL_PROMPT "minishell $ "
 

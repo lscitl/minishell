@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/30 20:22:23 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 21:44:43 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void	asterisk_sub(t_token **dir_list, DIR *p_dir, char *str)
 		f = readdir(p_dir);
 		if (!f)
 			break ;
-		if (ad_flag & DT_DIR && f->d_type != DT_DIR)
+		if (ad_flag & ASTER_DIR && f->d_type != DT_DIR)
 			continue ;
 		asterisk_sub2(dir_list, ast_strs, f->d_name, ad_flag);
 	}

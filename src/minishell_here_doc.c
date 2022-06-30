@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 20:57:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 22:40:29 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 21:04:22 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	search_here_doc(t_token *tokens)
 	t_token	*tmp;
 	char	*delimiter;
 
+	signal(SIGINT, &sig_here_doc);
 	tmp = tokens;
 	while (tmp)
 	{
