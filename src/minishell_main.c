@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 22:39:41 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 15:13:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static char	*readline_main(t_info *info)
 	{
 		printf("\e[A%sexit\n", SHELL_PROMPT);
 		tcsetattr(STDOUT_FILENO, TCSANOW, &info->e_enable);
-		exit(0);
+		exit(g_status);
 	}
 	return (line);
 }

@@ -6,53 +6,55 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 17:45:59 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 15:54:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 20:33:42 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int	do_builtin(t_info *info, char **cmd);
-static int	*backup_std_fd(int *io_fd);
+static void	backup_std_fd(int *io_fd);
+static void	restore_std_fd(int *io_fd);
 
 int	do_main_builtin(t_info *info, t_b_node *root)
 {
 	int		io_fd[2];
-	int		rd_fd[2];
 
 	info->status = 0;
 	if (root->redir)
-		if (backup_std_fd(io_fd))
-			info->status = apply_redir(info, root);
-	if (io_fd[0] == -1 || io_fd[1] == -1)
-		exit(EXIT_FAILURE);
+	{
+		backup_std_fd(io_fd);
+		info->status = apply_redir(info, root);
+	}
 	if (!info->status)
 		info->status = do_builtin(info, info->cmd);
 	free_strs(info->cmd);
 	info->cmd = NULL;
 	if (root->redir)
-	{
-		rd_fd[0] = dup(STDIN_FILENO);
-		rd_fd[1] = dup(STDOUT_FILENO);
-		close(rd_fd[0]);
-		close(rd_fd[1]);
-		dup2(io_fd[0], STDIN_FILENO);
-		close(io_fd[0]);
-		dup2(io_fd[1], STDOUT_FILENO);
-		close(io_fd[1]);
-	}
+		restore_std_fd(io_fd);
 	return (info->status);
 }
 
-static int	*backup_std_fd(int *io_fd)
+static void	backup_std_fd(int *io_fd)
 {
-	io_fd[0] = -1;
-	io_fd[1] = -1;
 	io_fd[0] = dup(STDIN_FILENO);
 	io_fd[1] = dup(STDOUT_FILENO);
 	if (io_fd[0] == -1 || io_fd[1] == -1)
-		return (NULL);
-	return (io_fd);
+		exit(EXIT_FAILURE);
+}
+
+static void	restore_std_fd(int *io_fd)
+{
+	int		rd_fd[2];
+
+	rd_fd[0] = dup(STDIN_FILENO);
+	rd_fd[1] = dup(STDOUT_FILENO);
+	close(rd_fd[0]);
+	close(rd_fd[1]);
+	dup2(io_fd[0], STDIN_FILENO);
+	close(io_fd[0]);
+	dup2(io_fd[1], STDOUT_FILENO);
+	close(io_fd[1]);
 }
 
 static int	do_builtin(t_info *info, char **cmd)
@@ -66,7 +68,7 @@ static int	do_builtin(t_info *info, char **cmd)
 	{
 		if (cmd[1])
 			b_exit(info, ft_atoi(cmd[1]));
-		b_exit(info, 0);
+		b_exit(info, g_status);
 	}
 	else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
 		status = b_pwd();
@@ -91,9 +93,7 @@ int	is_builtin(char *cmd)
 	if (cmd == NULL)
 		return (FALSE);
 	while (i < 7)
-	{
 		if (ft_strncmp(cmd, built_in_fuc[i++], -1) == 0)
 			return (i);
-	}
 	return (FALSE);
 }

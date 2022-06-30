@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 01:35:36 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 19:28:19 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,11 +87,11 @@ static int	make_path_and_exec_cmd(t_info *info, char **path)
 	char		**env;
 	int			i;
 
+	if (!path)
+		return (0);
 	env = get_env_strs(info);
 	buf = create_buf();
 	i = 0;
-	if (!path)
-		return (0);
 	while (path[i])
 	{
 		add_str(buf, path[i]);
