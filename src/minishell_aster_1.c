@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/29 23:59:22 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 20:22:23 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,14 @@ static void	asterisk_sub(t_token **dir_list, DIR *p_dir, char *str)
 	ast_strs = split_wildcard(str, '*');
 	asterisk_remove_quote(ast_strs);
 	ad_flag = asterisk_set_flag(ast_strs, str);
-	f = readdir(p_dir);
-	while (f)
+	while (TRUE)
 	{
-		if (ad_flag & DT_DIR && f->d_type != DT_DIR)
-		{
-			f = readdir(p_dir);
-			continue ;
-		}
-		asterisk_sub2(dir_list, ast_strs, f->d_name, ad_flag);
 		f = readdir(p_dir);
+		if (!f)
+			break ;
+		if (ad_flag & DT_DIR && f->d_type != DT_DIR)
+			continue ;
+		asterisk_sub2(dir_list, ast_strs, f->d_name, ad_flag);
 	}
 	free_strs(ast_strs);
 }
@@ -99,22 +97,21 @@ static int	asterisk_set_flag(char **ast_strs, char *str)
 
 	ad_flag = 0;
 	if (str[0] == '*')
-		ad_flag |= 1;
+		ad_flag |= ASTER_FRONT;
 	len = ft_strlen(str);
 	if (len > 0 && str[len - 1] == '/')
 	{
-		ad_flag |= DT_DIR;
+		ad_flag |= ASTER_DIR;
 		i = 0;
 		while (ast_strs[i])
 			i++;
 		tmp = ast_strs[i - 1];
-		ast_strs[i - 1] = ft_substr(ast_strs[i - 1], 0,
-				ft_strlen(ast_strs[i - 1]) - 1);
+		ast_strs[i - 1] = ft_substr(tmp, 0, ft_strlen(tmp) - 1);
 		free(tmp);
 	}
-	if (len > 1 && ad_flag & 4 && str[len - 2] == '*')
-		ad_flag |= 2;
+	if (len > 1 && ad_flag & ASTER_DIR && str[len - 2] == '*')
+		ad_flag |= ASTER_LAST;
 	else if (len > 0 && str[len - 1] == '*')
-		ad_flag |= 2;
+		ad_flag |= ASTER_LAST;
 	return (ad_flag);
 }
