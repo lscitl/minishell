@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 23:47:09 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 20:31:45 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ int	b_cd(t_info *info, char **cmd)
 			return (change_dir_from_env(info, "HOME"));
 		else if (ft_strncmp(cmd[1], "-", -1) == 0)
 			return (change_dir_from_env(info, "OLDPWD"));
-		else
-			return (change_dir_input(info, cmd[1]));
+		return (change_dir_input(info, cmd[1]));
 	}
 	return (change_dir_from_env(info, "HOME"));
 }
@@ -53,23 +52,17 @@ static int	change_dir_from_env(t_info *info, char *env_key)
 		print_err_no_env(env_key);
 		return (1);
 	}
-	else
+	tmp = getcwd(NULL, 0);
+	if (chdir(dir) == 0)
 	{
-		tmp = getcwd(NULL, 0);
-		if (chdir(dir) == 0)
-		{
-			if (ft_strncmp(env_key, "-", -1) == 0)
-				printf("%s\n", dir);
-			set_env_node(info, ft_strdup("OLDPWD"), tmp);
-			return (0);
-		}
-		else
-		{
-			free(tmp);
-			print_err_msg("cd", strerror(errno));
-			return (1);
-		}
+		if (ft_strncmp(env_key, "OLDPWD", -1) == 0)
+			printf("%s\n", dir);
+		set_env_node(info, ft_strdup("OLDPWD"), tmp);
+		return (0);
 	}
+	free(tmp);
+	print_err_msg("cd", strerror(errno));
+	return (1);
 }
 
 static int	change_dir_input(t_info *info, char *dir)
@@ -84,19 +77,16 @@ static int	change_dir_input(t_info *info, char *dir)
 		set_env_node(info, ft_strdup("OLDPWD"), tmp);
 		return (0);
 	}
-	else
-	{
-		free(tmp);
-		buf = create_buf();
-		add_str(buf, "cd: ");
-		add_str(buf, dir);
-		add_str(buf, ": ");
-		errmsg = put_str(buf);
-		print_err_msg(errmsg, strerror(errno));
-		free(errmsg);
-		del_buf(buf);
-		return (1);
-	}
+	free(tmp);
+	buf = create_buf();
+	add_str(buf, "cd: ");
+	add_str(buf, dir);
+	add_str(buf, ": ");
+	errmsg = put_str(buf);
+	print_err_msg(errmsg, strerror(errno));
+	free(errmsg);
+	del_buf(buf);
+	return (1);
 }
 
 static void	print_err_no_env(char *env_name)

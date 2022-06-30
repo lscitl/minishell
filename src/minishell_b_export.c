@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/10 13:43:41 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/28 16:00:13 by seseo            ###   ########.fr       */
+/*   Updated: 2022/06/30 20:32:37 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,17 @@ int	b_export(t_info *info, char **cmd)
 		print_envs(info->env_list);
 		return (0);
 	}
-	else
+	r_flg = 0;
+	i = 1;
+	while (cmd[i])
 	{
-		r_flg = 0;
-		i = 1;
-		while (cmd[i])
-		{
-			e_flg = is_env_var_invalid(cmd[i]);
-			if (e_flg == 0)
-				add_env_node(info, cmd[i]);
-			else
-				print_err_msg_arg("export", cmd[i], "not a valid identifier");
-			r_flg |= e_flg;
-			i++;
-		}
+		e_flg = is_env_var_invalid(cmd[i]);
+		if (e_flg == 0)
+			add_env_node(info, cmd[i]);
+		else
+			print_err_msg_arg("export", cmd[i], "not a valid identifier");
+		r_flg |= e_flg;
+		i++;
 	}
 	return (r_flg);
 }
