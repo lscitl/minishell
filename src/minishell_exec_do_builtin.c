@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 17:45:59 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/30 20:33:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/01 12:18:17 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,12 @@ static int	do_builtin(t_info *info, char **cmd)
 		status = b_echo(cmd);
 	else if (ft_strncmp(cmd[0], "exit", -1) == 0)
 	{
-		if (cmd[1])
-			b_exit(info, ft_atoi(cmd[1]));
-		b_exit(info, g_status);
+		if (cmd[1] && cmd[2] == 0)
+			b_exit(info, cmd[1]);
+		else if (cmd[1] == 0)
+			b_exit(info, ft_itoa(g_status));
+		print_err_msg(cmd[0], ENARG);
+		status = EXIT_FAILURE;
 	}
 	else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
 		status = b_pwd();
@@ -94,6 +97,6 @@ int	is_builtin(char *cmd)
 		return (FALSE);
 	while (i < 7)
 		if (ft_strncmp(cmd, built_in_fuc[i++], -1) == 0)
-			return (i);
+			return (TRUE);
 	return (FALSE);
 }

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 19:10:49 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/30 19:28:19 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/01 12:17:08 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	do_cmd_child(t_info *info, t_b_node *root)
 	path_node = find_env_node(info->env_list, "PATH");
 	if (path_node)
 		return (do_cmd_env_path(info, path_node));
-	print_err_msg(info->cmd[0], "No such file or directory");
+	print_err_msg(info->cmd[0], strerror(ENOENT));
 	return (ERROR_EXIT);
 }
 
@@ -47,7 +47,7 @@ static int	do_cmd_actual_path(t_info *info)
 	{
 		stat(info->cmd[0], &statbuf);
 		if (S_ISDIR(statbuf.st_mode))
-			print_err_msg(info->cmd[0], "is a directory");
+			print_err_msg(info->cmd[0], EDIR);
 		else
 			print_err_msg(info->cmd[0], strerror(errno));
 		free_strs(info->cmd);
@@ -66,16 +66,16 @@ static int	do_cmd_env_path(t_info *info, t_env_list *path_node)
 	path = ft_split(path_node->value, ':');
 	i = make_path_and_exec_cmd(info, path);
 	if (errno == ENOENT)
-		print_err_msg(info->cmd[0], "command not found");
+		print_err_msg(info->cmd[0], ECMDNF);
 	else if (path)
 	{
 		if (ft_strncmp(info->cmd[0], "..", -1) == 0)
-			print_err_msg(info->cmd[0], "is a directory");
+			print_err_msg(info->cmd[0], EDIR);
 		else
 			print_err_msg(path[i], strerror(errno));
 	}
 	else
-		print_err_msg(info->cmd[0], "No such file or directory");
+		print_err_msg(info->cmd[0], strerror(ENOENT));
 	free_strs(info->cmd);
 	free_strs(path);
 	return (ERROR_EXIT);
