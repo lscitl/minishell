@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 17:10:42 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/01 22:31:07 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,18 +77,17 @@ static int	change_dir_input(t_info *info, char *dir)
 	{
 		set_env_node(info, ft_strdup("OLDPWD"), tmp);
 		set_env_node(info, ft_strdup("PWD"), getcwd(NULL, 0));
-		return (0);
+		return (EXIT_SUCCESS);
 	}
 	free(tmp);
 	buf = create_buf();
 	add_str(buf, "cd: ");
 	add_str(buf, dir);
-	add_str(buf, ": ");
 	errmsg = put_str(buf);
 	print_err_msg(errmsg, strerror(errno));
 	free(errmsg);
 	del_buf(buf);
-	return (1);
+	return (EXIT_FAILURE);
 }
 
 static void	print_err_no_env(char *env_name)
