@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/28 21:43:35 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 14:06:40 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 00:14:13 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	do_cmd(t_info *info, t_b_node *root)
 	pid_t	pid;
 	int		status;
 
+	signal(SIGINT, &sig_exec);
+	signal(SIGQUIT, &sig_exec);
 	info->cmd = make_cmd_strs(info, root->tokens);
 	if (info->cmd[0] && is_builtin(info->cmd[0]))
 		return (do_main_builtin(info, root));
@@ -41,7 +43,12 @@ int	execute_bt_node(t_info *info, t_b_node *root)
 	int	status;
 
 	if (root->type == BT_PAREN)
-		status = do_main_paren(info, root);
+	{
+		if (root->right->type == BT_CMD)
+			status = do_main_paren_cmd_only(info, root);
+		else
+			status = do_main_paren(info, root);
+	}
 	else if (root->type == BT_CMD)
 		status = do_cmd(info, root);
 	else if (root->type == BT_PIPE)
