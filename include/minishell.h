@@ -6,29 +6,36 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/30 21:23:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/01 14:14:27 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# define TRUE 1
-# define FALSE 0
+# define TRUE	1
+# define FALSE	0
 
-# define S_QUOTE 1
-# define D_QUOTE 2
+# define S_QUOTE	1
+# define D_QUOTE	2
 
-# define ASTER_FRONT 1
-# define ASTER_LAST 2
-# define ASTER_DIR 4
+# define ASTER_FRONT	1
+# define ASTER_LAST		2
+# define ASTER_DIR		4
 
-# define ERROR_PERMISSION 126
-# define ERROR_EXIT 127
-# define ERROR_SYNTAX 258
+# define ERROR_PERMISSION	126
+# define ERROR_EXIT			127
+# define ERROR_SYNTAX		258
+# define EXIT_OUT_OF_RANGE	255
 
-# define SHELL_NAME "minishell"
-# define SHELL_PROMPT "minishell $ "
+# define SHELL_NAME		"minishell"
+# define SHELL_PROMPT	"minishell $ "
+
+# define EDIR			"is a directory"
+# define ENARG			"too many arguments"
+# define ECMDNF			"command not found"
+# define EREDIR			"ambiguous redirect"
+# define ENARGREQ		"numeric argument required"
 
 # include <unistd.h>
 # include <sys/wait.h>
@@ -104,7 +111,6 @@ typedef struct s_info
 {
 	struct termios	e_enable;
 	struct termios	e_disable;
-	char			*line;
 	char			**cmd;
 	int				status;
 	int				plv;
@@ -135,7 +141,7 @@ void		asterisk_sub2(t_token **dir_list, char **ast_strs, \
 // minishell_b_*.c
 int			b_pwd(void);
 int			b_echo(char **cmd);
-void		b_exit(t_info *info, int code);
+void		b_exit(t_info *info, char *code);
 int			b_cd(t_info *info, char **cmd);
 int			b_unset(t_env_list **env_list, char **cmd);
 int			b_env(t_info *info, t_env_list *env_list);
@@ -182,9 +188,12 @@ void		print_err_msg(char *cmd, char *errmsg);
 void		print_err_msg_arg(char *cmd, char *arg, char *errmsg);
 int			print_token_error(char *token_str);
 
-// minishell_redir.c
+// minishell_redir_1.c
 void		set_redir(t_b_node *root);
 int			apply_redir(t_info *info, t_b_node *root);
+
+// minishell_redir_2.c
+int			redirection_open_fd(t_info *info, t_redir *rd);
 
 // minishell_rm_quote.c
 char		*rm_quote(char *str);
