@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/06/29 00:18:41 by seseo            ###   ########.fr        #
+#    Updated: 2022/07/01 14:41:17 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,8 @@ SRC				:=	minishell_aster_1.c \
 					minishell_parser_1.c \
 					minishell_parser_2.c \
 					minishell_print_err.c \
-					minishell_redir.c \
+					minishell_redir_1.c \
+					minishell_redir_2.c \
 					minishell_rm_quote.c \
 					minishell_signal.c \
 					minishell_token_error_check.c \
@@ -56,7 +57,8 @@ OBJS			:=	$(SRC:%.c=$(OBJ_DIR)/%.o)
 NAME			:=	minishell
 CC				:=	gcc
 RM				:=	rm -rf
-CFLAGS			:=	-Wall -Wextra -Werror -Iinclude -g #-fsanitize=address,undefined
+CFLAGS			:=	-Wall -Wextra -Werror
+INCLUDE			:=	-Iinclude
 LIB_PATH		:=	libft
 
 $(OBJ_DIR)/%.o:		$(SRCS_DIR)/%.c
@@ -65,7 +67,7 @@ $(OBJ_DIR)/%.o:		$(SRCS_DIR)/%.c
 
 $(NAME):			$(OBJS)
 					@$(MAKE) BONUS=true -C $(LIB_PATH)
-					$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) -Llibft -lft -lreadline $(OBJS) -o $(NAME)
+					$(CC) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(INCLUDE) -Llibft -lft -lreadline $(OBJS) -o $(NAME)
 
 all:				$(NAME)
 
