@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 14:14:27 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 00:13:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,9 @@
 # define ERROR_SYNTAX		258
 # define EXIT_OUT_OF_RANGE	255
 
-# define SHELL_NAME		"minishell"
-# define SHELL_PROMPT	"minishell $ "
+# define SHELL_NAME			"minishell"
+# define SHELL_PROMPT		"minishell $ "
+# define SHELL_PROMPT_NL	"\nminishell $ "
 
 # define EDIR			"is a directory"
 # define ENARG			"too many arguments"
@@ -164,6 +165,7 @@ int			execute_bt_node(t_info *info, t_b_node *root);
 
 int			do_main_paren(t_info *info, t_b_node *root);
 int			do_pipe_paren(t_info *info, t_b_node *root);
+int			do_main_paren_cmd_only(t_info *info, t_b_node *root);
 
 int			do_pipe(t_info *info, t_b_node *root);
 
