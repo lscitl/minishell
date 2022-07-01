@@ -6,7 +6,7 @@
 #    By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/30 15:35:48 by seseo             #+#    #+#              #
-#    Updated: 2022/07/01 14:41:17 by seseo            ###   ########.fr        #
+#    Updated: 2022/07/01 14:46:49 by seseo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,7 @@ LIB_PATH		:=	libft
 
 $(OBJ_DIR)/%.o:		$(SRCS_DIR)/%.c
 					@mkdir -p $(@D)
-					@$(CC) $(CFLAGS) $(CPPFLAGS) -o $@ -c $<
+					@$(CC) $(CFLAGS) $(CPPFLAGS) $(INCLUDE) -o $@ -c $<
 
 $(NAME):			$(OBJS)
 					@$(MAKE) BONUS=true -C $(LIB_PATH)
