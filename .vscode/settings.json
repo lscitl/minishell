@@ -36,7 +36,12 @@
 		"ostream": "c",
 		"errno.h": "c",
 		"stat.h": "c",
-		"history.h": "c"
+		"history.h": "c",
+		"string.h": "c",
+		"termios.h": "c",
+		"stdio.h": "c",
+		"signal.h": "c",
+		"dirent.h": "c"
 	},
 
 	"42header.username": "seseo",
