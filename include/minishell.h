@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/02 00:13:49 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 17:44:59 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ typedef struct s_info
 	struct termios	e_enable;
 	struct termios	e_disable;
 	char			**cmd;
+	char			*cur_path;
 	int				status;
 	int				plv;
 	int				in_pt;
@@ -140,7 +141,7 @@ void		asterisk_sub2(t_token **dir_list, char **ast_strs, \
 													char *d_name, int ad_flag);
 
 // minishell_b_*.c
-int			b_pwd(void);
+int			b_pwd(t_info *info);
 int			b_echo(char **cmd);
 void		b_exit(t_info *info, char *code);
 int			b_cd(t_info *info, char **cmd);

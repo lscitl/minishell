@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 22:31:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 18:01:06 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,15 @@ static int	change_dir_from_env(t_info *info, char *env_key)
 		print_err_no_env(env_key);
 		return (1);
 	}
-	tmp = getcwd(NULL, 0);
+	tmp = ft_strdup(info->cur_path);
 	if (chdir(dir) == 0)
 	{
 		if (ft_strncmp(env_key, "OLDPWD", -1) == 0)
 			printf("%s\n", dir);
 		set_env_node(info, ft_strdup("OLDPWD"), tmp);
 		set_env_node(info, ft_strdup("PWD"), getcwd(NULL, 0));
+		free(info->cur_path);
+		info->cur_path = getcwd(NULL, 0);
 		return (0);
 	}
 	free(tmp);
@@ -72,11 +74,13 @@ static int	change_dir_input(t_info *info, char *dir)
 	char		*tmp;
 	char		*errmsg;
 
-	tmp = getcwd(NULL, 0);
+	tmp = ft_strdup(info->cur_path);
 	if (chdir(dir) == 0)
 	{
 		set_env_node(info, ft_strdup("OLDPWD"), tmp);
 		set_env_node(info, ft_strdup("PWD"), getcwd(NULL, 0));
+		free(info->cur_path);
+		info->cur_path = getcwd(NULL, 0);
 		return (EXIT_SUCCESS);
 	}
 	free(tmp);

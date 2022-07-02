@@ -6,18 +6,14 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:10:52 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/08 19:17:11 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 18:02:42 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	b_pwd(void)
+int	b_pwd(t_info *info)
 {
-	char	*buf;
-
-	buf = getcwd(NULL, 0);
-	printf("%s\n", buf);
-	free(buf);
+	printf("%s\n", info->cur_path);
 	return (0);
 }
