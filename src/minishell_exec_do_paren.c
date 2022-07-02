@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/23 20:28:03 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/02 00:28:31 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 17:36:01 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,8 @@ int	do_main_paren(t_info *info, t_b_node *root)
 		info->status = do_pipe_paren(info, root);
 		exit(info->status);
 	}
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &info->status, 0);
 	return (return_exit_status(info->status));
 }

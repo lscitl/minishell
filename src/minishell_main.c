@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 15:48:54 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 23:52:20 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 17:42:39 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	main(void)
 static void	shell_init(t_info *info)
 {
 	g_status = 0;
+	info->cur_path = getcwd(NULL, 0);
 	info->tokens = NULL;
 	info->cmd_root = NULL;
 	info->plv = 0;

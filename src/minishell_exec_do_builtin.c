@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/26 17:45:59 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 12:18:17 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 17:45:25 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static int	do_builtin(t_info *info, char **cmd)
 		status = EXIT_FAILURE;
 	}
 	else if (ft_strncmp(cmd[0], "pwd", -1) == 0)
-		status = b_pwd();
+		status = b_pwd(info);
 	else if (ft_strncmp(cmd[0], "env", -1) == 0)
 		status = b_env(info, info->env_list);
 	else if (ft_strncmp(cmd[0], "unset", -1) == 0)
