@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/13 18:07:35 by hyunkkim          #+#    #+#             */
-/*   Updated: 2022/07/01 14:09:17 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/02 20:40:15 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,22 @@ int	q_flag_switch(char c, int q_flag)
 char	**make_cmd_strs(t_info *info, t_token *token)
 {
 	char	**ret;
-	t_token	*cur;
 	t_token	*dir;
+	int		i;
 	char	*tmp;
+	char	**strs;
 
-	cur = token;
 	dir = NULL;
-	while (cur)
+	while (token)
 	{
-		tmp = expand_string_elem(info, cur->content);
-		if (tmp[0] != 0)
-			token_add_back(&dir, asterisk_expand(tmp));
+		tmp = expand_string_elem(info, token->content);
+		strs = split_wildcard(tmp, ' ');
+		i = 0;
+		while (strs[i])
+			token_add_back(&dir, asterisk_expand(strs[i++]));
 		free(tmp);
-		cur = cur->next;
+		free_strs(strs);
+		token = token->next;
 	}
 	ret = tokens_to_str(dir);
 	token_del(dir);
