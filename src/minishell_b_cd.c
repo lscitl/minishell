@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 18:18:27 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/02 20:59:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 22:54:49 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,26 @@
 static char	*get_env_val(t_env_list *env_list, char *envkey);
 static int	change_dir_from_env(t_info *info, char *env_key);
 static int	change_dir_input(t_info *info, char *dir);
-static void	print_err_no_env(char *env_name);
+static int	print_err_no_env(char *env_name);
 
 int	b_cd(t_info *info, char **cmd)
 {
+	char	*dir;
+
 	if (cmd[1])
 	{
-		if (ft_strncmp(cmd[1], "~", -1) == 0)
-			return (change_dir_input(info, getenv("HOME")));
+		if (ft_strncmp(cmd[1], "~/", 2) == 0)
+		{
+			dir = ft_strjoin(getenv("HOME"), &cmd[1][1]);
+			return (change_dir_input(info, dir));
+		}
+		else if (ft_strncmp(cmd[1], "~", -1) == 0)
+			return (change_dir_input(info, ft_strdup(getenv("HOME"))));
 		else if (ft_strncmp(cmd[1], "--", -1) == 0)
 			return (change_dir_from_env(info, "HOME"));
 		else if (ft_strncmp(cmd[1], "-", -1) == 0)
 			return (change_dir_from_env(info, "OLDPWD"));
-		return (change_dir_input(info, cmd[1]));
+		return (change_dir_input(info, ft_strdup(cmd[1])));
 	}
 	return (change_dir_from_env(info, "HOME"));
 }
@@ -45,58 +52,57 @@ static char	*get_env_val(t_env_list *env_list, char *envkey)
 static int	change_dir_from_env(t_info *info, char *env_key)
 {
 	const char	*dir = get_env_val(info->env_list, env_key);
-	char		*tmp;
+	char		*oldpwd;
 
 	if (dir == NULL)
-	{
-		print_err_no_env(env_key);
-		return (1);
-	}
-	tmp = ft_strdup(info->cur_path);
+		return (print_err_no_env(env_key));
+	oldpwd = ft_strdup(info->cur_path);
 	if (chdir(dir) == 0)
 	{
 		if (ft_strncmp(env_key, "OLDPWD", -1) == 0)
 			printf("%s\n", dir);
-		set_env_node(info, ft_strdup("OLDPWD"), tmp);
+		if (find_env_node(info->env_list, "OLDPWD"))
+			set_env_node(info, ft_strdup("OLDPWD"), oldpwd);
+		else
+			free(oldpwd);
 		if (find_env_node(info->env_list, "PWD"))
 			set_env_node(info, ft_strdup("PWD"), getcwd(NULL, 0));
 		free(info->cur_path);
 		info->cur_path = getcwd(NULL, 0);
 		return (0);
 	}
-	free(tmp);
+	free(oldpwd);
 	print_err_msg("cd", strerror(errno));
 	return (1);
 }
 
 static int	change_dir_input(t_info *info, char *dir)
 {
-	t_buffer	*buf;
-	char		*tmp;
-	char		*errmsg;
+	char		*pwd;
 
-	tmp = ft_strdup(info->cur_path);
 	if (chdir(dir) == 0)
 	{
-		set_env_node(info, ft_strdup("OLDPWD"), tmp);
-		if (find_env_node(info->env_list, "PWD"))
-			set_env_node(info, ft_strdup("PWD"), getcwd(NULL, 0));
-		free(info->cur_path);
-		info->cur_path = getcwd(NULL, 0);
+		if (find_env_node(info->env_list, "OLDPWD"))
+			set_env_node(info, ft_strdup("OLDPWD"), ft_strdup(info->cur_path));
+		pwd = getcwd(NULL, 0);
+		if (pwd)
+		{
+			if (find_env_node(info->env_list, "PWD"))
+				set_env_node(info, ft_strdup("PWD"), pwd);
+			free(info->cur_path);
+			info->cur_path = getcwd(NULL, 0);
+		}
+		else
+			print_err_msg("cd", "error retrieving current directory");
+		free(dir);
 		return (EXIT_SUCCESS);
 	}
-	free(tmp);
-	buf = create_buf();
-	add_str(buf, "cd: ");
-	add_str(buf, dir);
-	errmsg = put_str(buf);
-	print_err_msg(errmsg, strerror(errno));
-	free(errmsg);
-	del_buf(buf);
+	print_err_msg_arg_no_quote("cd", dir, strerror(errno));
+	free(dir);
 	return (EXIT_FAILURE);
 }
 
-static void	print_err_no_env(char *env_name)
+static int	print_err_no_env(char *env_name)
 {
 	t_buffer	*buf;
 	char		*err_msg;
@@ -110,4 +116,5 @@ static void	print_err_no_env(char *env_name)
 	ft_putstr_fd(err_msg, STDERR_FILENO);
 	del_buf(buf);
 	free(err_msg);
+	return (EXIT_FAILURE);
 }
