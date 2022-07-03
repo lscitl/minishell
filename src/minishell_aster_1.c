@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/02 18:29:20 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 19:27:23 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ static int	asterisk_set_flag(char **ast_strs, char *str)
 		ast_strs[i - 1] = ft_substr(tmp, 0, ft_strlen(tmp) - 1);
 		free(tmp);
 	}
-	if (len > 1 && ad_flag & ASTER_DIR && str[len - 2] == '*')
+	if (len > 1 && (ad_flag & ASTER_DIR) && str[len - 2] == '*')
 		ad_flag |= ASTER_LAST;
 	else if (len > 0 && str[len - 1] == '*')
 		ad_flag |= ASTER_LAST;

@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/30 20:26:07 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 19:16:10 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,11 @@ void	asterisk_add_files(t_token **dir_list,
 static int	first_str_match_check(char *d_name, char *ast_first, int ad_flag)
 {
 	if (ad_flag & 1)
+	{
+		if (d_name[0] == '.')
+			return (FALSE);
 		return (TRUE);
+	}
 	return (!ft_strncmp(d_name, ast_first, ft_strlen(ast_first)));
 }
 
