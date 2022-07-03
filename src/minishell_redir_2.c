@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/01 13:43:05 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 14:22:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 21:30:26 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,23 @@
 
 static int	open_file_for_redir(t_redir *rd, char *file_name);
 static int	open_check_and_dup(char *file_name, int fd1, int fd2);
+static char	**expand_str(t_info *info, char *str);
+
+void	print_tokens(t_redir *redir)
+{
+	while (redir)
+	{
+		fprintf(stderr, "redir : %s\n", redir->content);
+		redir = redir->next;
+	}
+}
 
 int	redirection_open_fd(t_info *info, t_redir *rd)
 {
 	int		redir_status;
 	char	**files;
 
-	files = make_cmd_strs(info, rd->next);
+	files = expand_str(info, rd->next->content);
 	if (files[0] == NULL)
 	{
 		print_err_msg(rd->next->content, EREDIR);
@@ -29,6 +39,7 @@ int	redirection_open_fd(t_info *info, t_redir *rd)
 	}
 	if (files && files[0] && files[1])
 	{
+		print_tokens(rd);
 		print_err_msg(rd->next->content, EREDIR);
 		redir_status = EXIT_FAILURE;
 	}
@@ -72,4 +83,25 @@ static int	open_check_and_dup(char *file_name, int fd1, int fd2)
 		close(fd1);
 		return (EXIT_SUCCESS);
 	}
+}
+
+static char	**expand_str(t_info *info, char *str)
+{
+	char	**ret;
+	t_token	*dir;
+	int		i;
+	char	*tmp;
+	char	**strs;
+
+	dir = NULL;
+	tmp = expand_string_elem(info, str);
+	strs = split_wildcard(tmp, ' ');
+	i = 0;
+	while (strs[i])
+		token_add_back(&dir, asterisk_expand(strs[i++]));
+	free(tmp);
+	free_strs(strs);
+	ret = tokens_to_str(dir);
+	token_del(dir);
+	return (ret);
 }
