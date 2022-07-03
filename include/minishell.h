@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/02 22:11:17 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/02 17:44:59 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 19:40:55 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,6 +189,7 @@ void		make_left_node(t_token	*token, t_token *root);
 void		print_err_msg_no_cmd(char *errmsg);
 void		print_err_msg(char *cmd, char *errmsg);
 void		print_err_msg_arg(char *cmd, char *arg, char *errmsg);
+void		print_err_msg_arg_no_quote(char *cmd, char *arg, char *errmsg);
 int			print_token_error(char *token_str);
 
 // minishell_redir_1.c
