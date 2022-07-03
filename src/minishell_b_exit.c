@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/05 16:15:13 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/01 14:02:21 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 19:45:11 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	get_exit_code(char *code_str)
 	while (code_str[i + j])
 		invalid_check |= !ft_isdigit(exit_code[i + j++]);
 	if (invalid_check || j >= 19)
-		print_err_msg_arg("exit", exit_code, ENARGREQ);
+		print_err_msg_arg_no_quote("exit", exit_code, ENARGREQ);
 	if (invalid_check)
 		return (EXIT_OUT_OF_RANGE);
 	return (ft_atol(exit_code));
