@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/17 19:57:26 by seseo             #+#    #+#             */
-/*   Updated: 2022/06/21 19:51:31 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/03 18:16:33 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,11 @@ static char	*ft_skip_quote(char *s)
 	int	quote_flag;
 
 	quote_flag = 0;
-	if (ft_isquote(*s))
-	{
-		quote_flag ^= ft_isquote(*s);
-		s++;
-	}
+	quote_flag ^= ft_isquote(*s++);
 	while (*s && quote_flag)
 	{
-		if (ft_isquote(*s))
-		{
-			quote_flag ^= ft_isquote(*s);
+		if ((quote_flag & 0b11) == ft_isquote(*s))
 			break ;
-		}
 		s++;
 	}
 	return (s);
