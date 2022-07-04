@@ -16,15 +16,6 @@ static int	open_file_for_redir(t_redir *rd, char *file_name);
 static int	open_check_and_dup(char *file_name, int fd1, int fd2);
 static char	**expand_str(t_info *info, char *str);
 
-void	print_tokens(t_redir *redir)
-{
-	while (redir)
-	{
-		fprintf(stderr, "redir : %s\n", redir->content);
-		redir = redir->next;
-	}
-}
-
 int	redirection_open_fd(t_info *info, t_redir *rd)
 {
 	int		redir_status;
@@ -39,7 +30,6 @@ int	redirection_open_fd(t_info *info, t_redir *rd)
 	}
 	if (files && files[0] && files[1])
 	{
-		print_tokens(rd);
 		print_err_msg(rd->next->content, EREDIR);
 		redir_status = EXIT_FAILURE;
 	}

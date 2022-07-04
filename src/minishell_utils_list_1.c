@@ -50,6 +50,8 @@ void	set_env_node(t_info *info, char *key, char *val)
 	if (tmp)
 	{
 		free(key);
+		if (tmp->value && val == NULL)
+			return ;
 		if (tmp->value)
 			free(tmp->value);
 		tmp->value = val;
