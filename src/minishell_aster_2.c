@@ -6,7 +6,7 @@
 /*   By: seseo <seseo@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/06 22:24:10 by seseo             #+#    #+#             */
-/*   Updated: 2022/07/03 19:16:10 by seseo            ###   ########.fr       */
+/*   Updated: 2022/07/04 12:57:25 by seseo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ void	asterisk_sub2(t_token **dir_list,
 						char **ast_strs, char *d_name, int ad_flag)
 {
 	if ((ad_flag && ast_strs[0] == NULL)
-		|| (ad_flag & DT_DIR && !ast_strs[0][0]))
+		|| (ad_flag & ASTER_DIR && !ast_strs[0][0]))
 	{
 		if (d_name[0] != '.')
 		{
-			if (ad_flag & DT_DIR)
+			if (ad_flag & ASTER_DIR)
 				token_add_back(dir_list, token_new(ft_strjoin(d_name, "/")));
 			else
 				token_add_back(dir_list, token_new(ft_strdup(d_name)));
@@ -52,7 +52,7 @@ void	asterisk_add_files(t_token **dir_list,
 		return ;
 	if (last_str_match_check(d_name, ast_strs[i - 1], ad_flag))
 	{
-		if (ad_flag & DT_DIR)
+		if (ad_flag & ASTER_DIR)
 			token_add_back(dir_list, token_new(ft_strjoin(d_name, "/")));
 		else
 			token_add_back(dir_list, token_new(ft_strdup(d_name)));
